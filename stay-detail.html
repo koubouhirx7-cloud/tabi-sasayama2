@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>器を作って、贈る | Stay | 一般社団法人ウイズささやま</title>
+    <meta name="description" content="丹波篠山での陶芸と週末の農村生活を体験するプログラム。" />
+    <link rel="stylesheet" href="./style.css" />
+    <style>
+      body {
+        background-color: #F9F8F3; /* 全体の背景色を少し温かみのあるクリーム色に */
+      }
+      .detail-header {
+        margin-top: 80px;
+        position: relative;
+        height: 60vh;
+        overflow: hidden;
+      }
+      .detail-header img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .detail-title-card {
+        position: absolute;
+        bottom: -50px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: white;
+        padding: var(--spacing-md) var(--spacing-lg);
+        border-radius: var(--border-radius-md);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        text-align: center;
+        width: 90%;
+        max-width: 800px;
+        z-index: 10;
+        border: 2px solid var(--color-primary);
+      }
+      .detail-title-card h1 {
+        font-family: var(--font-display);
+        color: var(--color-primary);
+        margin-bottom: 0.5rem;
+      }
+      
+      /* --- 2カラムレイアウト --- */
+      .program-layout {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 3rem;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      @media (max-width: 900px) {
+        .program-layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* 左カラム */
+      .program-content h2 {
+        font-family: var(--font-base);
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--color-primary);
+        border-bottom: 2px solid var(--color-primary);
+        padding-bottom: 0.5rem;
+        margin-top: 3rem;
+        margin-bottom: 1.5rem;
+      }
+      .program-content h2:first-child { margin-top: 0; }
+      
+      .program-desc {
+        line-height: 1.8;
+        color: var(--color-text);
+        margin-bottom: 3rem;
+      }
+
+      /* 行程スケジュールカード */
+      .schedule-card {
+        background: #fff;
+        border-radius: var(--border-radius-md);
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        margin-bottom: 3rem;
+      }
+      .schedule-day-title {
+        font-weight: bold;
+        font-size: 1.2rem;
+        color: var(--color-secondary);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+      }
+      .schedule-row {
+        display: flex;
+        gap: 1.5rem;
+        padding: 1rem 0;
+        border-bottom: 1px dashed var(--color-border);
+      }
+      .schedule-row:last-child { border-bottom: none; padding-bottom: 0; }
+      .schedule-time {
+        font-weight: bold;
+        color: #666;
+        min-width: 40px;
+      }
+
+      /* 右サイドバー (基本情報カード) */
+      .sidebar-card {
+        background: #fff;
+        border-radius: var(--border-radius-lg);
+        padding: 2.5rem 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+        position: sticky;
+        top: 100px;
+      }
+      .sidebar-card h3 {
+        text-align: center;
+        font-family: var(--font-base);
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-bottom: 2rem;
+        color: var(--color-text);
+      }
+      
+      .info-group {
+        margin-bottom: 1.5rem;
+      }
+      .info-label {
+        font-size: 0.85rem;
+        color: #777;
+        margin-bottom: 0.3rem;
+        font-weight: bold;
+      }
+      .info-val {
+        font-size: 0.95rem;
+        color: var(--color-text);
+        line-height: 1.5;
+      }
+      
+      .price-highlight {
+        color: #d35400;
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+
+      .cancel-table {
+        width: 100%;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+      }
+      .cancel-table td {
+        padding: 0.3rem 0;
+        border-bottom: 1px dotted #eee;
+      }
+      .cancel-table td:last-child {
+        text-align: right;
+      }
+      
+      .apply-btn {
+        display: block;
+        width: 100%;
+        background-color: var(--color-secondary);
+        color: #fff;
+        text-align: center;
+        padding: 1rem;
+        border-radius: var(--border-radius-sm);
+        text-decoration: none;
+        font-weight: bold;
+        margin-top: 2rem;
+        transition: background-color 0.3s;
+      }
+      .apply-btn:hover {
+        background-color: var(--color-primary);
+        color: #fff;
+      }
+      .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 1rem;
+        font-size: 0.85rem;
+        color: #888;
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+        <header class="header">
+      <div class="container nav-container">
+        <a href="index.html" class="logo">ウイズささやま</a>
+        <button class="hamburger" aria-label="メニューを開く">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <nav class="nav-links">
+          <a href="index.html">HOME</a>
+          <a href="stay.html">Stay</a>
+          <a href="news.html">News</a>
+          <a href="about.html">About us</a>
+          <a href="company-contact.html">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="detail-header fade-in">
+        <img src="/images/P8217829.jpg" alt="陶芸風景" />
+        <div class="detail-title-card">
+          <h1>器を作って、贈る</h1>
+          <p>週末の農村生活・創作体験プログラム</p>
+        </div>
+      </div>
+
+      <section class="section" style="margin-top: 60px;">
+        <div class="program-layout fade-in">
+          
+          <!-- 左カラム: プログラム詳細 -->
+          <div class="program-content">
+            <!-- microCMS: body (リッチエディタ) または text 等を想定 -->
+            <h2 id="mcs-about-title">プログラムについて</h2>
+            <div class="program-desc" id="mcs-about-body">
+              <p>丹波篠山の豊かな自然の中で、土に触れ、器を作る週末の体験です。出来上がった器は、大切な人への贈り物として、あるいは自分へのご褒美として。里山のゆったりとした時間とともに、本物の手仕事に触れる2日間を提供します。</p>
+            </div>
+
+            <!-- microCMS: schedule (繰り返しフィールド) 等を想定 -->
+            <h2 id="mcs-schedule-title">行程（スケジュール）</h2>
+            <div class="schedule-card" id="mcs-schedule-list">
+              <div class="schedule-day-title">1日目（7/11 土）</div>
+              <div class="schedule-row">
+                <div class="schedule-time">PM</div>
+                <div class="schedule-detail">JR篠山口駅 集合</div>
+              </div>
+              <div class="schedule-row">
+                <div class="schedule-time"></div>
+                <div class="schedule-detail">陶芸家〇〇さんのところで作陶</div>
+              </div>
+              <div class="schedule-row">
+                <div class="schedule-time"></div>
+                <div class="schedule-detail">（　　　）を購入</div>
+              </div>
+              <div class="schedule-row">
+                <div class="schedule-time"></div>
+                <div class="schedule-detail">〇〇で夕食</div>
+              </div>
+
+              <div class="schedule-day-title" style="margin-top: 2rem;">2日目（7/12 日）</div>
+              <div class="schedule-row">
+                <div class="schedule-time">AM</div>
+                <div class="schedule-detail">お宿で朝食</div>
+              </div>
+              <div class="schedule-row">
+                <div class="schedule-time"></div>
+                <div class="schedule-detail">○○で（内容未確定）</div>
+              </div>
+              <div class="schedule-row">
+                <div class="schedule-time">PM</div>
+                <div class="schedule-detail">JR篠山口駅 送迎・解散</div>
+              </div>
+            </div>
+
+            <!-- microCMS: includes (リッチエディタ等) を想定 -->
+            <h2 id="mcs-includes-title">料金に含まれるもの</h2>
+            <div class="program-desc" id="mcs-includes-body">
+              <p>体験費（材料費込み）、宿泊費、食糧費（夕食・朝食）、市内移動・地元案内、旅行保険料。</p>
+            </div>
+          </div>
+          
+          <!-- 右カラム: サイドバー (基本情報・申込) -->
+          <aside class="program-sidebar">
+            <div class="sidebar-card">
+              <h3>基本情報</h3>
+              
+              <!-- microCMS: custom fields (テキストや日付) を想定 -->
+              <div class="info-group">
+                <div class="info-label">日程</div>
+                <div class="info-val" id="mcs-info-dates">2026年4月11日（土）〜12日（日）</div>
+              </div>
+              <div class="info-group">
+                <div class="info-label">定員</div>
+                <div class="info-val" id="mcs-info-capacity">最大10名 / 最少催行5名</div>
+              </div>
+              <div class="info-group">
+                <div class="info-label">催行決定判断</div>
+                <div class="info-val" id="mcs-info-decision">14日前<br><small style="color:#777;">（6/27までに全員へご連絡いたします）</small></div>
+              </div>
+              <div class="info-group">
+                <div class="info-label">料金（お一人様価格）</div>
+                <div class="info-val" id="mcs-info-price">
+                  <span class="price-highlight">大人・高校生以上 : 24,000円</span><br>
+                  小学生以上 : 8,000〜10,000円<br>
+                  <small style="color:#777;">乳児・幼児 : 無料（添い寝・食事持込）</small>
+                </div>
+              </div>
+              <div class="info-group">
+                <div class="info-label">キャンセル料規定</div>
+                <table class="cancel-table" id="mcs-info-cancel">
+                  <tr><td>1週間前:</td><td>20%</td></tr>
+                  <tr><td>3日前:</td><td>30%</td></tr>
+                  <tr><td>前日:</td><td>40%</td></tr>
+                  <tr><td>当日:</td><td>50%</td></tr>
+                  <tr><td>開始後・無連絡:</td><td>100%</td></tr>
+                </table>
+              </div>
+              
+              <a href="company-contact.html" class="apply-btn" id="mcs-apply-link">このプログラムを申し込む</a>
+              <a href="stay.html" class="back-link">一覧へ戻る</a>
+            </div>
+          </aside>
+
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+        <footer class="footer">
+      <div class="container">
+        <div class="footer-top">
+          <div class="footer-left">
+            <div class="footer-logo">一般社団法人ウイズささやま</div>
+            <div class="footer-info">
+              〒669-2321 兵庫県丹波篠山市黒岡191 丹波篠山市民センター内<br>
+              TEL: 079-552-7373 / FAX: 079-552-4680<br>
+              兵庫県知事登録旅行業 地域-797号<br>
+              営業時間：平日9:00-17:00（土日祝定休）
+            </div>
+          </div>
+          
+          <div class="footer-nav">
+            <div class="footer-nav-col">
+              <h4>MENU</h4>
+              <a href="index.html">HOME</a>
+              <a href="stay.html">Stay</a>
+              <a href="news.html">News</a>
+              <a href="about.html">About us</a>
+              <a href="company-contact.html">Company & Contact</a>
+            </div>
+            <div class="footer-nav-col">
+              <h4>PROGRAMS</h4>
+              <a href="education.html">Education</a>
+              <a href="inbound.html">Inbound</a>
+              <a href="download.html">Download</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="footer-bottom">
+          <div class="footer-legal">
+            <a href="#">旅行業約款</a> &nbsp;|&nbsp; 
+            <a href="#">旅行条件書</a> &nbsp;|&nbsp; 
+            <a href="#">プライバシーポリシー</a>
+          </div>
+          <p>&copy; 2026 一般社団法人ウイズささやま All Rights Reserved.</p>
+        </div>
+      </div>
+    </footer>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>

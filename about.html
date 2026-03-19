@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About us | 私たちについて | 一般社団法人ウイズささやま</title>
+    <meta name="description" content="訪れる人もここで暮らす人も、自分たちだけでは踏み入ることが無いような世界に触れてほしい。私たちのビジョンと地元案内人をご紹介します。" />
+    <link rel="stylesheet" href="./style.css" />
+    <style>
+      .page-header {
+        background: url('/images/P8207341.jpg') center/cover no-repeat;
+        height: 40vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        margin-top: 80px;
+      }
+      .page-header::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.4);
+      }
+      .page-header h1 {
+        position: relative;
+        z-index: 1;
+        color: white;
+        font-family: var(--font-display);
+        font-size: clamp(2rem, 5vw, 4rem);
+        text-align: center;
+      }
+
+      .vision-section {
+        background: white;
+        padding: var(--spacing-xl) var(--spacing-md);
+        text-align: center;
+        max-width: 900px;
+        margin: -50px auto var(--spacing-xl);
+        position: relative;
+        z-index: 10;
+        border-radius: var(--border-radius-md);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+      }
+      
+      .vision-text {
+        font-family: var(--font-display);
+        font-size: clamp(1.2rem, 3vw, 1.8rem);
+        line-height: 2;
+        color: var(--color-primary);
+        margin-bottom: var(--spacing-md);
+      }
+
+      .guides-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--spacing-lg);
+        margin-top: var(--spacing-lg);
+      }
+
+      .guide-card {
+        background: var(--color-surface);
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius-blob);
+        text-align: center;
+        border: 2px dashed var(--color-secondary);
+        transition: transform 0.3s ease;
+      }
+      .guide-card:hover {
+        transform: translateY(-5px);
+        background: rgba(194, 168, 120, 0.05); /* very light secondary */
+      }
+      
+      .guide-img {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-bottom: 1rem;
+        border: 3px solid white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      }
+      .guide-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .guide-description {
+        font-family: var(--font-base);
+        font-size: 1rem;
+        color: var(--color-text);
+        line-height: 1.6;
+        padding: 0.5rem;
+        background: white;
+        border-radius: var(--border-radius-md);
+        position: relative;
+        margin-top: 1rem;
+        border: 1px solid var(--color-border);
+      }
+      .guide-description::before {
+        content: '';
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 0 10px 10px 10px;
+        border-style: solid;
+        border-color: transparent transparent var(--color-border) transparent;
+      }
+      .guide-description::after {
+        content: '';
+        position: absolute;
+        top: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 0 9px 9px 9px;
+        border-style: solid;
+        border-color: transparent transparent white transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HEADER -->
+        <header class="header">
+      <div class="container nav-container">
+        <a href="index.html" class="logo">ウイズささやま</a>
+        <button class="hamburger" aria-label="メニューを開く">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <nav class="nav-links">
+          <a href="index.html">HOME</a>
+          <a href="stay.html">Stay</a>
+          <a href="news.html">News</a>
+          <a href="about.html">About us</a>
+          <a href="company-contact.html">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="page-header fade-in">
+        <h1>About us<br><span style="font-size:0.5em">私たちについて</span></h1>
+      </div>
+
+      <section class="section pt-0">
+        <div class="container fade-in">
+          
+          <div class="vision-section">
+            <h2 class="title" style="margin-bottom: 2rem;">Vision</h2>
+            <p class="vision-text">
+              「訪れる人もここで暮らす人も、<br>
+              自分たちだけでは踏み入ることが無いような<br>
+              世界に触れてほしい」
+            </p>
+            <p class="vision-text" style="font-size: 1.4rem; color: var(--color-text);">
+              気付き、学び、楽しく、決断を得る旅作り
+            </p>
+            <p style="margin-top: 2rem; color: #666;">
+              ただ観光するだけではなく、丹波篠山というフィールドで土に触れ、人と語らい、普段の生活では見落としてしまう大切なものを見つける。そんな新しい形の「農村生活」を提案しています。
+            </p>
+          </div>
+
+          <h2 class="title text-center mt-xl fade-in" style="margin-top: 4rem;">地元案内人（兼 住民）</h2>
+          <p class="text-center mb-lg fade-in" style="color: #666;">丹波篠山をこよなく愛する、個性ゆたかな案内人たちが皆様をお迎えします。</p>
+          
+          <div class="guides-grid">
+            
+            <div class="guide-card fade-in">
+              <div class="guide-img">
+                <img src="/images/_W2A1099.jpg" alt="案内人1" />
+              </div>
+              <div class="guide-description">
+                1児の母でここの出身者。<br>
+                お酒と人のお世話が生きがい！
+              </div>
+            </div>
+
+            <div class="guide-card fade-in" style="animation-delay: 0.1s">
+              <div class="guide-img">
+                <img src="/images/P1011277.jpg" alt="案内人2" />
+              </div>
+              <div class="guide-description">
+                丹波篠山へ移住。<br>
+                どこへ出かけても篠山へすぐ帰ってくる人。
+              </div>
+            </div>
+
+            <div class="guide-card fade-in" style="animation-delay: 0.2s">
+              <div class="guide-img">
+                <img src="/images/P8076650.jpg" alt="案内人3" />
+              </div>
+              <div class="guide-description">
+                出身地へUターン。<br>
+                牛とビートルズが人生の軸。
+              </div>
+            </div>
+
+            <div class="guide-card fade-in" style="animation-delay: 0.3s">
+              <div class="guide-img">
+                <img src="/images/PB182516.jpg" alt="案内人4" />
+              </div>
+              <div class="guide-description">
+                お人柄全開のお宿オーナー。<br>
+                丹波篠山一の食通を目指す。
+              </div>
+            </div>
+
+            <div class="guide-card fade-in" style="animation-delay: 0.4s">
+              <div class="guide-img">
+                <img src="/images/PC022837.jpg" alt="案内人5" />
+              </div>
+              <div class="guide-description">
+                何でもこなす通訳案内士。<br>
+                今は全国に出稼ぎ中。
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+        <footer class="footer">
+      <div class="container">
+        <div class="footer-top">
+          <div class="footer-left">
+            <div class="footer-logo">一般社団法人ウイズささやま</div>
+            <div class="footer-info">
+              〒669-2321 兵庫県丹波篠山市黒岡191 丹波篠山市民センター内<br>
+              TEL: 079-552-7373 / FAX: 079-552-4680<br>
+              兵庫県知事登録旅行業 地域-797号<br>
+              営業時間：平日9:00-17:00（土日祝定休）
+            </div>
+          </div>
+          
+          <div class="footer-nav">
+            <div class="footer-nav-col">
+              <h4>MENU</h4>
+              <a href="index.html">HOME</a>
+              <a href="stay.html">Stay</a>
+              <a href="news.html">News</a>
+              <a href="about.html">About us</a>
+              <a href="company-contact.html">Company & Contact</a>
+            </div>
+            <div class="footer-nav-col">
+              <h4>PROGRAMS</h4>
+              <a href="education.html">Education</a>
+              <a href="inbound.html">Inbound</a>
+              <a href="download.html">Download</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="footer-bottom">
+          <div class="footer-legal">
+            <a href="#">旅行業約款</a> &nbsp;|&nbsp; 
+            <a href="#">旅行条件書</a> &nbsp;|&nbsp; 
+            <a href="#">プライバシーポリシー</a>
+          </div>
+          <p>&copy; 2026 一般社団法人ウイズささやま All Rights Reserved.</p>
+        </div>
+      </div>
+    </footer>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>

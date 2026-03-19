@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>会社案内・お問い合わせ | 一般社団法人ウイズささやま</title>
+    <meta name="description" content="一般社団法人ウイズささやまの会社案内、およびカスタマイズ体験のご相談・お問い合わせ窓口です。" />
+    <link rel="stylesheet" href="./style.css" />
+    <style>
+      .page-header {
+        background: url('/images/PB041465.jpg') center/cover no-repeat;
+        height: 40vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        margin-top: 80px;
+      }
+      .page-header::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.4);
+      }
+      .page-header h1 {
+        position: relative;
+        z-index: 1;
+        color: white;
+        font-family: var(--font-display);
+        font-size: clamp(2rem, 5vw, 4rem);
+        text-align: center;
+      }
+
+      .info-box {
+        background: white;
+        border-radius: var(--border-radius-md);
+        padding: var(--spacing-lg);
+        margin-bottom: var(--spacing-lg);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        border: 1px solid var(--color-border);
+      }
+      .info-box h2 {
+        color: var(--color-primary);
+        margin-bottom: var(--spacing-md);
+        font-family: var(--font-display);
+        text-align: center;
+      }
+
+      .company-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .company-table th, .company-table td {
+        border-bottom: 1px solid var(--color-border);
+        padding: 1rem;
+        text-align: left;
+      }
+      .company-table th {
+        width: 30%;
+        background: rgba(90, 126, 90, 0.05);
+        color: var(--color-primary);
+        font-weight: bold;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+        color: var(--color-text);
+      }
+      .form-group input, 
+      .form-group textarea, 
+      .form-group select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid var(--color-border);
+        border-radius: var(--border-radius-sm);
+        font-family: var(--font-base);
+        font-size: 1rem;
+        transition: border-color 0.3s;
+      }
+      .form-group input:focus, 
+      .form-group textarea:focus, 
+      .form-group select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 5px rgba(90, 126, 90, 0.2);
+      }
+      
+      .required {
+        color: var(--color-accent);
+        font-size: 0.8rem;
+        margin-left: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HEADER -->
+        <header class="header">
+      <div class="container nav-container">
+        <a href="index.html" class="logo">ウイズささやま</a>
+        <button class="hamburger" aria-label="メニューを開く">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <nav class="nav-links">
+          <a href="index.html">HOME</a>
+          <a href="stay.html">Stay</a>
+          <a href="news.html">News</a>
+          <a href="about.html">About us</a>
+          <a href="company-contact.html">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="page-header fade-in">
+        <h1>Company & Contact<br><span style="font-size:0.5em">会社案内・お問い合わせ</span></h1>
+      </div>
+
+      <section class="section pt-0">
+        <div class="container" style="max-width: 800px;">
+          
+          <div class="info-box fade-in" style="margin-top: -60px; position: relative; z-index: 10;">
+            <h2>会社案内</h2>
+            
+            <table class="company-table">
+              <tr>
+                <th>名称</th>
+                <td>一般社団法人ウイズささやま</td>
+              </tr>
+              <tr>
+                <th>住所</th>
+                <td>〒669-2321<br>兵庫県丹波篠山市黒岡191<br>丹波篠山市民センター内</td>
+              </tr>
+              <tr>
+                <th>TEL / FAX</th>
+                <td>TEL：079-552-7373<br>FAX：079-552-4680</td>
+              </tr>
+              <tr>
+                <th>旅行業登録</th>
+                <td>兵庫県知事登録旅行業 地域-797号</td>
+              </tr>
+              <tr>
+                <th>旅行業務取扱責任者</th>
+                <td>古西 遥奈</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="info-box fade-in">
+            <h2>お問い合わせ・カスタマイズ相談</h2>
+            <p class="text-center mb-md" style="color: #666;">
+              ご希望の体験内容、日程・人数に応じたオーダーメイドの農村生活プログラムをご提案します。<br>お気軽にご相談ください。
+            </p>
+            
+            <form action="#" method="POST" class="contact-form">
+              <div class="form-group">
+                <label for="name">お名前 <span class="required">必須</span></label>
+                <input type="text" id="name" name="name" required placeholder="例：山田 太郎">
+              </div>
+              
+              <div class="form-group">
+                <label for="kana">ふりがな <span class="required">必須</span></label>
+                <input type="text" id="kana" name="kana" required placeholder="例：やまだ たろう">
+              </div>
+
+              <div class="form-group">
+                <label for="tel">TEL <span class="required">必須</span></label>
+                <input type="tel" id="tel" name="tel" required placeholder="例：090-1234-5678">
+              </div>
+
+              <div class="form-group">
+                <label for="email">メールアドレス <span class="required">必須</span></label>
+                <input type="email" id="email" name="email" required placeholder="例：info@example.com">
+              </div>
+
+              <hr style="border: none; border-top: 1px dashed var(--color-border); margin: 2rem 0;">
+              
+              <h3 style="color: var(--color-primary); margin-bottom: 1rem; font-family: var(--font-display);">カスタマイズ相談詳細</h3>
+
+              <div class="form-group">
+                <label for="purpose">ご希望の体験内容（複数可）</label>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                  <label style="font-weight: normal;"><input type="checkbox" name="purpose" value="農業"> 農業体験</label>
+                  <label style="font-weight: normal;"><input type="checkbox" name="purpose" value="ものづくり"> ものづくり（陶芸等）</label>
+                  <label style="font-weight: normal;"><input type="checkbox" name="purpose" value="古民家"> 古民家滞在</label>
+                  <label style="font-weight: normal;"><input type="checkbox" name="purpose" value="教育旅行"> 学校・教育</label>
+                  <label style="font-weight: normal;"><input type="checkbox" name="purpose" value="インバウンド"> 外国人向け</label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="date">希望日程 / 時期</label>
+                <input type="text" id="date" name="date" placeholder="例：2026年10月の土日、または 具体的な日付">
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                  <label for="people">想定人数</label>
+                  <input type="text" id="people" name="people" placeholder="例：大人2名、子供2名">
+                </div>
+                
+                <div class="form-group">
+                  <label for="budget">ご予算（お一人様あたり）</label>
+                  <select id="budget" name="budget">
+                    <option value="">選択してください</option>
+                    <option value="15000">15,000円〜</option>
+                    <option value="25000">25,000円〜</option>
+                    <option value="40000">40,000円〜</option>
+                    <option value="未定">相談して決めたい</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="message">自由記入欄・その他ご要望</label>
+                <textarea id="message" name="message" rows="5" placeholder="アレルギーの有無や、とくに体験したいことなどをご記入ください。"></textarea>
+              </div>
+
+              <div class="text-center mt-md">
+                <button type="submit" class="btn btn-primary" style="padding: 1rem 4rem; font-size: 1.2rem;">送信する</button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+        <footer class="footer">
+      <div class="container">
+        <div class="footer-top">
+          <div class="footer-left">
+            <div class="footer-logo">一般社団法人ウイズささやま</div>
+            <div class="footer-info">
+              〒669-2321 兵庫県丹波篠山市黒岡191 丹波篠山市民センター内<br>
+              TEL: 079-552-7373 / FAX: 079-552-4680<br>
+              兵庫県知事登録旅行業 地域-797号<br>
+              営業時間：平日9:00-17:00（土日祝定休）
+            </div>
+          </div>
+          
+          <div class="footer-nav">
+            <div class="footer-nav-col">
+              <h4>MENU</h4>
+              <a href="index.html">HOME</a>
+              <a href="stay.html">Stay</a>
+              <a href="news.html">News</a>
+              <a href="about.html">About us</a>
+              <a href="company-contact.html">Company & Contact</a>
+            </div>
+            <div class="footer-nav-col">
+              <h4>PROGRAMS</h4>
+              <a href="education.html">Education</a>
+              <a href="inbound.html">Inbound</a>
+              <a href="download.html">Download</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="footer-bottom">
+          <div class="footer-legal">
+            <a href="#">旅行業約款</a> &nbsp;|&nbsp; 
+            <a href="#">旅行条件書</a> &nbsp;|&nbsp; 
+            <a href="#">プライバシーポリシー</a>
+          </div>
+          <p>&copy; 2026 一般社団法人ウイズささやま All Rights Reserved.</p>
+        </div>
+      </div>
+    </footer>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>

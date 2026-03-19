@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Education | 教育プログラム | 一般社団法人ウイズささやま</title>
+    <meta name="description" content="若い世代へ。探求学習や教育旅行に向けた「里山アカデミー」「里山探求プログラム」のご案内。" />
+    <link rel="stylesheet" href="./style.css" />
+    <style>
+      .lp-header {
+        background: url('/images/PB121931.jpg') center/cover no-repeat;
+        height: 60vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        margin-top: 80px;
+      }
+      .lp-header::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+      }
+      .lp-title-wrap {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        color: white;
+      }
+      .lp-title-wrap h1 {
+        font-family: var(--font-display);
+        font-size: clamp(2.5rem, 6vw, 5rem);
+        margin-bottom: 1rem;
+        letter-spacing: 2px;
+      }
+      .lp-title-wrap p {
+        font-size: clamp(1.2rem, 3vw, 1.8rem);
+        font-weight: bold;
+      }
+
+      .message-box {
+        background: var(--color-surface);
+        padding: var(--spacing-lg);
+        border-radius: var(--border-radius-md);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        max-width: 800px;
+        margin: -50px auto var(--spacing-xl);
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        border-top: 5px solid var(--color-primary);
+      }
+      .message-box h2 {
+        color: var(--color-primary);
+        font-family: var(--font-display);
+        margin-bottom: 1rem;
+      }
+      .message-box p {
+        font-size: 1.1rem;
+        line-height: 1.8;
+      }
+
+      .program-highlight {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-lg);
+        align-items: center;
+        margin-bottom: var(--spacing-xl);
+      }
+      .program-highlight:nth-child(even) {
+        direction: rtl;
+      }
+      .program-highlight:nth-child(even) > * {
+        direction: ltr;
+      }
+      
+      .prog-img img {
+        border-radius: var(--border-radius-md);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      }
+      
+      .prog-info h3 {
+        font-family: var(--font-display);
+        color: var(--color-primary);
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+      .prog-info p {
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
+      }
+
+      .cta-section {
+        background: var(--color-secondary);
+        color: white;
+        padding: var(--spacing-xl) 0;
+        text-align: center;
+      }
+      .cta-section h2 {
+        font-family: var(--font-display);
+        color: white;
+        margin-bottom: 1rem;
+      }
+      .btn-download {
+        background: white;
+        color: var(--color-secondary);
+        font-size: 1.2rem;
+        padding: 1rem 3rem;
+        border-radius: 50px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: bold;
+        transition: transform 0.3s;
+      }
+      .btn-download:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        color: var(--color-secondary);
+      }
+
+      @media (max-width: 768px) {
+        .program-highlight {
+          grid-template-columns: 1fr;
+        }
+        .program-highlight:nth-child(even) {
+          direction: ltr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HEADER -->
+        <header class="header">
+      <div class="container nav-container">
+        <a href="index.html" class="logo">ウイズささやま</a>
+        <button class="hamburger" aria-label="メニューを開く">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <nav class="nav-links">
+          <a href="index.html">HOME</a>
+          <a href="stay.html">Stay</a>
+          <a href="news.html">News</a>
+          <a href="about.html">About us</a>
+          <a href="company-contact.html">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="lp-header fade-in">
+        <div class="lp-title-wrap">
+          <h1>Education</h1>
+          <p>教育関係者・学生の皆様へ</p>
+        </div>
+      </div>
+
+      <section class="section pt-0">
+        <div class="container">
+          
+          <div class="message-box fade-in">
+            <h2>若い世代へ、本物を知る経験を</h2>
+            <p>
+              教室で学ぶだけでは得られない「生きた知識」が、丹波篠山の里山にはあふれています。<br>
+              私たちは、学生たちが地域の人々と共に考え、汗を流し、<br>
+              自らの足で答えを見つける「探求」の場を提供しています。
+            </p>
+          </div>
+
+          <div class="program-highlight fade-in">
+            <div class="prog-img">
+              <img src="/images/P6170310.jpg" alt="里山探求プログラム" />
+            </div>
+            <div class="prog-info">
+              <h3>里山探求プログラム</h3>
+              <p>中学生〜大学生を対象とした、課題解決型の宿泊プログラムです。<br>過疎化、獣害、農業の後継者問題など、リアルな地域の課題に対して、地元住民の生の声を聞きながら、自分たちなりの解決策をチームで探求します。</p>
+              <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; list-style: disc; color: #666;">
+                <li>対象：中学・高校・大学のゼミ/団体</li>
+                <li>期間：1泊2日〜（応相談）</li>
+                <li>目的：課題発見力・協調性・行動力の育成</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="program-highlight fade-in">
+            <div class="prog-img">
+              <img src="/images/PC022881.jpg" alt="里山アカデミー" />
+            </div>
+            <div class="prog-info">
+              <h3>里山アカデミー</h3>
+              <p>より深く里山の文化やなりわいを学ぶ、体験特化型の教育旅行プログラムです。<br>陶芸、農業、古民家改修など、その道のプロフェッショナルである地元住民から直接指導を受け、ホンモノの手仕事を体験します。</p>
+              <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; list-style: disc; color: #666;">
+                <li>対象：教育旅行・修学旅行</li>
+                <li>期間：日帰り〜</li>
+                <li>目的：日本の伝統文化・職業観の醸成</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="cta-section fade-in">
+        <div class="container">
+          <h2>詳しい資料をご用意しております</h2>
+          <p class="mb-lg">学校行事への導入や、ゼミ合宿のご相談も承ります。まずはカタログをご覧ください。</p>
+          <a href="download.html" class="btn-download">
+            📘 教育プログラムのカタログをダウンロードする
+          </a>
+          <p style="margin-top: 1.5rem;">
+            <a href="company-contact.html" style="color: white; text-decoration: underline;">直接カスタマイズの相談をする</a>
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+        <footer class="footer">
+      <div class="container">
+        <div class="footer-top">
+          <div class="footer-left">
+            <div class="footer-logo">一般社団法人ウイズささやま</div>
+            <div class="footer-info">
+              〒669-2321 兵庫県丹波篠山市黒岡191 丹波篠山市民センター内<br>
+              TEL: 079-552-7373 / FAX: 079-552-4680<br>
+              兵庫県知事登録旅行業 地域-797号<br>
+              営業時間：平日9:00-17:00（土日祝定休）
+            </div>
+          </div>
+          
+          <div class="footer-nav">
+            <div class="footer-nav-col">
+              <h4>MENU</h4>
+              <a href="index.html">HOME</a>
+              <a href="stay.html">Stay</a>
+              <a href="news.html">News</a>
+              <a href="about.html">About us</a>
+              <a href="company-contact.html">Company & Contact</a>
+            </div>
+            <div class="footer-nav-col">
+              <h4>PROGRAMS</h4>
+              <a href="education.html">Education</a>
+              <a href="inbound.html">Inbound</a>
+              <a href="download.html">Download</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="footer-bottom">
+          <div class="footer-legal">
+            <a href="#">旅行業約款</a> &nbsp;|&nbsp; 
+            <a href="#">旅行条件書</a> &nbsp;|&nbsp; 
+            <a href="#">プライバシーポリシー</a>
+          </div>
+          <p>&copy; 2026 一般社団法人ウイズささやま All Rights Reserved.</p>
+        </div>
+      </div>
+    </footer>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
