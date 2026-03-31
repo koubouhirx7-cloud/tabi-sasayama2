@@ -864,3 +864,59 @@ ul { list-style: none; }
   .footer-nav-group { flex-direction: column; gap: 2rem; }
   .footer-bottom { flex-direction: column; text-align: center; }
 }
+
+
+/* --- 横スクロール ギャラリー --- */
+.gallery-section {
+  width: 100%;
+  overflow: hidden;
+  margin-top: 5rem;
+  margin-bottom: 5rem;
+  background: transparent;
+  display: flex;
+}
+
+.scrolling-gallery {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  overflow: hidden;
+  display: flex;
+}
+
+.scrolling-gallery-track {
+  display: flex;
+  gap: 1.5rem;
+  animation: scroll-left-seamless 45s linear infinite;
+  width: max-content;
+}
+
+.scrolling-gallery-track:hover {
+  animation-play-state: paused;
+}
+
+.gallery-photo {
+  width: 320px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  flex-shrink: 0;
+  transition: transform 0.3s;
+}
+
+@media (max-width: 768px) {
+  .gallery-photo {
+    width: 240px;
+    height: 160px;
+  }
+}
+
+.gallery-photo:hover {
+  transform: scale(1.03);
+}
+
+@keyframes scroll-left-seamless {
+  0% { transform: translateX(0); }
+  /* (320px幅 + 1.5rem(24px)gap) * 7枚 = 2408px分マイナスに移動 */
+  100% { transform: translateX(calc(-50% - 0.75rem)); } 
+}
