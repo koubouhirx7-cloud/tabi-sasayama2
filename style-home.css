@@ -868,18 +868,17 @@ ul { list-style: none; }
 
 /* --- 横スクロール ギャラリー --- */
 .gallery-section {
-  width: 100%;
-  overflow: hidden;
-  margin-top: 3rem;
-  margin-bottom: 3rem;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  padding: 3rem 0;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  background: #F1F0EB; /* 背景の写真を完全に隠すベース色 */
+  padding: 4rem 0; /* 上下の余白 */
+  display: block;
 }
 
 .scrolling-gallery {
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5); /* 黒色透過率50%の帯 */
+  padding: 3rem 0;
   overflow: hidden;
   display: flex;
 }
