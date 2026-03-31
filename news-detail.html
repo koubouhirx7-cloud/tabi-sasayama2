@@ -7,88 +7,114 @@
     <meta name="description" content="お知らせ・レポート・日記。最近の出来事を発信しています。" />
     <link rel="stylesheet" href="./style.css" />
     <style>
-      .article-header {
-        margin-top: 80px;
-        background: var(--color-bg);
-        padding: var(--spacing-lg) 0;
+      body {
+        background: #F8F7F3; /* 少し温かみのある薄いグレーベージュ */
+      }
+      .notion-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 30px rgba(0,0,0,0.06);
+        max-width: 900px;
+        margin: 120px auto 80px;
+        border: 1px solid rgba(0,0,0,0.05);
       }
       
-      .article-meta {
+      .notion-cover {
+        width: 100%;
+        height: min(40vh, 400px);
+        background: #eee;
+        position: relative;
+      }
+      .notion-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      
+      .notion-content {
+        padding: 50px 80px 80px;
+      }
+      @media (max-width: 768px) {
+        .notion-content {
+          padding: 30px 20px 60px;
+        }
+      }
+      
+      .notion-title {
+        font-family: var(--font-display);
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        color: var(--color-text);
+        line-height: 1.4;
+        margin-bottom: 24px;
+        letter-spacing: 0.05em;
+      }
+      
+      .notion-meta {
         display: flex;
         align-items: center;
-        gap: 1rem;
-        margin-bottom: 1rem;
-        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 40px;
+        padding-bottom: 30px;
+        border-bottom: 1px solid var(--color-border);
       }
-      .article-category {
+      .notion-category {
         background: var(--color-primary);
         color: white;
-        padding: 0.3rem 0.8rem;
-        border-radius: 20px;
+        padding: 4px 12px;
+        border-radius: 4px;
         font-size: 0.9rem;
         font-weight: bold;
       }
-      .article-date {
+      .notion-date {
         color: #888;
+        font-size: 0.95rem;
       }
       
-      .article-title {
-        font-family: var(--font-display);
-        text-align: center;
-        max-width: 800px;
-        margin: 0 auto;
-        color: var(--color-text);
-        font-size: clamp(1.8rem, 4vw, 2.5rem);
+      .notion-body {
+        font-size: 1.05rem;
+        line-height: 1.9;
+        color: #333;
+        font-family: var(--font-base);
       }
-
-      .article-cover {
-        width: 100%;
-        max-width: 900px;
-        margin: -40px auto var(--spacing-xl);
-        border-radius: var(--border-radius-md);
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        position: relative;
-        z-index: 10;
-        border: 4px solid white;
+      .notion-body p {
+        margin-bottom: 1.6em;
       }
-      .article-cover img {
-        width: 100%;
-        height: auto;
-        max-height: 500px;
-        object-fit: cover;
-      }
-
-      .article-body {
-        max-width: 700px;
-        margin: 0 auto var(--spacing-xl);
-        font-size: 1.1rem;
-        line-height: 1.8;
-      }
-      .article-body h2 {
+      .notion-body h1, .notion-body h2 {
         font-family: var(--font-display);
         color: var(--color-primary);
-        margin: 2rem 0 1rem;
-        padding-bottom: 0.5rem;
+        margin: 2.5em 0 1em;
+        padding-bottom: 0.5em;
         border-bottom: 1px solid var(--color-border);
+        font-size: 1.5rem;
       }
-      .article-body p {
-        margin-bottom: 1.5rem;
+      .notion-body img {
+        border-radius: 8px;
+        margin: 2em 0;
+        max-width: 100%;
+        height: auto;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
       }
-      .article-body img {
-        border-radius: var(--border-radius-sm);
-        margin: 2rem 0;
-      }
-
+      
       .back-to-list {
         display: block;
-        text-align: center;
-        margin-top: var(--spacing-xl);
+        margin-top: 60px;
+        padding-top: 40px;
+        border-top: 1px dotted var(--color-border);
       }
       .back-to-list a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
         font-weight: bold;
         color: var(--color-primary);
-        text-decoration: underline;
+        text-decoration: none;
+        transition: 0.2s;
+      }
+      .back-to-list a:hover {
+        opacity: 0.7;
+        transform: translateX(-5px);
       }
     </style>
   </head>
@@ -113,44 +139,24 @@
     </header>
 
     <main>
-      <div class="article-header fade-in">
-        <div class="container">
-          <div class="article-meta">
-            <span class="article-category" id="detail-category">報告レポート</span>
-            <span class="article-date" id="detail-date">2026年5月20日</span>
+      <div class="container fade-in">
+        <article class="notion-card">
+          <div class="notion-cover" id="detail-cover-container">
+            <img id="detail-cover" src="/images/P6170310.jpg" alt="アイキャッチ画像" />
           </div>
-          <h1 class="article-title" id="detail-title">龍谷大学◎◎ゼミ生、初めての里山体験</h1>
-        </div>
-      </div>
-
-      <section class="section pt-0">
-        <div class="container fade-in">
-          <div class="article-cover" id="detail-cover-container">
-            <img id="detail-cover" src="/images/P6170310.jpg" alt="龍谷大学のゼミ生が活動する様子" />
-          </div>
-
-          <div class="article-body" id="detail-body">
-            <p>こんにちは。今回は、龍谷大学の◎◎ゼミに所属する学生の皆さんが週末の里山体験プログラムに参加してくれた様子をレポートします。</p>
+          <div class="notion-content">
+            <h1 class="notion-title" id="detail-title">龍谷大学◎◎ゼミ生、初めての里山体験</h1>
+            <div class="notion-meta">
+              <span class="notion-category" id="detail-category">報告レポート</span>
+              <span class="notion-date" id="detail-date">2026年5月20日</span>
+            </div>
             
-            <p>都会での暮らしに慣れている学生たちにとって、丹波篠山の自然豊かな環境は新鮮そのもの。初めての土いじりや、地域の方々との深い交流を通じて、多くの「気づき」を得てくれたようです。</p>
-
-            <h2>土に触れ、自分の手で作り出す喜び</h2>
-            <p>初日は地元陶芸家さんのご指導のもと、作陶に挑戦。マニュアルがない手仕事の温もりに触れながら、思い思いの器づくりを楽しみました。「自分の手でゼロから形にしていく作業は、普段の大学生活ではなかなか経験できない」といった声も上がりました。</p>
-            
-            <img src="/images/P8217813.jpg" alt="作陶の様子" />
-
-            <h2>夜の語らいで生まれた共創のアイデア</h2>
-            <p>夕食後は、地元案内人たちとのBBQ&座談会。お酒も入り、リラックスした雰囲気の中で「里山の課題」や「若い世代が地域とどう関われるか」について、熱い議論が交わされました。案内人たちの率直な意見や「失敗を恐れずにやってみる」という姿勢が、学生たちの心に強く響いたようです。</p>
-
-            <h2>最後に</h2>
-            <p>2日間の短い滞在でしたが、別れ際に見せてくれた学生たちの晴れやかな顔が印象的でした。訪れる人と住民が双方向で学び合う。そんな「共創」の形が、また一つ実感できたプログラムとなりました。</p>
-
-            <div class="back-to-list">
-              <a href="news.html">← News一覧に戻る</a>
+            <div class="notion-body" id="detail-body">
+              <p style="text-align:center; color:#888; margin: 40px 0;">記事を読み込んでいます...</p>
             </div>
           </div>
-        </div>
-      </section>
+        </article>
+      </div>
     </main>
 
     <!-- FOOTER -->

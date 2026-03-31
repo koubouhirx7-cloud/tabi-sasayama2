@@ -2,26 +2,81 @@ import { fetchAllNews } from './cms.js';
 
 (async function initNewsList() {
   const container = document.getElementById('news-grid-container');
-  const tags = document.querySelectorAll('.category-nav .tag');
+  const catFilterList = document.getElementById('category-filter-list');
+  const archFilterList = document.getElementById('archive-filter-list');
   
   if (!container) return;
 
   const newsData = await fetchAllNews();
   
-  function renderNews(categoryFilter = 'すべて') {
+  let currentCategory = 'すべて';
+  let currentArchive = 'すべて';
+
+  function extractFilters() {
+    const cats = new Set();
+    const archives = new Set();
+    
+    // Sort logic to ensure correct newest-first dates
+    newsData.sort((a,b) => new Date(b.date || b.publishedAt) - new Date(a.date || a.publishedAt));
+
+    newsData.forEach(item => {
+      if (item.category) cats.add(item.category);
+      const d = new Date(item.date || item.publishedAt);
+      const ym = `${d.getFullYear()}年${d.getMonth() + 1}月`;
+      archives.add(ym);
+    });
+
+    if (catFilterList) {
+      catFilterList.innerHTML = `<li><a href="#" class="active" data-cat="すべて">すべて</a></li>`;
+      cats.forEach(c => {
+        catFilterList.insertAdjacentHTML('beforeend', `<li><a href="#" data-cat="${c}">${c}</a></li>`);
+      });
+      catFilterList.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', e => {
+          e.preventDefault();
+          catFilterList.querySelectorAll('a').forEach(l => l.classList.remove('active'));
+          a.classList.add('active');
+          currentCategory = a.getAttribute('data-cat');
+          renderNews();
+        });
+      });
+    }
+
+    if (archFilterList) {
+      archFilterList.innerHTML = `<li><a href="#" class="active" data-arc="すべて">すべて</a></li>`;
+      archives.forEach(arc => {
+         archFilterList.insertAdjacentHTML('beforeend', `<li><a href="#" data-arc="${arc}">${arc}</a></li>`);
+      });
+      archFilterList.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', e => {
+          e.preventDefault();
+          archFilterList.querySelectorAll('a').forEach(l => l.classList.remove('active'));
+          a.classList.add('active');
+          currentArchive = a.getAttribute('data-arc');
+          renderNews();
+        });
+      });
+    }
+  }
+
+  function renderNews() {
     container.innerHTML = '';
     
     if (!newsData || newsData.length === 0) {
-      container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">現在表示できる記事がありません。</p>';
+      container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #888;">現在表示できる記事がありません。</p>';
       return;
     }
 
-    const filtered = categoryFilter === 'すべて' 
-      ? newsData 
-      : newsData.filter(n => (n.category === categoryFilter));
+    const filtered = newsData.filter(item => {
+      const matchCat = currentCategory === 'すべて' || item.category === currentCategory;
+      const d = new Date(item.date || item.publishedAt);
+      const ym = `${d.getFullYear()}年${d.getMonth() + 1}月`;
+      const matchArc = currentArchive === 'すべて' || ym === currentArchive;
+      return matchCat && matchArc;
+    });
 
     if (filtered.length === 0) {
-      container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">該当する記事が見つかりませんでした。</p>';
+      container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #888;">該当する記事が見つかりませんでした。</p>';
       return;
     }
 
@@ -53,18 +108,10 @@ import { fetchAllNews } from './cms.js';
     });
   }
 
-  // 取得した直後に初回レンダリングを実行（空の場合は内部で「記事がありません」を表示）
-  renderNews('すべて');
-
-  tags.forEach(tag => {
-    tag.addEventListener('click', (e) => {
-      e.preventDefault();
-      tags.forEach(t => t.classList.remove('active'));
-      tag.classList.add('active');
-      
-      const categoryToFilter = tag.textContent.trim();
-      renderNews(categoryToFilter);
-    });
-  });
+  if (newsData && newsData.length > 0) {
+    extractFilters();
+  }
+  
+  renderNews();
 
 })();
