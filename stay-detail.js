@@ -79,6 +79,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ページタイトル（ブラウザのタブ名）も動的に変更する
     if (data.title) {
       document.title = `${data.title} | Stay | 一般社団法人ウイズささやま`;
+      
+      // 申し込み・カスタマイズ相談ボタンにお問い合わせソース（ツアー名）を付与
+      const applyBtn = document.getElementById('mcs-apply-link');
+      if (applyBtn) {
+        applyBtn.href = `company-contact.html?type=apply&tour=${encodeURIComponent(data.title)}`;
+      }
+      const customBtn = document.getElementById('mcs-custom-link');
+      if (customBtn) {
+        customBtn.href = `company-contact.html?type=customize&tour=${encodeURIComponent(data.title)}`;
+      }
     }
 
   } catch (error) {
