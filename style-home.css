@@ -870,10 +870,11 @@ ul { list-style: none; }
 .gallery-section {
   width: 100%;
   overflow: hidden;
-  margin-top: 5rem;
-  margin-bottom: 5rem;
-  background: transparent;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
+  padding: 3rem 0;
 }
 
 .scrolling-gallery {
