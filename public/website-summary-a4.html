@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ウイズささやま WEBサイト概要説明書</title>
+  <style>
+    /* A4印刷用のスタイル設定 */
+    @page {
+      size: A4;
+      margin: 15mm;
+    }
+    
+    body {
+      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+      color: #333;
+      line-height: 1.5;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    /* 印刷時のプレビュー（A4サイズ）を見やすくするためのコンテナ */
+    .a4-container {
+      background-color: #fff;
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      padding: 15mm 15mm;
+      box-sizing: border-box;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    /* 印刷時のみ適用されるスタイル */
+    @media print {
+      body { background-color: #fff; padding: 0; }
+      .a4-container { box-shadow: none; margin: 0; width: auto; min-height: auto; padding: 0; }
+      .no-print { display: none; }
+    }
+
+    /* タイポグラフィと見出し */
+    h1 {
+      font-size: 20px;
+      text-align: center;
+      border-bottom: 2px solid #8C806A;
+      padding-bottom: 8px;
+      margin-bottom: 15px;
+      color: #1A1A1A;
+    }
+    h2 {
+      font-size: 15px;
+      color: #8C806A;
+      border-left: 5px solid #8C806A;
+      padding-left: 10px;
+      margin-top: 15px;
+      margin-bottom: 10px;
+    }
+    h3 {
+      font-size: 14px;
+      margin-top: 10px;
+      margin-bottom: 6px;
+      color: #1A1A1A;
+    }
+    p, li {
+      font-size: 12.5px;
+      color: #444;
+      margin-bottom: 5px;
+    }
+    ul.target-list, ul.role-list {
+      padding-left: 20px;
+      margin-bottom: 10px;
+    }
+    li {
+      margin-bottom: 4px;
+    }
+    .concept-box {
+      background-color: #F8F7F5;
+      padding: 12px;
+      border-radius: 5px;
+      border: 1px solid #E8E6E1;
+      margin-bottom: 12px;
+    }
+    .concept-catch {
+      font-weight: bold;
+      font-size: 14.5px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    
+    .print-btn {
+      display: block;
+      width: 200px;
+      margin: 0 auto 20px;
+      padding: 10px;
+      text-align: center;
+      background-color: #8C806A;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .print-btn:hover { background-color: #6B7A68; }
+
+    /* 見積もり内訳の注釈用 */
+    .note-text {
+      display: block;
+      font-size: 11px;
+      color: #666;
+      margin-top: 2px;
+    }
+    .price-box {
+      background-color: #f7f7f7;
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+      margin-bottom: 8px;
+      border-radius: 4px;
+    }
+    .price-box .price-title {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+    .price-box .price-amount {
+      font-size: 16px;
+      font-weight: bold;
+      color: #555;
+      margin: 0;
+    }
+    
+    /* ご提案用特別ボックス */
+    .proposal-box {
+      background-color: #fff9f0;
+      border: 2px solid #b07e2c;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+    .proposal-box p {
+      font-size: 13.5px;
+      line-height: 1.6;
+      margin-bottom: 0;
+    }
+    .proposal-box .high-price {
+      font-size: 18px;
+      color: #b07e2c;
+      font-weight: bold;
+    }
+    .proposal-box ul {
+      margin-top: 8px;
+      margin-bottom: 0;
+      padding-left: 20px;
+    }
+    .proposal-box ul li {
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 印刷ボタン (印刷時は非表示になります) -->
+  <a href="#" class="print-btn no-print" onclick="window.print(); return false;">このページをA4で印刷する</a>
+
+  <div class="a4-container">
+    <h1>「一般社団法人ウイズささやま」WEBサイト仕様・お見積り書</h1>
+
+    <h2>1. サイトの目的とコンセプト</h2>
+    <div class="concept-box">
+      <p class="concept-catch">「訪れる人と地域住民の『共創』による地域価値の向上」</p>
+      <p>本サイトは、単なる観光情報の提供にとどまらず、丹波篠山の「本質的な魅力」を発信し、訪れる人と暮らす人をつなぐ架け橋となることを目的としています。移住・文化・教育を掛け合わせた、深みのある里山体験をご提案します。</p>
+    </div>
+
+    <h2>2. メインターゲット層</h2>
+    <ul class="target-list">
+      <li><strong>週末の農村生活に関心がある層（個人・ファミリー）：</strong> 本物の体験を求める方々。</li>
+      <li><strong>教育関係者：</strong> 探求学習や教育旅行などを検討している教員やエージェント。</li>
+      <li><strong>インバウンド（訪日外国人旅行者）：</strong> オーセンティックな体験を求める外国人。</li>
+    </ul>
+
+    <h2>3. サイト構成と各ページの役割（全7ページ構成）</h2>
+    <ul class="role-list">
+      <li><strong>HOME：</strong> スクロール演出で世界観に引き込みます。</li>
+      <li><strong>Stay：</strong> 体験プログラムや宿泊情報の一覧・詳細ページ。予約を後押しします。</li>
+      <li><strong>News：</strong> 取り組みの「今」を伝えるレポートや日記。</li>
+      <li><strong>About us：</strong> ビジョンや理念、「地元案内人」を紹介します。</li>
+      <li><strong>Programs (Education / Inbound)：</strong> 専門LP（ランディングページ）。</li>
+      <li><strong>Contact &amp; Download：</strong> カタログのDLや、カスタマイズ相談窓口。</li>
+    </ul>
+
+    <h2>4. デザイン・演出の特徴</h2>
+    <ul class="role-list">
+      <li><strong>没入感のあるスクロールアニメーション：</strong> 背景の写真が滑らかに切り替わる全画面レイアウト。</li>
+      <li><strong>親しみと上質さの共存：</strong> 高品質な写真と明朝体で上質さを持たせつつ、手書きイラストの吹き出しで温かさを表現。</li>
+    </ul>
+
+    <h2>5. 制作適正価格帯（相場）と機能の価値</h2>
+    <div class="price-box">
+      <p class="price-title">本仕様のサイトを中小規模のWeb制作会社へ依頼した場合の適正相場</p>
+      <p class="price-amount">通常参考価格： 80万円 〜 150万円</p>
+    </div>
+    <ul class="role-list" style="margin-bottom: 10px;">
+      <li><strong>高度なフロントエンド実装（+10〜20万円相当）：</strong> 今回のスクロール連動のフルスクリーン背景アニメーションは工数が大きくかかるため、通常のサイト（基本相場50万〜80万）よりも評価額が上乗せされます。</li>
+    </ul>
+
+    <h2>6. 本件に関するご提案と最終ご請求金額（お見積り）</h2>
+    <div class="proposal-box">
+      <p>
+        当初の予算よりも膨らんでしまい誠に申し訳ありません。<br>
+        しかしながら、今回のサイト構築には私自身の実績作りの意味合いも強く込めさせていただきたいと考えております。通常の市場相場（80万〜150万円）に匹敵するリッチな表現を取り入れたデザイン・実装仕様となっておりますが、今回は特別価格として、<br><br>
+        <span class="high-price">最終的な納品価格を【 13万〜14万円 】ほどでいかがでしょうか？</span><br><br>
+        なお、こちらのお見積りには以下の運用サポート内容がすべて含まれております。
+      </p>
+      <ul>
+        <li>既存のサーバーへの接続・公開（アップロード）作業代行サポート</li>
+        <li>News等の記事更新に関する操作講習会</li>
+      </ul>
+    </div>
+
+  </div>
+
+</body>
+</html>
