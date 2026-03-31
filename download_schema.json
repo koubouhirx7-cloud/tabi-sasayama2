@@ -1,0 +1,19 @@
+{
+  "apiFields": [
+    {
+      "fieldId": "title",
+      "name": "ダウンロード資料名",
+      "kind": "text"
+    },
+    {
+      "fieldId": "description",
+      "name": "資料の簡単な説明",
+      "kind": "text"
+    },
+    {
+      "fieldId": "file",
+      "name": "PDFファイル（ここにPDFをアップロード）",
+      "kind": "media"
+    }
+  ]
+}

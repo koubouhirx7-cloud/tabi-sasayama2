@@ -78,3 +78,19 @@ export async function fetchNewsDetail(id) {
     return null;
   }
 }
+
+// Download情報を取得 (外部PDFアップロードリスト)
+export async function fetchDownloads(limit = 100) {
+  if (!domain || !apiKey) return [];
+  try {
+    const res = await fetch(`https://${domain}.microcms.io/api/v1/downloads?limit=${limit}`, {
+      headers: { 'X-MICROCMS-API-KEY': apiKey }
+    });
+    if (!res.ok) throw new Error('API Error');
+    const data = await res.json();
+    return data.contents;
+  } catch (error) {
+    console.error('Download取得エラー:', error);
+    return [];
+  }
+}
