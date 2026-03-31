@@ -91,6 +91,14 @@ import { fetchAllNews } from './cms.js';
       return;
     }
 
+    // --- デザイン確認用: 記事が少ない場合はダミーで複製して3つ並びを見せる ---
+    if (filtered.length > 0 && filtered.length < 5) {
+      const original = [...filtered];
+      while (filtered.length < 6) { /* 6個くらい並べる */
+        filtered.push(original[0]);
+      }
+    }
+
     filtered.forEach((item, index) => {
       const delay = (index % 4) * 0.1;
       const dateObj = new Date(item.date || item.publishedAt);
