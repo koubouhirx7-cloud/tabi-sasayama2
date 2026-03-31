@@ -181,39 +181,20 @@ import { fetchNews, fetchStay } from './cms.js';
     if (news && news.length > 0) {
       newsContainer.innerHTML = '';
       
-      // --- デザイン確認用: 記事が少ない場合はダミーで複製して3つ並びを見せる ---
-      const displayNews = [...news];
-      if (displayNews.length > 0 && displayNews.length < 3) {
-        while (displayNews.length < 3) {
-          displayNews.push(displayNews[0]);
-        }
-      }
-
-      displayNews.forEach((item, index) => {
-        const delay = (index % 3) * 0.1;
+      news.forEach((item) => {
         const dateObj = new Date(item.date || item.publishedAt);
         const y = dateObj.getFullYear();
         const m = String(dateObj.getMonth() + 1).padStart(2, '0');
         const d = String(dateObj.getDate()).padStart(2, '0');
         
-        // サムネイル画像の取得（なければデフォルト画像）
-        const imgUrl = item.eyecatch ? item.eyecatch.url : '/images/P6170310.jpg';
-        
-        // カテゴリー名の取得（なければ'NEWS'）
-        const catName = (item.category && item.category.length > 0) ? item.category[0].name : 'NEWS';
-
         const html = `
-          <a href="news-detail.html?id=${item.id}" class="content-card fade-in is-visible" style="transition-delay:${delay}s">
-            <div class="card-img-wrap"><img src="${imgUrl}" alt="${item.title}" /></div>
-            <div class="card-body">
-              <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 8px;">
-                <span class="card-tag-en" style="margin-bottom: 0;">${catName}</span>
-                <span style="font-size: 0.85rem; color: #888;">${y}.${m}.${d}</span>
-              </div>
-              <h3 class="card-title">${item.title}</h3>
-              <span class="card-arrow">→</span>
-            </div>
-          </a>
+          <li class="news-item fade-in is-visible">
+            <a href="news-detail.html?id=${item.id}">
+              <time class="news-date">${y}.${m}.${d}</time>
+              <span class="news-title">${item.title || 'お知らせ'}</span>
+              <span class="news-arrow">→</span>
+            </a>
+          </li>
         `;
         newsContainer.insertAdjacentHTML('beforeend', html);
       });

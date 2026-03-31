@@ -15,6 +15,7 @@ export default defineConfig({
         inbound: resolve(__dirname, 'inbound.html'),
         download: resolve(__dirname, 'download.html'),
         contact: resolve(__dirname, 'company-contact.html'),
+        stayApply: resolve(__dirname, 'stay-apply.html'),
       }
     }
   }
