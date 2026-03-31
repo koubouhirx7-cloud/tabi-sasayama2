@@ -53,9 +53,8 @@ import { fetchAllNews } from './cms.js';
     });
   }
 
-  if (newsData && newsData.length > 0) {
-    renderNews('すべて');
-  }
+  // 取得した直後に初回レンダリングを実行（空の場合は内部で「記事がありません」を表示）
+  renderNews('すべて');
 
   tags.forEach(tag => {
     tag.addEventListener('click', (e) => {
