@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>プログラムお申し込み | 一般社団法人ウイズささやま</title>
+    <meta name="description" content="丹波篠山の体験・滞在プログラムお申し込みフォームです。" />
+    <link rel="stylesheet" href="./style.css" />
+    <style>
+      body {
+        background: #F8F7F3; /* 落ち着いたオフホワイト背景 */
+      }
+      .page-header {
+        background: url('/images/P8207341.jpg') center/cover no-repeat;
+        height: 35vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        margin-top: 80px;
+      }
+      .page-header::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.4);
+      }
+      .page-header h1 {
+        position: relative;
+        z-index: 1;
+        color: white;
+        font-family: var(--font-display);
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        text-align: center;
+        text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      }
+
+      /* フォーム専用のNotion風ホワイトカード */
+      .apply-card {
+        background: white;
+        border-radius: 16px;
+        padding: 60px 80px;
+        margin: -80px auto 80px;
+        position: relative;
+        z-index: 10;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+        max-width: 800px;
+        border: 1px solid rgba(0,0,0,0.04);
+      }
+      @media (max-width: 768px) {
+        .apply-card {
+          padding: 40px 20px;
+          margin: -40px auto 60px;
+        }
+      }
+
+      .apply-card h2 {
+        text-align: center;
+        color: var(--color-primary);
+        font-family: var(--font-display);
+        margin-bottom: 2rem;
+        font-size: 1.8rem;
+      }
+      .apply-desc {
+        text-align: center;
+        color: #666;
+        margin-bottom: 3rem;
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+
+      /* プログラム名の特別表示枠 */
+      .selected-program {
+        background: rgba(90, 126, 90, 0.05);
+        border-left: 4px solid var(--color-primary);
+        padding: 1.5rem;
+        margin-bottom: 3rem;
+        border-radius: 0 8px 8px 0;
+      }
+      .selected-program-label {
+        font-size: 0.85rem;
+        color: #777;
+        font-weight: bold;
+        margin-bottom: 0.3rem;
+      }
+      .selected-program-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: var(--color-primary);
+        font-family: var(--font-base);
+      }
+
+      /* フォームデザイン */
+      .form-section-title {
+        font-family: var(--font-display);
+        font-size: 1.25rem;
+        color: var(--color-text);
+        border-bottom: 2px solid var(--color-border);
+        padding-bottom: 0.5rem;
+        margin: 2.5rem 0 1.5rem;
+      }
+
+      .form-group {
+        margin-bottom: 2rem;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 0.8rem;
+        font-weight: bold;
+        color: #444;
+        font-size: 0.95rem;
+      }
+      .required {
+        display: inline-block;
+        background: #e74c3c;
+        color: white;
+        font-size: 0.7rem;
+        padding: 2px 6px;
+        border-radius: 4px;
+        margin-left: 8px;
+        vertical-align: middle;
+      }
+      .optional {
+        display: inline-block;
+        background: #95a5a6;
+        color: white;
+        font-size: 0.7rem;
+        padding: 2px 6px;
+        border-radius: 4px;
+        margin-left: 8px;
+        vertical-align: middle;
+      }
+
+      .form-group input[type="text"],
+      .form-group input[type="email"],
+      .form-group input[type="tel"],
+      .form-group input[type="date"],
+      .form-group input[type="number"],
+      .form-group textarea {
+        width: 100%;
+        padding: 1rem;
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        font-family: var(--font-base);
+        font-size: 1rem;
+        background: #FAFAFA;
+        transition: 0.3s;
+      }
+      .form-group input:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(90, 126, 90, 0.1);
+      }
+      
+      /* 人数入力エリア（横並び） */
+      .count-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+      }
+      .count-item {
+        background: #FAFAFA;
+        border: 1px solid var(--color-border);
+        padding: 1.5rem;
+        border-radius: 8px;
+        text-align: center;
+      }
+      .count-label {
+        display: block;
+        font-weight: bold;
+        color: var(--color-primary);
+        font-size: 1.1rem;
+        margin-bottom: 0.3rem;
+      }
+      .count-sub {
+        font-size: 0.8rem;
+        color: #777;
+        margin-bottom: 1rem;
+        display: block;
+      }
+      .count-input-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      .count-input-wrap input {
+        width: 80px !important;
+        text-align: right;
+        font-size: 1.2rem !important;
+        padding: 0.5rem !important;
+      }
+      @media (max-width: 600px) {
+        .count-grid { grid-template-columns: 1fr; gap: 1rem; }
+        .count-item { display: flex; align-items: center; justify-content: space-between; padding: 1rem; }
+        .count-label-box { text-align: left; }
+      }
+
+      /* 住所入力エリア（横並び） */
+      .address-flex {
+        display: flex;
+        gap: 1rem;
+      }
+      .address-zip {
+        flex: 0 0 150px;
+      }
+      .address-main {
+        flex: 1;
+      }
+      @media (max-width: 600px) {
+        .address-flex { flex-direction: column; }
+        .address-zip { flex: auto; }
+      }
+
+      .error-text {
+        color: #e74c3c;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+        display: none;
+      }
+
+      /* ボタン */
+      .submit-btn {
+        display: block;
+        width: 100%;
+        background: var(--color-primary);
+        color: white;
+        border: none;
+        padding: 1.2rem;
+        font-size: 1.2rem;
+        font-weight: bold;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-top: 3rem;
+        box-shadow: 0 4px 15px rgba(90, 126, 90, 0.3);
+      }
+      .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(90, 126, 90, 0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header class="header">
+      <div class="container nav-container">
+        <a href="index.html" class="logo">丹波篠山に滞在する</a>
+        <button class="hamburger" aria-label="メニューを開く">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <nav class="nav-links">
+          <a href="index.html">ホーム</a>
+          <a href="stay.html">体験・滞在</a>
+          <a href="news.html">最新情報</a>
+          <a href="about.html">旅づくり</a>
+          <a href="company-contact.html">お問い合わせ</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="page-header fade-in">
+        <h1>Program Application<br><span style="font-size:0.5em">参加お申し込み</span></h1>
+      </div>
+
+      <div class="container fade-in">
+        <div class="apply-card">
+          <h2>プログラムお申し込みフォーム</h2>
+          <p class="apply-desc">
+            必要事項をご入力の上、「確認画面へ進む」ボタンを押してください。<br>
+            ※このページに入力された情報は暗号化通信により安全に送信されます。
+          </p>
+
+          <form action="send_mail.php" method="POST" id="applyForm">
+            <!-- 選択中のプログラム名（URLパラメータから自動取得） -->
+            <div class="selected-program">
+              <div class="selected-program-label">選択中のプログラム</div>
+              <div class="selected-program-title" id="tour-name-display">プログラム情報を取得中...</div>
+              <!-- バックエンド送信用にhidden値としても保持 -->
+              <input type="hidden" name="tour_name" id="tour_name_input" value="">
+            </div>
+
+            <!-- 1. 人数 -->
+            <h3 class="form-section-title">申し込み人数</h3>
+            <div class="form-group">
+              <label>内訳を入力してください <span class="required">必須</span></label>
+              <div class="count-grid">
+                <div class="count-item">
+                  <div class="count-label-box">
+                    <span class="count-label">大人</span>
+                    <span class="count-sub">12歳（中学生）以上</span>
+                  </div>
+                  <div class="count-input-wrap">
+                    <input type="number" name="count_adult" min="0" value="0" required>
+                    <span>名</span>
+                  </div>
+                </div>
+                <div class="count-item">
+                  <div class="count-label-box">
+                    <span class="count-label">子供</span>
+                    <span class="count-sub">5〜12歳（小学生）</span>
+                  </div>
+                  <div class="count-input-wrap">
+                    <input type="number" name="count_child" min="0" value="0">
+                    <span>名</span>
+                  </div>
+                </div>
+                <div class="count-item">
+                  <div class="count-label-box">
+                    <span class="count-label">幼児</span>
+                    <span class="count-sub">5歳以下（乳幼児）</span>
+                  </div>
+                  <div class="count-input-wrap">
+                    <input type="number" name="count_infant" min="0" value="0">
+                    <span>名</span>
+                  </div>
+                </div>
+              </div>
+              <p class="error-text" id="count-error">※合計で1名以上の参加人数を入力してください。</p>
+            </div>
+
+            <!-- 2. 代表者情報 -->
+            <h3 class="form-section-title">代表者情報</h3>
+            
+            <div class="form-group">
+              <label for="name_kanji">お名前（漢字） <span class="required">必須</span></label>
+              <input type="text" id="name_kanji" name="name_kanji" required placeholder="例：山田 太郎">
+            </div>
+
+            <div class="form-group">
+              <label for="name_kana">お名前（ふりがな） <span class="required">必須</span></label>
+              <input type="text" id="name_kana" name="name_kana" required placeholder="例：やまだ たろう">
+            </div>
+
+            <div class="form-group">
+              <label for="email">メールアドレス <span class="required">必須</span></label>
+              <input type="email" id="email" name="email" required placeholder="例：info@example.com">
+            </div>
+
+            <div class="form-group">
+              <label for="email_confirm">メールアドレス（確認用） <span class="required">必須</span></label>
+              <input type="email" id="email_confirm" required placeholder="間違い防止のためもう一度ご入力ください">
+              <p class="error-text" id="email-error">※メールアドレスが一致しません。</p>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">携帯番号 <span class="required">必須</span></label>
+              <input type="tel" id="phone" name="phone" required placeholder="例：090-1234-5678">
+              <p style="font-size:0.85rem; color:#888; margin-top:5px;">※当日の緊急連絡がつく番号をご入力ください。</p>
+            </div>
+
+            <div class="form-group">
+              <label for="birthday">生年月日 <span class="required">必須</span></label>
+              <input type="date" id="birthday" name="birthday" required>
+            </div>
+
+            <div class="form-group">
+              <label>ご住所 <span class="required">必須</span></label>
+              <div class="address-flex">
+                <div class="address-zip">
+                  <input type="text" name="zipcode" id="zipcode" required placeholder="郵便番号 (例: 123-4567)">
+                </div>
+                <div class="address-main">
+                  <input type="text" name="address" id="address" required placeholder="都道府県・市区町村・番地・建物名">
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. アレルギー情報 -->
+            <h3 class="form-section-title">アレルギー情報</h3>
+            <div class="form-group">
+              <label for="allergy">ご参加者全員のアレルギー有無と内容 <span class="optional">任意</span></label>
+              <textarea id="allergy" name="allergy" rows="5" placeholder="例：参加者の1名が「甲殻類」アレルギーです。 / 特になし"></textarea>
+              <p style="font-size:0.85rem; color:#888; margin-top:5px;">※食事などの対応があるため、該当する方がいる場合は必ず詳細（対象者とアレルギー品目）をご記入ください。</p>
+            </div>
+
+            <!-- ロボット検証 -->
+            <div class="form-group text-center" style="margin: 3rem 0; padding: 1.5rem; background: #fafafa; border-radius: 8px; border: 1px solid #eee;">
+              <label style="display: inline-flex; align-items: center; cursor: pointer; font-weight: normal; color: #333; font-size: 1.1rem; margin-bottom: 0;">
+                <input type="checkbox" name="not_a_robot" value="yes" required style="width: 24px; height: 24px; margin-right: 12px; cursor: pointer;">
+                私はロボットではありません <span class="required">必須</span>
+              </label>
+            </div>
+
+            <!-- 送信 -->
+            <button type="submit" class="submit-btn" id="submitBtn">上記の内容で申し込む</button>
+            <p style="text-align: center; margin-top: 15px; font-size:0.85rem; color:#888;">
+              <a href="stay.html" style="color:var(--color-primary);">一覧へ戻る</a>
+            </p>
+          </form>
+
+        </div>
+      </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-top">
+          <div class="footer-left">
+            <div class="footer-logo">一般社団法人ウイズささやま</div>
+            <div class="footer-info">
+              〒669-2321 兵庫県丹波篠山市黒岡191 丹波篠山市民センター内<br>
+              TEL: 079-552-7373 / FAX: 079-552-4680<br>
+              営業時間：平日9:00-17:00（土日祝定休）
+            </div>
+          </div>
+          
+          <div class="footer-nav">
+            <div class="footer-nav-col">
+              <h4>メニュー</h4>
+              <a href="index.html">ホーム</a>
+              <a href="stay.html">体験・滞在</a>
+              <a href="news.html">最新情報</a>
+              <a href="about.html">旅づくり</a>
+              <a href="company-contact.html">お問い合わせ</a>
+            </div>
+            <div class="footer-nav-col">
+              <h4>プログラム</h4>
+              <a href="download.html">Download</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="footer-bottom">
+          <div class="footer-legal">
+            <a href="#">旅行業約款</a> &nbsp;|&nbsp; 
+            <a href="#">旅行条件書</a> &nbsp;|&nbsp; 
+            <a href="#">プライバシーポリシー</a>
+          </div>
+          <p>&copy; 2026 一般社団法人ウイズささやま All Rights Reserved.</p>
+        </div>
+      </div>
+    </footer>
+    
+    <script type="module" src="/main.js"></script>
+    <script>
+      // フォーム専用のJavaScript処理（URLからの情報取得＆バリデーション）
+      document.addEventListener('DOMContentLoaded', () => {
+        // 1. URLパラメータからプログラム名を取得して表示
+        const params = new URLSearchParams(window.location.search);
+        const tourName = params.get('tour') || '未選択（プログラムが指定されていません）';
+        
+        const displayEl = document.getElementById('tour-name-display');
+        const inputEl = document.getElementById('tour_name_input');
+        
+        if (displayEl) displayEl.textContent = tourName;
+        if (inputEl) inputEl.value = tourName;
+
+        // 2. フォーム送信前のバリデーション（Eメール一致チェック＆人数チェック）
+        const form = document.getElementById('applyForm');
+        const email = document.getElementById('email');
+        const emailConfirm = document.getElementById('email_confirm');
+        const emailError = document.getElementById('email-error');
+        
+        const countAdult = document.getElementsByName('count_adult')[0];
+        const countChild = document.getElementsByName('count_child')[0];
+        const countInfant = document.getElementsByName('count_infant')[0];
+        const countError = document.getElementById('count-error');
+
+        form.addEventListener('submit', (e) => {
+          let hasError = false;
+
+          // アドレス一致チェック
+          if (email.value !== emailConfirm.value) {
+            emailError.style.display = 'block';
+            hasError = true;
+          } else {
+            emailError.style.display = 'none';
+          }
+
+          // 人数合計チェック（最低1人は必要）
+          const totalPeople = (parseInt(countAdult.value) || 0) + (parseInt(countChild.value) || 0) + (parseInt(countInfant.value) || 0);
+          if (totalPeople < 1) {
+            countError.style.display = 'block';
+            hasError = true;
+          } else {
+            countError.style.display = 'none';
+          }
+
+          // エラーがあれば送信をストップ
+          if (hasError) {
+            e.preventDefault();
+            // エラー箇所にスクロール
+            const firstErrorDiv = hasError === 'email' ? emailError : countError;
+            window.scrollTo({
+              top: firstErrorDiv.closest('.form-group').offsetTop - 100,
+              behavior: 'smooth'
+            });
+          }
+        });
+
+        // リアルタイムバリデーション（入力時にエラーメッセージを消す）
+        emailConfirm.addEventListener('input', () => {
+          if (email.value === emailConfirm.value) {
+            emailError.style.display = 'none';
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

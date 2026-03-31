@@ -80,14 +80,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (data.title) {
       document.title = `${data.title} | Stay | 一般社団法人ウイズささやま`;
       
-      // 申し込み・カスタマイズ相談ボタンにお問い合わせソース（ツアー名）を付与
+      // 申し込みボタンへのリンク変更（専用フォームへ）
       const applyBtn = document.getElementById('mcs-apply-link');
       if (applyBtn) {
-        applyBtn.href = `company-contact.html?type=apply&tour=${encodeURIComponent(data.title)}`;
+        applyBtn.href = `stay-apply.html?tour=${encodeURIComponent(data.title)}`;
       }
+      
+      // カスタマイズ相談は従来通りのお問い合わせフォームへ
       const customBtn = document.getElementById('mcs-custom-link');
       if (customBtn) {
-        customBtn.href = `customize.html?type=customize&tour=${encodeURIComponent(data.title)}`;
+        customBtn.href = `company-contact.html?type=customize&tour=${encodeURIComponent(data.title)}`;
       }
     }
 
