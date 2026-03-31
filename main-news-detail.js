@@ -1,4 +1,4 @@
-import { fetchNewsDetail } from './cms.js';
+import { fetchNewsDetail, fetchAllNews } from './cms.js';
 
 (async function initNewsDetail() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -6,7 +6,12 @@ import { fetchNewsDetail } from './cms.js';
   
   if (!id) return; // IDがない場合は静的プレースホルダーのままとする
 
-  const article = await fetchNewsDetail(id);
+  // 詳細記事と、サイドバー用の全記事を並行して取得
+  const [article, allNews] = await Promise.all([
+    fetchNewsDetail(id),
+    fetchAllNews()
+  ]);
+  
   if (!article) return; // 取得失敗時
 
   const dateObj = new Date(article.date || article.publishedAt);
@@ -53,4 +58,44 @@ import { fetchNewsDetail } from './cms.js';
   }
   
   document.title = `${article.title} | 一般社団法人ウイズささやま`;
+
+  // --- サイドバー生成処理 ---
+  if (allNews && allNews.length > 0) {
+    const cats = new Set();
+    const archives = new Set();
+    
+    allNews.forEach(item => {
+      if (item.category) cats.add(item.category);
+      const bd = new Date(item.date || item.publishedAt);
+      const ym = `${bd.getFullYear()}年${bd.getMonth() + 1}月`;
+      archives.add(ym);
+    });
+
+    const catFilterList = document.getElementById('category-filter-list');
+    const archFilterList = document.getElementById('archive-filter-list');
+
+    if (catFilterList) {
+      catFilterList.innerHTML = `<li><a href="news.html?cat=${encodeURIComponent('すべて')}" data-cat="すべて">すべて</a></li>`;
+      if (cats.size === 0) {
+        cats.add('お知らせ');
+        cats.add('イベント情報');
+        cats.add('レポート');
+      }
+      cats.forEach(c => {
+        catFilterList.insertAdjacentHTML('beforeend', `<li><a href="news.html?cat=${encodeURIComponent(c)}" data-cat="${c}">${c}</a></li>`);
+      });
+    }
+
+    if (archFilterList) {
+      archFilterList.innerHTML = `<li><a href="news.html?arc=${encodeURIComponent('すべて')}" data-arc="すべて">すべて</a></li>`;
+      if (archives.size === 0) {
+        archives.add('2026年3月');
+        archives.add('2026年2月');
+        archives.add('2026年1月');
+      }
+      archives.forEach(arc => {
+        archFilterList.insertAdjacentHTML('beforeend', `<li><a href="news.html?arc=${encodeURIComponent(arc)}" data-arc="${arc}">${arc}</a></li>`);
+      });
+    }
+  }
 })();

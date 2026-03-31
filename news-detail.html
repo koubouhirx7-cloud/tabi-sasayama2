@@ -116,6 +116,69 @@
         opacity: 0.7;
         transform: translateX(-5px);
       }
+      
+      /* Sidebar Layout for Notion Blog Style */
+      .news-layout {
+        display: flex;
+        gap: 40px;
+        align-items: flex-start;
+        margin-top: 40px;
+      }
+      .news-sidebar {
+        width: 250px;
+        flex-shrink: 0;
+        position: sticky;
+        top: 100px;
+      }
+      .news-main {
+        flex: 1;
+      }
+      @media (max-width: 900px) {
+        .news-layout { flex-direction: column; }
+        .news-sidebar { width: 100%; position: static; margin-bottom: 30px; }
+      }
+      
+      .sidebar-box {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        border: 1px solid var(--color-border);
+      }
+      .sidebar-title {
+        font-family: var(--font-display);
+        font-size: 1.1rem;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--color-border);
+        color: var(--color-text);
+      }
+      .sidebar-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .sidebar-list li {
+        margin-bottom: 4px;
+      }
+      .sidebar-list a {
+        text-decoration: none;
+        color: var(--color-text);
+        display: block;
+        padding: 8px 12px;
+        border-radius: 6px;
+        transition: 0.2s;
+        font-size: 0.95rem;
+      }
+      .sidebar-list a:hover {
+        background: #f0f0f0;
+      }
+      .sidebar-list a.active {
+        background: var(--color-primary);
+        color: white;
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
@@ -140,22 +203,42 @@
 
     <main>
       <div class="container fade-in">
-        <article class="notion-card">
-          <div class="notion-cover" id="detail-cover-container">
-            <img id="detail-cover" src="/images/P6170310.jpg" alt="アイキャッチ画像" />
-          </div>
-          <div class="notion-content">
-            <h1 class="notion-title" id="detail-title">龍谷大学◎◎ゼミ生、初めての里山体験</h1>
-            <div class="notion-meta">
-              <span class="notion-category" id="detail-category">報告レポート</span>
-              <span class="notion-date" id="detail-date">2026年5月20日</span>
+        <div class="news-layout">
+          <!-- Sidebar -->
+          <aside class="news-sidebar">
+            <div class="sidebar-box">
+              <h3 class="sidebar-title">カテゴリー</h3>
+              <ul class="sidebar-list" id="category-filter-list">
+                <li><a href="news.html?cat=すべて" data-cat="すべて">すべて</a></li>
+              </ul>
             </div>
-            
-            <div class="notion-body" id="detail-body">
-              <p style="text-align:center; color:#888; margin: 40px 0;">記事を読み込んでいます...</p>
+            <div class="sidebar-box">
+              <h3 class="sidebar-title">アーカイブ</h3>
+              <ul class="sidebar-list" id="archive-filter-list">
+                <li><a href="news.html?arc=すべて" data-arc="すべて">すべて</a></li>
+              </ul>
             </div>
+          </aside>
+          
+          <div class="news-main">
+            <article class="notion-card" style="margin-top: 0; max-width: 100%;">
+              <div class="notion-cover" id="detail-cover-container">
+                <img id="detail-cover" src="/images/P6170310.jpg" alt="アイキャッチ画像" />
+              </div>
+              <div class="notion-content">
+                <h1 class="notion-title" id="detail-title">記事を読み込んでいます...</h1>
+                <div class="notion-meta">
+                  <span class="notion-category" id="detail-category">お知らせ</span>
+                  <span class="notion-date" id="detail-date">----年--月--日</span>
+                </div>
+                
+                <div class="notion-body" id="detail-body">
+                  <p style="text-align:center; color:#888; margin: 40px 0;">お待ちください...</p>
+                </div>
+              </div>
+            </article>
           </div>
-        </article>
+        </div>
       </div>
     </main>
 

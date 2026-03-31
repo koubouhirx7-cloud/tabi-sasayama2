@@ -9,8 +9,9 @@ import { fetchAllNews } from './cms.js';
 
   const newsData = await fetchAllNews();
   
-  let currentCategory = 'すべて';
-  let currentArchive = 'すべて';
+  const urlParams = new URLSearchParams(window.location.search);
+  let currentCategory = urlParams.get('cat') || 'すべて';
+  let currentArchive = urlParams.get('arc') || 'すべて';
 
   function extractFilters() {
     const cats = new Set();
@@ -28,6 +29,11 @@ import { fetchAllNews } from './cms.js';
 
     if (catFilterList) {
       catFilterList.innerHTML = `<li><a href="#" class="active" data-cat="すべて">すべて</a></li>`;
+      if (cats.size === 0) {
+        cats.add('お知らせ');
+        cats.add('イベント情報');
+        cats.add('レポート');
+      }
       cats.forEach(c => {
         catFilterList.insertAdjacentHTML('beforeend', `<li><a href="#" data-cat="${c}">${c}</a></li>`);
       });
@@ -44,6 +50,11 @@ import { fetchAllNews } from './cms.js';
 
     if (archFilterList) {
       archFilterList.innerHTML = `<li><a href="#" class="active" data-arc="すべて">すべて</a></li>`;
+      if (archives.size === 0) {
+        archives.add('2026年3月');
+        archives.add('2026年2月');
+        archives.add('2026年1月');
+      }
       archives.forEach(arc => {
          archFilterList.insertAdjacentHTML('beforeend', `<li><a href="#" data-arc="${arc}">${arc}</a></li>`);
       });
