@@ -1,4 +1,4 @@
-// cms.js - microCMSデータ取得用モジュール
+// cms.js - microCMSからデータを取得するためのモジュール
 const domain = import.meta.env.VITE_MICROCMS_SERVICE_DOMAIN;
 const apiKey = import.meta.env.VITE_MICROCMS_API_KEY;
 

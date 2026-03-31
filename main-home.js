@@ -1,3 +1,5 @@
+import { fetchNews, fetchStay } from './cms.js';
+
 /**
  * main-home.js — ウイズささやま ホームページ
  * chinotabi.jp スタイルの固定背景スクロール制御
@@ -143,4 +145,57 @@
   setVH();
   window.addEventListener('resize', setVH, { passive: true });
 
+})();
+
+// --- CMS Fetch & Render ---
+(async function initCMS() {
+  const stayContainer = document.getElementById('stay-container');
+  const newsContainer = document.getElementById('news-container');
+
+  if (stayContainer) {
+    const stays = await fetchStay(6);
+    if (stays && stays.length > 0) {
+      stayContainer.innerHTML = '';
+      stays.forEach((stay, index) => {
+        const delay = (index % 3) * 0.1;
+        const imgUrl = stay.image ? stay.image.url : '/images/PB182518.jpg';
+        const excerpt = stay.description ? stay.description.substr(0, 40) + '...' : '';
+        const html = `
+          <a href="stay.html" class="content-card fade-in is-visible" style="transition-delay:${delay}s">
+            <div class="card-img-wrap"><img src="${imgUrl}" alt="${stay.title}" /></div>
+            <div class="card-body">
+              <span class="card-tag-en">STAY</span>
+              <h3 class="card-title">${stay.title}</h3>
+              <p class="card-desc">${excerpt}</p>
+              <span class="card-arrow">→</span>
+            </div>
+          </a>
+        `;
+        stayContainer.insertAdjacentHTML('beforeend', html);
+      });
+    }
+  }
+
+  if (newsContainer) {
+    const news = await fetchNews(3);
+    if (news && news.length > 0) {
+      newsContainer.innerHTML = '';
+      news.forEach((item) => {
+        const dateObj = new Date(item.date || item.publishedAt);
+        const y = dateObj.getFullYear();
+        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const d = String(dateObj.getDate()).padStart(2, '0');
+        const html = `
+          <li class="news-item fade-in is-visible">
+            <a href="news.html">
+              <time class="news-date">${y}.${m}.${d}</time>
+              <span class="news-title">${item.title}</span>
+              <span class="news-arrow">→</span>
+            </a>
+          </li>
+        `;
+        newsContainer.insertAdjacentHTML('beforeend', html);
+      });
+    }
+  }
 })();
