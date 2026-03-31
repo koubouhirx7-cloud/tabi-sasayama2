@@ -26,18 +26,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 取得したデータを画面上の各IDへ反映
     if (titleEl) titleEl.textContent = data.title || '';
-    if (subTitleEl) subTitleEl.textContent = data.subtitle || '';
+    
+    // マイクロCMSのフィールド「description」をサブタイトルとして利用（設定されていない場合はsubtitle）
+    if (subTitleEl) subTitleEl.textContent = data.subtitle || data.description || '';
 
-    // メイン画像
+    // メイン画像（基本は heroImage, もし無ければ image を使用）
     const heroImg = document.querySelector('.detail-header img');
-    if (heroImg && data.heroImage && data.heroImage.url) {
-      heroImg.src = data.heroImage.url;
+    const imageUrl = data.heroImage?.url || data.image?.url;
+    if (heroImg && imageUrl) {
+      heroImg.src = imageUrl;
     }
 
-    // プログラムについて (リッチエディタ)
+    // プログラムについて (リッチエディタ。基本は aboutBody, 無ければ body を使用)
     const aboutBody = document.getElementById('mcs-about-body');
-    if (aboutBody && data.aboutBody) {
-      aboutBody.innerHTML = data.aboutBody;
+    const aboutHtml = data.aboutBody || data.body;
+    if (aboutBody && aboutHtml) {
+      aboutBody.innerHTML = aboutHtml;
     }
 
     // 行程スケジュール (リッチエディタ)
