@@ -46,7 +46,6 @@ footer_html = """    <footer class="footer">
               <h4>プログラム</h4>
               <a href="education.html">Education</a>
               <a href="inbound.html">Inbound</a>
-              <a href="download.html">Download</a>
             </div>
           </div>
         </div>
