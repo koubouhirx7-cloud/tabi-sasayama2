@@ -1,0 +1,59 @@
+{
+  "apiFields": [
+    {
+      "fieldId": "title",
+      "name": "タイトル（プログラム名）",
+      "kind": "text"
+    },
+    {
+      "fieldId": "subtitle",
+      "name": "サブタイトル（プログラムのキャッチフレーズ）",
+      "kind": "text"
+    },
+    {
+      "fieldId": "heroImage",
+      "name": "メイン画像（一番上の大きな写真）",
+      "kind": "media"
+    },
+    {
+      "fieldId": "aboutBody",
+      "name": "プログラムについて（魅力などを記載）",
+      "kind": "richEditor"
+    },
+    {
+      "fieldId": "scheduleBody",
+      "name": "行程・スケジュール（リストや表を作成可能）",
+      "kind": "richEditor"
+    },
+    {
+      "fieldId": "includesBody",
+      "name": "料金に含まれるもの",
+      "kind": "richEditor"
+    },
+    {
+      "fieldId": "infoDates",
+      "name": "【右側・基本情報】日程",
+      "kind": "text"
+    },
+    {
+      "fieldId": "infoCapacity",
+      "name": "【右側・基本情報】定員",
+      "kind": "text"
+    },
+    {
+      "fieldId": "infoDecision",
+      "name": "【右側・基本情報】催行決定判断",
+      "kind": "textArea"
+    },
+    {
+      "fieldId": "infoPrice",
+      "name": "【右側・基本情報】料金・お一人様価格",
+      "kind": "richEditor"
+    },
+    {
+      "fieldId": "infoCancel",
+      "name": "【右側・基本情報】キャンセル料規定",
+      "kind": "richEditor"
+    }
+  ]
+}
