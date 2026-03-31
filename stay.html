@@ -65,7 +65,16 @@
         color: inherit;
         display: block;
         padding: 0;
+        background-color: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
         overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .program-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
       }
 
       .program-img {
@@ -83,7 +92,7 @@
       }
       
       .program-content {
-        padding: var(--spacing-sm);
+        padding: 20px 24px 24px;
       }
       
       .program-tags {
