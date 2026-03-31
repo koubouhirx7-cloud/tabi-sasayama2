@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
       const customBtn = document.getElementById('mcs-custom-link');
       if (customBtn) {
-        customBtn.href = `company-contact.html?type=customize&tour=${encodeURIComponent(data.title)}`;
+        customBtn.href = `customize.html?type=customize&tour=${encodeURIComponent(data.title)}`;
       }
     }
 
