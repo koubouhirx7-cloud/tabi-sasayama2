@@ -42,10 +42,11 @@ import { fetchNewsDetail, fetchAllNews } from './cms.js';
     if (article.eyecatch) {
       elCover.src = article.eyecatch.url;
       elCover.alt = article.title;
-      elCoverContainer.style.display = '';
     } else {
-      elCoverContainer.style.display = 'none';
+      elCover.src = '/images/P6170310.jpg';
+      elCover.alt = 'アイキャッチ画像';
     }
+    elCoverContainer.style.display = '';
   }
 
   if (elBody) {
