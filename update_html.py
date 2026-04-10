@@ -15,7 +15,8 @@ header_html = """    <header class="header">
           <a href="stay.html">体験・滞在</a>
           <a href="news.html">最新情報</a>
           <a href="about.html">旅づくり</a>
-          <a href="company-contact.html">お問い合わせ</a>
+          <a href="company.html">会社案内</a>
+          <a href="contact.html">お問い合わせ</a>
         </nav>
       </div>
     </header>"""
@@ -40,7 +41,8 @@ footer_html = """    <footer class="footer">
               <a href="stay.html">体験・滞在</a>
               <a href="news.html">最新情報</a>
               <a href="about.html">旅づくり</a>
-              <a href="company-contact.html">お問い合わせ</a>
+              <a href="company.html">会社案内</a>
+              <a href="contact.html">お問い合わせ</a>
             </div>
             <div class="footer-nav-col">
               <h4>プログラム</h4>

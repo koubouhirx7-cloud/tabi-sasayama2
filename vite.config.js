@@ -14,7 +14,8 @@ export default defineConfig({
         education: resolve(__dirname, 'education.html'),
         inbound: resolve(__dirname, 'inbound.html'),
         download: resolve(__dirname, 'download.html'),
-        contact: resolve(__dirname, 'company-contact.html'),
+        company: resolve(__dirname, 'company.html'),
+        contact: resolve(__dirname, 'contact.html'),
         stayApply: resolve(__dirname, 'stay-apply.html'),
       }
     }

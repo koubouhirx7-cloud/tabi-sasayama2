@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       // カスタマイズ相談は従来通りのお問い合わせフォームへ
       const customBtn = document.getElementById('mcs-custom-link');
       if (customBtn) {
-        customBtn.href = `company-contact.html?type=customize&tour=${encodeURIComponent(data.title)}`;
+        customBtn.href = `contact.html?type=customize&tour=${encodeURIComponent(data.title)}`;
       }
     }
 

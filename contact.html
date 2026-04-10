@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>カスタマイズ相談 | 一般社団法人ウイズささやま</title>
-    <meta name="description" content="一般社団法人ウイズささやまのカスタマイズ体験のご相談・お問い合わせ窓口です。" />
+    <title>会社案内・お問い合わせ | 一般社団法人ウイズささやま</title>
+    <meta name="description" content="一般社団法人ウイズささやまの会社案内、およびカスタマイズ体験のご相談・お問い合わせ窓口です。" />
     <link rel="stylesheet" href="./style.css" />
     <style>
       .page-header {
@@ -120,19 +120,21 @@
 
     <main>
       <div class="page-header fade-in">
-        <h1>Customize Consultation<br><span style="font-size:0.5em">カスタマイズ相談</span></h1>
+        <h1>Contact & Customize<br><span style="font-size:0.5em">お問い合わせ・カスタマイズ相談</span></h1>
       </div>
 
       <section class="section pt-0">
         <div class="container" style="max-width: 800px;">
           
+
+
           <div class="info-box fade-in" style="margin-top: -60px; position: relative; z-index: 10;">
-            <h2>カスタマイズ相談</h2>
+            <h2>お問い合わせ・カスタマイズ相談</h2>
             <p class="text-center mb-md" style="color: #666;">
               ご希望の体験内容、日程・人数に応じたオーダーメイドの農村生活プログラムをご提案します。<br>お気軽にご相談ください。
             </p>
             
-            <form action="send_mail.php" method="POST" class="contact-form">
+            <form action="#" method="POST" class="contact-form">
               <div class="form-group">
                 <label for="name">お名前 <span class="required">必須</span></label>
                 <input type="text" id="name" name="name" required placeholder="例：山田 太郎">
@@ -158,38 +160,42 @@
               <h3 style="color: var(--color-primary); margin-bottom: 1rem; font-family: var(--font-display);">カスタマイズ相談詳細</h3>
 
               <div class="form-group">
-                <label for="date1">希望日 <span class="required">必須</span></label>
-                <input type="text" id="date1" name="date1" required placeholder="第1希望日 (例: 2026年10月10日)">
-                <input type="text" id="date2" name="date2" placeholder="第2希望日 (例: 2026年10月11日)" style="margin-top: 0.5rem;">
+                <label for="purpose">ご希望の体験内容（複数可）</label>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                  <label style="font-weight: normal;"><input type="checkbox" name="purpose" value="農業"> 農業体験</label>
+                  <label style="font-weight: normal;"><input type="checkbox" name="purpose" value="ものづくり"> ものづくり（陶芸等）</label>
+                  <label style="font-weight: normal;"><input type="checkbox" name="purpose" value="古民家"> 古民家滞在</label>
+                  <label style="font-weight: normal;"><input type="checkbox" name="purpose" value="教育旅行"> 学校・教育</label>
+                  <label style="font-weight: normal;"><input type="checkbox" name="purpose" value="インバウンド"> 外国人向け</label>
+                </div>
               </div>
 
               <div class="form-group">
-                <label for="duration">所要時間 <span class="required">必須</span></label>
-                <input type="text" id="duration" name="duration" required placeholder="例: 4時間 / 1泊2日">
+                <label for="date">希望日程 / 時期</label>
+                <input type="text" id="date" name="date" placeholder="例：2026年10月の土日、または 具体的な日付">
               </div>
 
-              <div class="form-group">
-                <label for="people">想定人数 <span class="required">必須</span></label>
-                <input type="text" id="people" name="people" required placeholder="例: 大人2名、子供2名">
-              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                  <label for="people">想定人数</label>
+                  <input type="text" id="people" name="people" placeholder="例：大人2名、子供2名">
+                </div>
                 
-              <div class="form-group">
-                <label for="budget">ご予算 <span class="required">必須</span></label>
-                <input type="text" id="budget" name="budget" required placeholder="例: 1人あたり 15,000円など">
+                <div class="form-group">
+                  <label for="budget">ご予算（お一人様あたり）</label>
+                  <select id="budget" name="budget">
+                    <option value="">選択してください</option>
+                    <option value="15000">15,000円〜</option>
+                    <option value="25000">25,000円〜</option>
+                    <option value="40000">40,000円〜</option>
+                    <option value="未定">相談して決めたい</option>
+                  </select>
+                </div>
               </div>
 
               <div class="form-group">
-                <label for="message">その他ご要望</label>
+                <label for="message">自由記入欄・その他ご要望</label>
                 <textarea id="message" name="message" rows="5" placeholder="アレルギーの有無や、とくに体験したいことなどをご記入ください。"></textarea>
-              </div>
-
-              <!-- スパム対策用 ロボット検証チェックボックス -->
-              <div class="form-group text-center" style="margin: 2rem 0; padding: 1.5rem; background: #f9f9f9; border-radius: 8px; border: 1px solid #eee;">
-                <label style="display: inline-flex; align-items: center; cursor: pointer; font-weight: normal; color: #333; font-size: 1.1rem;">
-                  <input type="checkbox" name="not_a_robot" value="yes" required style="width: 24px; height: 24px; margin-right: 12px; cursor: pointer;">
-                  私はロボットではありません <span class="required">必須</span>
-                </label>
-                <p style="font-size: 0.85rem; color: #888; margin-top: 10px; margin-bottom: 0;">※スパム対策のため、送信前に必ずチェックを入れてください。</p>
               </div>
 
               <div class="text-center mt-md">
