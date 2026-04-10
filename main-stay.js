@@ -35,8 +35,13 @@ import { fetchStay } from './cms.js';
       const dates = item.infoDates || '個別にお問合せください';
       const capacity = item.infoCapacity || '個別にお問合せください';
 
-      // 今回は固定のタグを仮表示（将来的にCMSでタグフィールドを作った場合はそこから取得）
-      const tagsHtml = `<span class="prog-tag">#体験プログラム</span>`;
+      // microCMSの `tags` フィールド（複数選択）から取得。なければ既存の表示を残す
+      let tagsHtml = '';
+      if (item.tags && Array.isArray(item.tags) && item.tags.length > 0) {
+        tagsHtml = item.tags.map(tag => `<span class="prog-tag">#${tag}</span>`).join('');
+      } else {
+        tagsHtml = `<span class="prog-tag">#体験プログラム</span>`;
+      }
 
       const html = `
         <a href="stay-detail.html?id=${item.id}" class="card program-card fade-in is-visible" style="animation-delay: ${delay}s">
