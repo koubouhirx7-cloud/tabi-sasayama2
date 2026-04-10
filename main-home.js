@@ -191,7 +191,7 @@ import { fetchNews, fetchStay } from './cms.js';
           <li class="news-item fade-in is-visible">
             <a href="news-detail.html?id=${item.id}">
               <time class="news-date">${y}.${m}.${d}</time>
-              <span class="news-title">${item.title || 'お知らせ'}</span>
+              <span class="news-title">${item.title || 'タイトル未設定'}</span>
               <span class="news-arrow">→</span>
             </a>
           </li>
