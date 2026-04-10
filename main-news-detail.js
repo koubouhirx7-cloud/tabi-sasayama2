@@ -40,7 +40,7 @@ import { fetchNewsDetail, fetchAllNews } from './cms.js';
   
   if (elCoverContainer && elCover) {
     if (article.eyecatch) {
-      elCover.src = article.eyecatch.url;
+      elCover.src = article.eyecatch.url + '?fm=webp&w=1200&q=80';
       elCover.alt = article.title;
     } else {
       elCover.src = '/images/P6170310.jpg';
@@ -50,7 +50,9 @@ import { fetchNewsDetail, fetchAllNews } from './cms.js';
   }
 
   if (elBody) {
-    elBody.innerHTML = article.body;
+    let optimizedContent = article.body || '';
+    optimizedContent = optimizedContent.replace(/(src="https:\/\/images\.microcms-assets\.io\/[^"]+)"/g, '$1?fm=webp&w=1000&q=80"');
+    elBody.innerHTML = optimizedContent;
     elBody.innerHTML += `
       <div class="back-to-list">
         <a href="news.html">← News一覧に戻る</a>

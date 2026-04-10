@@ -107,7 +107,7 @@ import { fetchAllNews } from './cms.js';
       const m = String(dateObj.getMonth() + 1).padStart(2, '0');
       const d = String(dateObj.getDate()).padStart(2, '0');
       
-      const imgUrl = item.eyecatch ? item.eyecatch.url : '/images/PB182518.jpg';
+      const imgUrl = item.eyecatch ? item.eyecatch.url + '?fm=webp&w=800&q=80' : '/images/PB182518.jpg';
       const category = item.category || 'お知らせ';
       const title = item.title || 'タイトル未設定'; // undefined防止用
       

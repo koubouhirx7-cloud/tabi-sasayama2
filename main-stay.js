@@ -39,7 +39,8 @@ import { fetchStay } from './cms.js';
     displayData.forEach((item, index) => {
       const delay = (index % 3) * 0.1;
       
-      const imgUrl = item.heroImage?.url || item.image?.url || '/images/P8217785.jpg';
+      const fetchedImg = item.heroImage?.url || item.image?.url;
+      const imgUrl = fetchedImg ? fetchedImg + '?fm=webp&w=800&q=80' : '/images/P8217785.jpg';
       
       // 価格がリッチテキストの場合のプレーンテキスト抽出
       let plainPrice = '個別にお問合せください';

@@ -34,26 +34,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     const heroImg = document.querySelector('.detail-header img');
     const imageUrl = data.heroImage?.url || data.image?.url;
     if (heroImg && imageUrl) {
-      heroImg.src = imageUrl;
+      heroImg.src = imageUrl + '?fm=webp&w=1200&q=80';
     }
+
+    // 画像最適化ユーティリティ
+    const optimizeHtmlImages = (html) => {
+      if (!html) return html;
+      return html.replace(/(src="https:\/\/images\.microcms-assets\.io\/[^"]+)"/g, '$1?fm=webp&w=1000&q=80"');
+    };
 
     // プログラムについて (リッチエディタ。基本は aboutBody, 無ければ body を使用)
     const aboutBody = document.getElementById('mcs-about-body');
     const aboutHtml = data.aboutBody || data.body;
     if (aboutBody && aboutHtml) {
-      aboutBody.innerHTML = aboutHtml;
+      aboutBody.innerHTML = optimizeHtmlImages(aboutHtml);
     }
 
     // 行程スケジュール (リッチエディタ)
     const scheduleList = document.getElementById('mcs-schedule-list');
     if (scheduleList && data.scheduleBody) {
-      scheduleList.innerHTML = data.scheduleBody;
+      scheduleList.innerHTML = optimizeHtmlImages(data.scheduleBody);
     }
 
     // 料金に含まれるもの (リッチエディタ)
     const includesBody = document.getElementById('mcs-includes-body');
     if (includesBody && data.includesBody) {
-      includesBody.innerHTML = data.includesBody;
+      includesBody.innerHTML = optimizeHtmlImages(data.includesBody);
     }
 
     // 基本情報群
