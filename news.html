@@ -199,6 +199,32 @@
         color: white;
         font-weight: bold;
       }
+
+      /* Pagination Styles */
+      .pagination-btn {
+        padding: 0.4rem 0.8rem;
+        border: 1px solid var(--color-border);
+        background: white;
+        color: var(--color-text);
+        cursor: pointer;
+        border-radius: 4px;
+        transition: 0.2s;
+        font-family: var(--font-base);
+        font-size: 0.9rem;
+      }
+      .pagination-btn:hover:not(.active):not([disabled]) {
+        background: #f0f0f0;
+      }
+      .pagination-btn.active {
+        background: var(--color-primary);
+        color: white;
+        border-color: var(--color-primary);
+        font-weight: bold;
+      }
+      .pagination-btn[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
     </style>
   </head>
   <body>
@@ -253,6 +279,8 @@
               <div class="news-grid" id="news-grid-container">
                 <p style="grid-column: 1/-1; text-align: center; color: #666;">お知らせを読み込んでいます...</p>
               </div>
+              <!-- Pagination -->
+              <div id="news-pagination" style="margin-top: 3rem; display: flex; justify-content: center; gap: 0.5rem; align-items: center;"></div>
             </div>
           </div>
           

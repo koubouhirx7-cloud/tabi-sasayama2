@@ -12,6 +12,8 @@ import { fetchAllNews } from './cms.js';
   const urlParams = new URLSearchParams(window.location.search);
   let currentCategory = urlParams.get('cat') || 'すべて';
   let currentArchive = urlParams.get('arc') || 'すべて';
+  let currentPage = 1;
+  const itemsPerPage = 6;
 
   function extractFilters() {
     const cats = new Set();
@@ -43,6 +45,7 @@ import { fetchAllNews } from './cms.js';
           catFilterList.querySelectorAll('a').forEach(l => l.classList.remove('active'));
           a.classList.add('active');
           currentCategory = a.getAttribute('data-cat');
+          currentPage = 1;
           renderNews();
         });
       });
@@ -64,6 +67,7 @@ import { fetchAllNews } from './cms.js';
           archFilterList.querySelectorAll('a').forEach(l => l.classList.remove('active'));
           a.classList.add('active');
           currentArchive = a.getAttribute('data-arc');
+          currentPage = 1;
           renderNews();
         });
       });
@@ -72,6 +76,8 @@ import { fetchAllNews } from './cms.js';
 
   function renderNews() {
     container.innerHTML = '';
+    const paginationContainer = document.getElementById('news-pagination');
+    if (paginationContainer) paginationContainer.innerHTML = '';
     
     if (!newsData || newsData.length === 0) {
       container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #888;">現在表示できる記事がありません。</p>';
@@ -91,16 +97,11 @@ import { fetchAllNews } from './cms.js';
       return;
     }
 
-    // --- デザイン確認用: 記事が少ない場合はダミーで複製して3つ並びを見せる ---
-    if (filtered.length > 0 && filtered.length < 5) {
-      const original = [...filtered];
-      while (filtered.length < 6) { /* 6個くらい並べる */
-        filtered.push(original[0]);
-      }
-    }
+    const totalPages = Math.ceil(filtered.length / itemsPerPage);
+    const displayData = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-    filtered.forEach((item, index) => {
-      const delay = (index % 4) * 0.1;
+    displayData.forEach((item, index) => {
+      const delay = (index % itemsPerPage) * 0.1;
       const dateObj = new Date(item.date || item.publishedAt);
       const y = dateObj.getFullYear();
       const m = String(dateObj.getMonth() + 1).padStart(2, '0');
@@ -108,6 +109,7 @@ import { fetchAllNews } from './cms.js';
       
       const imgUrl = item.eyecatch ? item.eyecatch.url : '/images/PB182518.jpg';
       const category = item.category || 'お知らせ';
+      const title = item.title || 'タイトル未設定'; // undefined防止用
       
       const html = `
         <a href="news-detail.html?id=${item.id}" class="news-card fade-in is-visible" style="animation-delay: ${delay}s">
@@ -119,12 +121,47 @@ import { fetchAllNews } from './cms.js';
               <span class="news-category">${category}</span>
               <span class="news-date">${y}.${m}.${d}</span>
             </div>
-            <h3 class="news-title">${item.title}</h3>
+            <h3 class="news-title">${title}</h3>
           </div>
         </a>
       `;
       container.insertAdjacentHTML('beforeend', html);
     });
+
+    // Pagination rendering
+    if (totalPages > 1 && paginationContainer) {
+      const btnPrev = document.createElement('button');
+      btnPrev.className = 'pagination-btn';
+      btnPrev.textContent = '前へ';
+      if (currentPage === 1) btnPrev.disabled = true;
+      btnPrev.addEventListener('click', () => {
+        if (currentPage > 1) { 
+          currentPage--; renderNews(); window.scrollTo({top: 0, behavior: 'smooth'}); 
+        }
+      });
+      paginationContainer.appendChild(btnPrev);
+
+      for (let i = 1; i <= totalPages; i++) {
+        const btnNum = document.createElement('button');
+        btnNum.className = 'pagination-btn' + (i === currentPage ? ' active' : '');
+        btnNum.textContent = i;
+        btnNum.addEventListener('click', () => {
+          currentPage = i; renderNews(); window.scrollTo({top: 0, behavior: 'smooth'});
+        });
+        paginationContainer.appendChild(btnNum);
+      }
+
+      const btnNext = document.createElement('button');
+      btnNext.className = 'pagination-btn';
+      btnNext.textContent = '次へ';
+      if (currentPage === totalPages) btnNext.disabled = true;
+      btnNext.addEventListener('click', () => {
+        if (currentPage < totalPages) { 
+          currentPage++; renderNews(); window.scrollTo({top: 0, behavior: 'smooth'}); 
+        }
+      });
+      paginationContainer.appendChild(btnNext);
+    }
   }
 
   if (newsData && newsData.length > 0) {
