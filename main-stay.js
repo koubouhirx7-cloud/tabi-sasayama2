@@ -14,14 +14,29 @@ import { fetchStay } from './cms.js';
       return;
     }
 
-    const filtered = stayData; // 現在はカテゴリフィルタリングなし（すべて表示）
+    let displayData = [...stayData];
+    
+    // microCMSに記事が少ない場合、デザイン確認のために常時6件になるよう複製して表示
+    if (displayData.length > 0 && displayData.length < 6) {
+      const firstItem = displayData[0];
+      while (displayData.length < 6) {
+        displayData.push({ 
+          ...firstItem, 
+          id: firstItem.id + '-dummy-' + displayData.length,
+          title: firstItem.title + ' (複製)'
+        });
+      }
+    }
+    
+    // 最大6件(2行x3列)に制限
+    displayData = displayData.slice(0, 6);
 
-    if (filtered.length === 0) {
+    if (displayData.length === 0) {
       container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">該当するプログラムは見つかりませんでした。</p>';
       return;
     }
 
-    filtered.forEach((item, index) => {
+    displayData.forEach((item, index) => {
       const delay = (index % 3) * 0.1;
       
       const imgUrl = item.heroImage?.url || item.image?.url || '/images/P8217785.jpg';
