@@ -32,10 +32,14 @@ export async function fetchStay(limit = 6) {
   }
 }
 
-export async function fetchStayDetail(id) {
+export async function fetchStayDetail(id, draftKey = null) {
   if (!domain || !apiKey || !id) return null;
   try {
-    const res = await fetch(`https://${domain}.microcms.io/api/v1/stay/${id}`, {
+    const url = draftKey 
+      ? `https://${domain}.microcms.io/api/v1/stay/${id}?draftKey=${draftKey}`
+      : `https://${domain}.microcms.io/api/v1/stay/${id}`;
+      
+    const res = await fetch(url, {
       headers: { 'X-MICROCMS-API-KEY': apiKey }
     });
     if (!res.ok) {
@@ -64,10 +68,14 @@ export async function fetchAllNews(limit = 100) {
   }
 }
 
-export async function fetchNewsDetail(id) {
+export async function fetchNewsDetail(id, draftKey = null) {
   if (!domain || !apiKey || !id) return null;
   try {
-    const res = await fetch(`https://${domain}.microcms.io/api/v1/news/${id}`, {
+    const url = draftKey 
+      ? `https://${domain}.microcms.io/api/v1/news/${id}?draftKey=${draftKey}`
+      : `https://${domain}.microcms.io/api/v1/news/${id}`;
+
+    const res = await fetch(url, {
       headers: { 'X-MICROCMS-API-KEY': apiKey }
     });
     if (!res.ok) throw new Error('API Error');

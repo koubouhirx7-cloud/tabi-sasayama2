@@ -3,12 +3,13 @@ import { fetchNewsDetail, fetchAllNews } from './cms.js';
 (async function initNewsDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const id = urlParams.get('id');
+  const draftKey = urlParams.get('draftKey');
   
   if (!id) return; // IDがない場合は静的プレースホルダーのままとする
 
   // 詳細記事と、サイドバー用の全記事を並行して取得
   const [article, allNews] = await Promise.all([
-    fetchNewsDetail(id),
+    fetchNewsDetail(id, draftKey),
     fetchAllNews()
   ]);
   

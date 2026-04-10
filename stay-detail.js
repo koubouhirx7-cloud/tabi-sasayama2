@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // URLのクエリパラメータから取得 (?id=...)
   const params = new URLSearchParams(window.location.search);
   const stayId = params.get('id');
+  const draftKey = params.get('draftKey');
 
   if (!stayId) {
     // IDがない場合は詳細ページとして機能しないため、一覧へ戻すなどの処理にするかアラートを出す
@@ -17,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (titleEl) titleEl.textContent = '読み込み中...';
 
   try {
-    const data = await fetchStayDetail(stayId);
+    const data = await fetchStayDetail(stayId, draftKey);
 
     if (!data) {
       if (titleEl) titleEl.textContent = 'データが見つかりませんでした';
