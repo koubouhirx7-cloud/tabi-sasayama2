@@ -43,6 +43,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       return html.replace(/(src="https:\/\/images\.microcms-assets\.io\/[^"]+)"/g, '$1?fm=webp&w=1000&q=80"');
     };
 
+    // ギャラリー (複数画像)
+    const galleryEl = document.getElementById('mcs-gallery');
+    if (galleryEl && data.gallery && data.gallery.length > 0) {
+      galleryEl.style.display = '';
+      data.gallery.forEach(imgData => {
+        const img = document.createElement('img');
+        img.src = imgData.url + '?fm=webp&w=800&q=80';
+        galleryEl.appendChild(img);
+      });
+    }
+
     // プログラムについて (リッチエディタ。基本は aboutBody, 無ければ body を使用)
     const aboutBody = document.getElementById('mcs-about-body');
     const aboutHtml = data.aboutBody || data.body;

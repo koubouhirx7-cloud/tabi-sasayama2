@@ -74,6 +74,41 @@
         margin-bottom: 3rem;
       }
 
+      /* ギャラリー (PC 3列 / スマホ スライダー) */
+      .stay-gallery {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 3rem;
+      }
+      .stay-gallery img {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        border-radius: var(--border-radius-sm);
+      }
+      
+      @media (max-width: 768px) {
+        .stay-gallery {
+          display: flex;
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+          padding-bottom: 1rem;
+          -webkit-overflow-scrolling: touch;
+        }
+        .stay-gallery::-webkit-scrollbar {
+          height: 6px;
+        }
+        .stay-gallery::-webkit-scrollbar-thumb {
+          background: #ccc;
+          border-radius: 3px;
+        }
+        .stay-gallery img {
+          flex: 0 0 85%;
+          scroll-snap-align: center;
+        }
+      }
+
       /* 行程スケジュールカード */
       .schedule-card {
         background: #fff;
@@ -240,6 +275,9 @@
             <div class="program-desc" id="mcs-about-body">
               <p>データを読み込んでいます...</p>
             </div>
+
+            <!-- ギャラリー -->
+            <div class="stay-gallery" id="mcs-gallery" style="display: none;"></div>
 
             <!-- microCMS: schedule (繰り返しフィールド) 等を想定 -->
             <h2 id="mcs-schedule-title">行程（スケジュール）</h2>
