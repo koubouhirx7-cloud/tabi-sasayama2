@@ -19,10 +19,16 @@ import { fetchDownloads } from './cms.js';
       
       const title = item.title || 'カタログ';
       const description = item.description || '';
-      const fileUrl = item.file?.url ? item.file.url : '#';
+      let fileUrl = '#';
+      if (item.file) {
+        if (typeof item.file === 'object' && item.file.url) {
+          fileUrl = item.file.url; // 従来通りファイル型の場合
+        } else if (typeof item.file === 'string') {
+          fileUrl = item.file; // テキストフィールドでURLを直接入れた場合
+        }
+      }
       
-      // ボタンのテキストも必要に応じて変えられますが、一旦固定で「PDFをダウンロード」
-      // ※もしPDFがない場合はアラートか非表示にするなど工夫も可能
+      // ボタンのテキストも必要に応じて変えられますが、Googleドライブ等を開く想定で「資料を開く」に変更
       
       const html = `
         <div class="download-card fade-in is-visible" style="animation-delay: ${delay}s">
@@ -30,7 +36,7 @@ import { fetchDownloads } from './cms.js';
             <h3>${title}</h3>
             <p>${description}</p>
           </div>
-          <a href="${fileUrl}" class="btn-dl" target="_blank" rel="noopener noreferrer">PDFをダウンロード</a>
+          <a href="${fileUrl}" class="btn-dl" target="_blank" rel="noopener noreferrer">資料をみる（ダウンロード）</a>
         </div>
       `;
       container.insertAdjacentHTML('beforeend', html);
