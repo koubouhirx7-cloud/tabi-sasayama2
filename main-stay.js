@@ -6,7 +6,40 @@ import { fetchStay } from './cms.js';
 
   const stayData = await fetchStay(100);
 
-  function renderStay(categoryFilter = 'すべて') {
+  let currentCategory = 'すべて';
+
+  function extractFilters() {
+    const cats = new Set();
+    stayData.forEach(item => {
+      // ユーザーが microCMS で category を追加した場合に抽出
+      if (item.category) cats.add(item.category);
+    });
+
+    const filterContainer = document.querySelector('.filter-tags');
+    if (filterContainer) {
+      if (cats.size > 0) {
+        filterContainer.style.display = 'flex';
+        filterContainer.innerHTML = `<span class="tag active" data-cat="すべて">すべて</span>`;
+        cats.forEach(c => {
+          filterContainer.insertAdjacentHTML('beforeend', `<span class="tag" data-cat="${c}">${c}</span>`);
+        });
+
+        filterContainer.querySelectorAll('.tag').forEach(tag => {
+          tag.addEventListener('click', (e) => {
+            e.preventDefault();
+            filterContainer.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+            tag.classList.add('active');
+            currentCategory = tag.getAttribute('data-cat');
+            renderStay();
+          });
+        });
+      } else {
+        filterContainer.style.display = 'none';
+      }
+    }
+  }
+
+  function renderStay() {
     container.innerHTML = '';
     
     if (!stayData || stayData.length === 0) {
@@ -14,12 +47,10 @@ import { fetchStay } from './cms.js';
       return;
     }
 
-    let displayData = [...stayData];
-    
-
-    
-    // 最大6件(2行x3列)に制限
-    displayData = displayData.slice(0, 6);
+    let displayData = stayData.filter(item => {
+      if (currentCategory === 'すべて') return true;
+      return item.category === currentCategory;
+    });
 
     if (displayData.length === 0) {
       container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">該当するプログラムは見つかりませんでした。</p>';
@@ -69,18 +100,7 @@ import { fetchStay } from './cms.js';
     });
   }
 
-  // 取得できたら描画
-  renderStay('すべて');
-
-  // タグフィルタのUIがあればUIだけ切り替える（将来拡張用）
-  const filterTags = document.querySelectorAll('.filter-tags .tag');
-  if (filterTags.length > 0) {
-    filterTags.forEach(tag => {
-      tag.addEventListener('click', (e) => {
-        e.preventDefault();
-        filterTags.forEach(t => t.classList.remove('active'));
-        tag.classList.add('active');
-      });
-    });
-  }
+  // タグと初期描画
+  extractFilters();
+  renderStay();
 })();
