@@ -301,11 +301,11 @@ ul { list-style: none; }
 .section-tag {
   display: inline-block;
   font-family: var(--font-label);
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.75);
-  border-bottom: 1px solid rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.85);
+  border-bottom: 1px solid rgba(255,255,255,0.5);
   padding-bottom: 0.4rem;
   margin-bottom: 1.6rem;
   text-shadow: 0 2px 15px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8);
