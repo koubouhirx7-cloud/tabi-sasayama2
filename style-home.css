@@ -904,38 +904,42 @@ ul { list-style: none; }
 #bg-4 { animation-delay: 18s; }
 
 /* ---------------------------------
-   Google Translate Widget Tuning
+   Custom Language Toggle UI
 ----------------------------------*/
-.translate-widget-wrap {
-  margin-left: 1rem;
+.custom-lang-switch {
+  font-family: var(--font-en);
+  font-size: 0.9rem;
+  color: inherit; /* Will be white or dark depending on scroll */
 }
-.goog-te-gadget-simple {
-  background-color: transparent !important;
-  border: 1px solid rgba(255,255,255,0.6) !important;
-  padding: 4px 10px !important;
-  border-radius: 0 !important;
-  font-size: 0.85rem !important;
-  font-family: var(--font-en) !important;
-  color: #fff !important;
-  display: flex !important;
-  align-items: center !important;
+.lang-btn {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 1em;
+  cursor: pointer;
+  padding: 4px 6px;
   transition: 0.3s;
+  opacity: 0.5;
+  outline: none;
 }
-.goog-te-gadget-simple:hover {
-  background-color: rgba(255,255,255,0.2) !important;
-  color: #fff !important;
+.lang-btn:hover {
+  opacity: 0.8;
 }
-.goog-te-menu-value {
-  color: inherit !important;
-  margin: 0 !important;
+.lang-btn.active {
+  opacity: 1;
+  font-weight: bold;
 }
-.goog-te-menu-value span {
-  color: inherit !important;
+.lang-sep {
+  opacity: 0.3;
 }
-.goog-te-gadget-icon {
+/* Completely hide Google native artifacts */
+#google_translate_element {
   display: none !important;
 }
-/* Hide google top bar */
+.goog-te-banner-frame {
+  display: none !important;
+}
 .goog-tooltip {
   display: none !important;
 }
@@ -949,9 +953,6 @@ ul { list-style: none; }
 }
 body {
   top: 0 !important;
-}
-.skiptranslate.goog-te-banner-frame {
-  display: none !important;
 }
 
 .gallery-photo {
