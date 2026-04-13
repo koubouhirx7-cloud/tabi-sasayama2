@@ -13,7 +13,6 @@ import { fetchAllNews } from './cms.js';
   let currentCategory = urlParams.get('cat') || 'すべて';
   let currentArchive = urlParams.get('arc') || 'すべて';
   let currentPage = 1;
-  const itemsPerPage = 6;
 
   function extractFilters() {
     const cats = new Set();
@@ -97,7 +96,14 @@ import { fetchAllNews } from './cms.js';
       return;
     }
 
+    const itemsPerPage = window.innerWidth <= 1024 ? 6 : 9;
     const totalPages = Math.ceil(filtered.length / itemsPerPage);
+    
+    // Ensure currentPage doesn't exceed totalPages after resize
+    if (currentPage > totalPages) {
+      currentPage = totalPages || 1;
+    }
+
     const displayData = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     displayData.forEach((item, index) => {
@@ -169,5 +175,13 @@ import { fetchAllNews } from './cms.js';
   }
   
   renderNews();
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      renderNews();
+    }, 200);
+  });
 
 })();
