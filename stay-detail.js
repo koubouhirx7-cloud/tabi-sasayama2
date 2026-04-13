@@ -94,9 +94,19 @@ document.addEventListener('DOMContentLoaded', async () => {
       infoCancel.innerHTML = data.infoCancel; // リッチエディタ
     }
 
-    // ページタイトル（ブラウザのタブ名）も動的に変更する
+    // ページタイトル（ブラウザのタブ名）なども動的に変更する
     if (data.title) {
-      document.title = `${data.title} | Stay | 一般社団法人ウイズささやま`;
+      document.title = `${data.title} | 丹波篠山で田舎・農業体験`;
+      
+      // SEOディスクリプションとOGP画像の更新
+      const descText = data.subtitle || data.description || '';
+      if (descText) {
+        const plainText = descText.replace(/<[^>]+>/g, '').substring(0, 120);
+        document.querySelector('meta[name="description"]')?.setAttribute('content', plainText);
+      }
+      if (imageUrl) {
+        document.querySelector('meta[property="og:image"]')?.setAttribute('content', imageUrl);
+      }
       
       // 申し込みボタンへのリンク変更（専用フォームへ）
       const applyBtn = document.getElementById('mcs-apply-link');

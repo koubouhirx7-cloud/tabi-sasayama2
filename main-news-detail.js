@@ -59,9 +59,15 @@ import { fetchNewsDetail, fetchAllNews } from './cms.js';
         <a href="news.html">← News一覧に戻る</a>
       </div>
     `;
+  // 動的SEOタグの更新
+  document.title = `${article.title} | 最新情報 | 丹波篠山で田舎・農業体験`;
+  if (article.body) {
+    const plainText = article.body.replace(/<[^>]+>/g, '').substring(0, 120) + '...';
+    document.querySelector('meta[name="description"]')?.setAttribute('content', plainText);
   }
-  
-  document.title = `${article.title} | 一般社団法人ウイズささやま`;
+  if (article.eyecatch) {
+    document.querySelector('meta[property="og:image"]')?.setAttribute('content', article.eyecatch.url);
+  }
 
   // --- サイドバー生成処理 ---
   if (allNews && allNews.length > 0) {
