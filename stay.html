@@ -43,7 +43,7 @@
         padding: 0.5rem 1rem;
         background: white;
         border: 1px solid var(--color-border);
-        border-radius: 20px;
+        border-radius: 0;
         font-size: 0.9rem;
         cursor: pointer;
         transition: 0.3s;
@@ -70,16 +70,15 @@
         color: inherit;
         display: block;
         padding: 0;
-        background-color: #ffffff;
-        border: 1px solid #dcdcdc;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        background-color: var(--color-bg);
+        border: 1px solid var(--color-border);
+        border-radius: 0;
         overflow: hidden;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s;
       }
       .program-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+        transform: translateY(-6px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
       }
 
       .program-img {
