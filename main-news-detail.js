@@ -59,6 +59,8 @@ import { fetchNewsDetail, fetchAllNews } from './cms.js';
         <a href="news.html">← News一覧に戻る</a>
       </div>
     `;
+  }
+
   // 動的SEOタグの更新
   document.title = `${article.title} | 最新情報 | 丹波篠山で田舎・農業体験`;
   if (article.body) {
