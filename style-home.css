@@ -81,7 +81,7 @@ ul { list-style: none; }
 }
 .logo-en {
   font-family: var(--font-label);
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   letter-spacing: 0.25em;
   color: rgba(255,255,255,0.75);
   transition: color 0.5s;
@@ -204,7 +204,7 @@ ul { list-style: none; }
 }
 .label-en {
   font-family: var(--font-label);
-  font-size: 0.75rem;
+  font-size: 0.88rem;
   letter-spacing: 0.4em;
   color: rgba(255,255,255,0.65);
   text-transform: uppercase;
@@ -285,7 +285,7 @@ ul { list-style: none; }
 }
 .scroll-hint-text {
   font-family: var(--font-label);
-  font-size: 0.65rem;
+  font-size: 0.8rem;
   letter-spacing: 0.35em;
   color: rgba(255,255,255,0.8);
 }
