@@ -16,12 +16,12 @@ import { fetchNews, fetchStay } from './cms.js';
   const bgPanels = document.querySelectorAll('.bg-panel');
   const sections = document.querySelectorAll('[data-bg]');
 
+  let activeBg = 1; // グローバルで保持し、リセットさせない
+
   function updateBackground() {
     const scrollY    = window.scrollY;
     const winHeight  = window.innerHeight;
     const midY       = scrollY + winHeight * 0.5;   // 画面の中央Y座標
-
-    let activeBg = 1; // デフォルトは最初の背景
 
     sections.forEach(section => {
       const rect    = section.getBoundingClientRect();
@@ -116,26 +116,7 @@ import { fetchNews, fetchStay } from './cms.js';
   window.addEventListener('scroll', onScroll, { passive: true });
 
   /* ────────────────────────────────────────────
-     6. 白背景セクション到達時は
-        固定背景ステージを非表示にする
-        （より自然な白へのトランジション）
-     ──────────────────────────────────────────── */
-  const bgStage      = document.querySelector('.bg-stage');
-  const sectionWhite = document.querySelector('.section-white');
-
-  if (bgStage && sectionWhite) {
-    const whiteObserver = new IntersectionObserver(
-      ([entry]) => {
-        // 白セクションが画面の上向かいから完全に見えたら背景を隠す
-        bgStage.style.opacity = entry.isIntersecting ? '0' : '1';
-      },
-      { threshold: 0.15 }
-    );
-    whiteObserver.observe(sectionWhite);
-  }
-
-  /* ────────────────────────────────────────────
-     7. モバイル: 100vh を実際の vh で補正
+     6. モバイル: 100vh を実際の vh で補正
      ──────────────────────────────────────────── */
   function setVH() {
     document.documentElement.style.setProperty(
