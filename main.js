@@ -1,3 +1,5 @@
+import { initTranslate } from "./translate.js";
+initTranslate();
 // Navigation scroll effect
 const header = document.querySelector('.header');
 

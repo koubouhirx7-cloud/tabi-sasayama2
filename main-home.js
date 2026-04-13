@@ -1,4 +1,6 @@
 import { fetchNews, fetchStay } from './cms.js';
+import { initTranslate } from './translate.js';
+initTranslate();
 
 /**
  * main-home.js — ウイズささやま ホームページ
