@@ -50,8 +50,8 @@ export function initTranslate() {
         location.reload();
       } else {
         // Translate to English
-        document.cookie = \`googtrans=/ja/\${targetLang}; path=/\`;
-        document.cookie = \`googtrans=/ja/\${targetLang}; domain=\${location.hostname}; path=/\`;
+        document.cookie = `googtrans=/ja/${targetLang}; path=/`;
+        document.cookie = `googtrans=/ja/${targetLang}; domain=${location.hostname}; path=/`;
         
         const combo = document.querySelector('.goog-te-combo');
         if (combo) {
