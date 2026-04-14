@@ -937,9 +937,11 @@ ul { list-style: none; }
 #google_translate_element,
 .goog-te-banner-frame,
 iframe.goog-te-banner-frame,
-.goog-te-balloon-frame {
+.goog-te-balloon-frame,
+body > .skiptranslate {
   display: none !important;
   visibility: hidden !important;
+  opacity: 0 !important;
 }
 .goog-tooltip {
   display: none !important;
@@ -953,8 +955,12 @@ iframe.goog-te-banner-frame,
   box-shadow: none !important;
 }
 body, html {
+  position: static !important;
   top: 0 !important;
   margin-top: 0 !important;
+}
+.header {
+  top: 0 !important;
 }
 
 .gallery-photo {
