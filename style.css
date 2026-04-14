@@ -594,11 +594,12 @@ img {
   opacity: 0.3;
 }
 /* Completely hide Google native artifacts */
-#google_translate_element {
+#google_translate_element,
+.goog-te-banner-frame,
+iframe.goog-te-banner-frame,
+.goog-te-balloon-frame {
   display: none !important;
-}
-.goog-te-banner-frame {
-  display: none !important;
+  visibility: hidden !important;
 }
 .goog-tooltip {
   display: none !important;
@@ -611,8 +612,9 @@ img {
   border: none !important; 
   box-shadow: none !important;
 }
-body {
+body, html {
   top: 0 !important;
+  margin-top: 0 !important;
 }
 
 .fade-in.is-visible {
