@@ -38,6 +38,24 @@ export function initTranslate() {
   script.async = true;
   document.head.appendChild(script);
 
+  // Aggressive cleanup for the Google Translate top banner
+  const observer = new MutationObserver(() => {
+    const banner = document.querySelector('.goog-te-banner-frame');
+    if (banner && banner.style.display !== 'none') {
+      banner.style.display = 'none';
+      banner.style.setProperty('display', 'none', 'important');
+    }
+    if (document.body.style.top && document.body.style.top !== '0px') {
+      document.body.style.top = '0px';
+      document.body.style.setProperty('top', '0px', 'important');
+    }
+    if (document.body.style.marginTop && document.body.style.marginTop !== '0px') {
+      document.body.style.marginTop = '0px';
+      document.body.style.setProperty('margin-top', '0px', 'important');
+    }
+  });
+  observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+
   // Events for Custom UI
   wrapper.querySelectorAll('.lang-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
