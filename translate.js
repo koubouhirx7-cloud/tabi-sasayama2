@@ -1,4 +1,13 @@
 export function initTranslate() {
+  // Restore scroll position if we just reloaded from a language switch
+  const savedScroll = sessionStorage.getItem('lang-switch-scroll');
+  if (savedScroll) {
+    document.documentElement.style.scrollBehavior = 'auto'; // Prevent smooth slide
+    window.scrollTo(0, parseInt(savedScroll, 10));
+    sessionStorage.removeItem('lang-switch-scroll');
+    setTimeout(() => { document.documentElement.style.scrollBehavior = ''; }, 100);
+  }
+
   const nav = document.querySelector('.nav-links');
   if (!nav || document.querySelector('.custom-lang-switch')) return;
 
@@ -62,10 +71,18 @@ export function initTranslate() {
       const targetLang = e.target.getAttribute('data-lang');
       
       if (targetLang === 'ja') {
-        // Revert to Japanese
+        // UI Feedback: instant fade out to prevent the "catch" perception
+        document.body.style.transition = 'opacity 0.2s';
+        document.body.style.opacity = '0';
+        sessionStorage.setItem('lang-switch-scroll', window.scrollY);
+
+        // Revert to Japanese (Clear all possible cookie variations)
+        const d = location.hostname;
         document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
-        document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=" + location.hostname + "; path=/";
-        location.reload();
+        document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${d}; path=/`;
+        document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=.${d}; path=/`;
+        
+        setTimeout(() => location.reload(), 150);
       } else {
         // Translate to English
         document.cookie = `googtrans=/ja/${targetLang}; path=/`;
