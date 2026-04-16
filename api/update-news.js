@@ -16,7 +16,8 @@ export default async function handler(req, res) {
   const payload = { title, publishedAt, category, eyecatch, body };
 
   try {
-    const response = await fetch(`https://${domain}.microcms.io/api/v1/news/${id}`, {
+    const endpoint = `https://${domain}.microcms.io/api/v1/news/${id}${req.body.isDraft ? '?status=draft' : ''}`;
+    const response = await fetch(endpoint, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

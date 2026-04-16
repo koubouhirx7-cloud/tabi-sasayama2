@@ -99,8 +99,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     existingList.forEach(item => {
       const option = document.createElement('option');
       option.value = item.id;
-      const dateStr = item.publishedAt ? item.publishedAt.substring(0, 10).replace(/-/g, '.') : '';
-      option.textContent = `[${dateStr}] ${item.title}`;
+      const dateStr = item.publishedAt ? item.publishedAt.substring(0, 10).replace(/-/g, '.') : (item.createdAt ? item.createdAt.substring(0, 10).replace(/-/g, '.') : '');
+      const statusText = item.publishedAt ? `[${dateStr}] ` : `[下書き: ${dateStr}] `;
+      option.textContent = `${statusText}${item.title}`;
       selectExisting.appendChild(option);
     });
   } catch (err) {
@@ -254,9 +255,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  submitBtn.addEventListener('click', async () => {
-    submitBtn.textContent = '画像をサーバーへ保存中...';
+  const draftBtn = document.getElementById('btn-draft');
+
+  async function submitArticle(isDraft) {
+    const btn = isDraft ? draftBtn : submitBtn;
+    const originalText = btn.textContent;
+    btn.textContent = '画像をサーバーへ保存中...';
     submitBtn.disabled = true;
+    if (draftBtn) draftBtn.disabled = true;
 
     try {
       // 1. Upload Images to MicroCMS Media API if needed
@@ -268,14 +274,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         publishedAt: new Date(dateInput.value).toISOString(),
         category: [categoryInput.value],
         eyecatch: realEyecatchUrl,
-        body: quill.root.innerHTML
+        body: quill.root.innerHTML,
+        isDraft
       };
 
       if (currentEditId) {
         data.id = currentEditId;
       }
 
-      submitBtn.textContent = 'データ保存中...';
+      btn.textContent = 'データ保存中...';
 
       // 3. call Vercel Serverless Function
       // credentials:'same-origin' ensures browser forwards any stored auth context
@@ -295,7 +302,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         throw new Error(resJson.message || '通信エラー');
       }
       
-      alert(`記事が正常にmicroCMSへ${currentEditId ? '上書き保存' : '公開保存'}されました！`);
+      alert(isDraft ? `下書きを保存しました！` : `記事が正常にmicroCMSへ${currentEditId ? '上書き保存' : '公開保存'}されました！`);
       console.log('Success:', resJson);
       
       // Reset form on success
@@ -310,9 +317,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error(err);
     } finally {
       submitBtn.textContent = currentEditId ? '編集内容を上書き保存する' : '記事を公開エリアへ保存';
+      if (draftBtn) draftBtn.textContent = '下書きとして保存する';
       submitBtn.disabled = false;
+      if (draftBtn) draftBtn.disabled = false;
     }
-  });
+  }
+
+  submitBtn.addEventListener('click', () => submitArticle(false));
+  if (draftBtn) draftBtn.addEventListener('click', () => submitArticle(true));
 
   // --- Media Modal Logic ---
   const btnOpenMedia = document.getElementById('btn-open-media');

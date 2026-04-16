@@ -306,7 +306,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     existingList.forEach(item => {
       const option = document.createElement('option');
       option.value = item.id;
-      option.textContent = `[体験・滞在] ${item.title}`;
+      const statusText = item.publishedAt ? `[体験・滞在] ` : `[体験・滞在 / 下書き] `;
+      option.textContent = `${statusText}${item.title}`;
       selectExisting.appendChild(option);
     });
   } catch(err) {
@@ -385,9 +386,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
   // --- Submit button ---
-  submitBtn.addEventListener('click', async () => {
-    submitBtn.textContent = '画像をサーバーへ保存中...';
+  // --- Submit button ---
+  const draftBtn = document.getElementById('btn-draft');
+
+  async function submitArticle(isDraft) {
+    const btn = isDraft ? draftBtn : submitBtn;
+    const originalText = btn.textContent;
+    btn.textContent = '画像をサーバーへ保存中...';
     submitBtn.disabled = true;
+    if (draftBtn) draftBtn.disabled = true;
 
     try {
       // 1. Upload Media
@@ -413,14 +420,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         scheduleBody: editors.schedule.root.innerHTML,
         includesBody: editors.includes.root.innerHTML,
         infoPrice: editors.price.root.innerHTML,
-        infoCancel: editors.cancel.root.innerHTML
+        infoCancel: editors.cancel.root.innerHTML,
+        isDraft
       };
 
       if (currentEditId) {
         data.id = currentEditId;
       }
 
-      submitBtn.textContent = 'データ保存中...';
+      btn.textContent = 'データ保存中...';
       const endpoint = currentEditId ? '/api/update-stay' : '/api/create-stay';
       const method = currentEditId ? 'PATCH' : 'POST';
 
@@ -437,16 +445,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         throw new Error(resJson.message || '通信エラー');
       }
       
-      alert(`プログラムが正常にmicroCMSへ${currentEditId ? '上書き保存' : '公開保存'}されました！`);
+      alert(isDraft ? `下書きを保存しました！` : `プログラムが正常にmicroCMSへ${currentEditId ? '上書き保存' : '公開保存'}されました！`);
       console.log('Success:', resJson);
     } catch(err) {
       alert('エラーが発生しました: ' + err.message);
       console.error(err);
     } finally {
       submitBtn.textContent = currentEditId ? '編集内容を上書き保存する' : '保存する（新規公開）';
+      if (draftBtn) draftBtn.textContent = '下書きとして保存する';
       submitBtn.disabled = false;
+      if (draftBtn) draftBtn.disabled = false;
     }
-  });
+  }
+
+  submitBtn.addEventListener('click', () => submitArticle(false));
+  if (draftBtn) draftBtn.addEventListener('click', () => submitArticle(true));
 
   // --- Media Modal Logic ---
   const btnOpenMediaMain = document.getElementById('btn-open-media-main');

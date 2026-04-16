@@ -9,6 +9,8 @@ export default async function handler(req, res) {
   // headers via fetch() from JS — the middleware is the enforced gatekeeper.
 
   const payload = req.body;
+  const isDraft = payload.isDraft;
+  delete payload.isDraft;
   
   // Use a strictly SEPARATE variable for the write key to prevent frontend exposure
   const domain = process.env.VITE_MICROCMS_SERVICE_DOMAIN || process.env.MICROCMS_SERVICE_DOMAIN;
@@ -19,7 +21,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch(`https://${domain}.microcms.io/api/v1/stay`, {
+    const endpoint = `https://${domain}.microcms.io/api/v1/stay${isDraft ? '?status=draft' : ''}`;
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

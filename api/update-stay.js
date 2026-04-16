@@ -15,10 +15,13 @@ export default async function handler(req, res) {
 
   // 対象記事IDを分離し、ペイロードからは削除する
   const id = payload.id;
+  const isDraft = payload.isDraft;
   delete payload.id;
+  delete payload.isDraft;
 
   try {
-    const response = await fetch(`https://${domain}.microcms.io/api/v1/stay/${id}`, {
+    const endpoint = `https://${domain}.microcms.io/api/v1/stay/${id}${isDraft ? '?status=draft' : ''}`;
+    const response = await fetch(endpoint, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
