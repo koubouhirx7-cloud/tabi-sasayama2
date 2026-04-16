@@ -142,15 +142,72 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Utility: Media Upload Proxy
-  async function uploadMediaIfBase64(dataUrl, filename) {
-    if (!dataUrl || !dataUrl.startsWith('data:image')) return dataUrl;
-    const res = await fetch('/api/upload-media', {
-      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imageBase64: dataUrl, filename })
+  async  function uploadMediaIfBase64(dataUrl, filename) {
+    if (!dataUrl || !dataUrl.startsWith('data:image')) return dataUrl; // return as is if empty or absolute URL
+    
+    const base64Data = dataUrl.split(',')[1];
+    return fetch('/api/upload-media', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ base64: base64Data, name: filename })
+    })
+    .then(r => r.json())
+    .then(d => {
+      if (!d.success) throw new Error(d.message || 'アップロード失敗');
+      return d.url;
     });
-    const json = await res.json();
-    if (!res.ok) throw new Error(json.message || '画像アップロードに失敗しました');
-    return json.data.url; 
+  }
+
+  // Utility: Add gallery image to UI with remove button
+  function addGalleryImageToUI(url) {
+    if (!currentGalleryDataUrls.includes(url)) {
+      currentGalleryDataUrls.push(url);
+    }
+    
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'relative';
+    wrapper.style.display = 'inline-block';
+    wrapper.style.margin = '4px 8px 4px 0';
+    
+    const img = document.createElement('img');
+    img.src = url;
+    img.style.height = '60px';
+    img.style.objectFit = 'cover';
+    img.style.borderRadius = '4px';
+    
+    const removeBtn = document.createElement('button');
+    removeBtn.innerHTML = '✕';
+    removeBtn.style.position = 'absolute';
+    removeBtn.style.top = '-8px';
+    removeBtn.style.right = '-8px';
+    removeBtn.style.background = 'rgba(255,0,0,0.85)';
+    removeBtn.style.color = 'white';
+    removeBtn.style.border = 'none';
+    removeBtn.style.borderRadius = '50%';
+    removeBtn.style.width = '20px';
+    removeBtn.style.height = '20px';
+    removeBtn.style.cursor = 'pointer';
+    removeBtn.style.fontSize = '12px';
+    removeBtn.style.fontWeight = 'bold';
+    removeBtn.style.display = 'flex';
+    removeBtn.style.alignItems = 'center';
+    removeBtn.style.justifyContent = 'center';
+    removeBtn.style.padding = '0';
+    removeBtn.style.zIndex = '10';
+    
+    removeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const index = currentGalleryDataUrls.indexOf(url);
+      if (index > -1) {
+        currentGalleryDataUrls.splice(index, 1);
+      }
+      wrapper.remove();
+      updatePreview();
+    });
+    
+    wrapper.appendChild(img);
+    wrapper.appendChild(removeBtn);
+    els.galleryThumbnails.appendChild(wrapper);
   }
 
   let currentImageDataUrl = '';
@@ -217,28 +274,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     updatePreview();
   });
 
-  // Gallery Upload
   els.galleryInput.addEventListener('change', async (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
 
-    // Overwrite existing array
-    currentGalleryDataUrls = [];
-    els.galleryThumbnails.innerHTML = '';
-
+    // Do NOT overwrite existing array; just append
     for (let file of files) {
       const url = await compressImage(file);
-      currentGalleryDataUrls.push(url);
-      
-      const img = document.createElement('img');
-      img.src = url;
-      img.style.height = '60px';
-      img.style.objectFit = 'cover';
-      img.style.borderRadius = '4px';
-      els.galleryThumbnails.appendChild(img);
-      
+      addGalleryImageToUI(url);
       updatePreview();
     }
+    els.galleryInput.value = ''; // Reset input to allow adding the same file again if deleted
   });
 
   // --- Initial Render ---
@@ -311,13 +357,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (detail.gallery && detail.gallery.length > 0) {
           detail.gallery.forEach(g => {
             if (g && g.url) {
-              currentGalleryDataUrls.push(g.url);
-              const img = document.createElement('img');
-              img.src = g.url;
-              img.style.height = '60px';
-              img.style.objectFit = 'cover';
-              img.style.borderRadius = '4px';
-              els.galleryThumbnails.appendChild(img);
+              addGalleryImageToUI(g.url);
             }
           });
         }
@@ -446,13 +486,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             els.removeImgBtn.style.display = 'block';
             els.eyecatchText.style.display = 'none';
           } else if (activeMediaTarget === 'gallery') {
-            currentGalleryDataUrls.push(m.url);
-            const img = document.createElement('img');
-            img.src = m.url;
-            img.style.height = '60px';
-            img.style.objectFit = 'cover';
-            img.style.borderRadius = '4px';
-            els.galleryThumbnails.appendChild(img);
+            addGalleryImageToUI(m.url);
           } else {
             // Quill editor target (about, schedule, includes, price, cancel)
             const quillEditor = editors[activeMediaTarget];
