@@ -8,7 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     infoDecision: document.getElementById('input-info-decision'),
     imageInput: document.getElementById('input-image'),
     removeImgBtn: document.getElementById('btn-remove-image'),
-    eyecatchText: document.getElementById('eyecatch-text')
+    eyecatchText: document.getElementById('eyecatch-text'),
+    galleryInput: document.getElementById('input-gallery'),
+    galleryThumbnails: document.getElementById('gallery-thumbnails')
   };
 
   // Elements: Previews
@@ -21,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     infoCapacity: document.getElementById('preview-info-capacity'),
     infoDecision: document.getElementById('preview-info-decision'),
     about: document.getElementById('preview-about'),
+    gallery: document.getElementById('preview-gallery'),
     schedule: document.getElementById('preview-schedule'),
     includes: document.getElementById('preview-includes'),
     price: document.getElementById('preview-price'),
@@ -83,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   let currentImageDataUrl = 'https://images.unsplash.com/photo-1596422846543-74c6e271ffd6?auto=format&fit=crop&w=1200&q=80';
+  let currentGalleryDataUrls = [];
 
   function updatePreview() {
     p.title.textContent = els.title.value || 'タイトル未入力';
@@ -92,6 +96,15 @@ document.addEventListener('DOMContentLoaded', () => {
     p.infoDecision.textContent = els.infoDecision.value;
     
     p.image.src = currentImageDataUrl;
+    
+    // Gallery
+    if (currentGalleryDataUrls.length > 0) {
+      p.gallery.style.display = 'grid'; // CSS dictates grid-template-columns
+      p.gallery.innerHTML = currentGalleryDataUrls.map(url => `<img src="${url}" alt="gallery">`).join('');
+    } else {
+      p.gallery.style.display = 'none';
+      p.gallery.innerHTML = '';
+    }
     
     p.about.innerHTML = editors.about.root.innerHTML;
     p.schedule.innerHTML = editors.schedule.root.innerHTML;
@@ -137,6 +150,34 @@ document.addEventListener('DOMContentLoaded', () => {
     els.removeImgBtn.style.display = 'none';
     els.eyecatchText.style.display = 'block';
     updatePreview();
+  });
+
+  // Gallery Upload
+  els.galleryInput.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+
+    // Append to existing array if you want cumulative uploads, or overwrite. Let's overwrite for simplicity like eyecatch.
+    currentGalleryDataUrls = [];
+    els.galleryThumbnails.innerHTML = '';
+
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const url = event.target.result;
+        currentGalleryDataUrls.push(url);
+        
+        const img = document.createElement('img');
+        img.src = url;
+        img.style.height = '60px';
+        img.style.objectFit = 'cover';
+        img.style.borderRadius = '4px';
+        els.galleryThumbnails.appendChild(img);
+        
+        updatePreview();
+      };
+      reader.readAsDataURL(file);
+    });
   });
 
   updatePreview();

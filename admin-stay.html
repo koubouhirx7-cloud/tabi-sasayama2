@@ -187,6 +187,15 @@
       </div>
       
       <div class="form-group">
+        <label>ギャラリー画像（複数枚アップロード）</label>
+        <div class="image-upload-zone" id="gallery-zone">
+          <span style="color: #666; font-size: 0.9rem;">クリックまたはドラッグ＆ドロップで複数同時選択可能</span>
+          <input type="file" id="input-gallery" accept="image/*" multiple>
+          <div id="gallery-thumbnails" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;"></div>
+        </div>
+      </div>
+      
+      <div class="form-group">
         <label>行程・スケジュール</label>
         <div id="editor-schedule"></div>
       </div>
@@ -234,6 +243,8 @@
         <div class="program-content">
           <h2>プログラムについて</h2>
           <div class="program-desc" id="preview-about"></div>
+          
+          <div class="stay-gallery" id="preview-gallery" style="display: none; margin-bottom: 3rem;"></div>
 
           <h2>行程（スケジュール）</h2>
           <div class="schedule-card" id="preview-schedule"></div>
