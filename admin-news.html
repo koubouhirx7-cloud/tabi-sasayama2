@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS管理画面: お知らせ | ウイズささやま</title>
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    body {
+      background: #f4f5f7;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .admin-header {
+      background: var(--color-primary, #333);
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 10;
+    }
+    .admin-header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-family: var(--font-display, sans-serif);
+    }
+    .btn-save {
+      background: #fff;
+      color: var(--color-primary, #333);
+      border: none;
+      padding: 8px 24px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .btn-save:hover {
+      background: #eee;
+    }
+    .admin-layout {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    /* LEFT PANE: Form */
+    .admin-pane-left {
+      width: 400px;
+      background: white;
+      border-right: 1px solid #ddd;
+      padding: 30px;
+      overflow-y: auto;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+      z-index: 5;
+    }
+    .form-group {
+      margin-bottom: 24px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    .form-group input[type="text"],
+    .form-group input[type="date"],
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    .form-group textarea {
+      min-height: 250px;
+      resize: vertical;
+    }
+    /* RIGHT PANE: Preview */
+    .admin-pane-right {
+      flex: 1;
+      background: #F8F7F3; /* site background */
+      overflow-y: auto;
+      position: relative;
+    }
+    .preview-header {
+      position: sticky;
+      top: 0;
+      background: rgba(255,255,255,0.9);
+      padding: 10px 20px;
+      border-bottom: 1px solid #ddd;
+      font-size: 0.85rem;
+      color: #888;
+      z-index: 100;
+      backdrop-filter: blur(5px);
+    }
+    
+    /* --- INJECTED PREVIEW STYLES (Copied from news-detail.html) --- */
+    .preview-container {
+      padding: 40px;
+    }
+    .notion-card {
+      background: white;
+      border-radius: 0;
+      overflow: hidden;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.06);
+      max-width: 900px;
+      margin: 0 auto;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    .notion-cover {
+      width: 100%;
+      height: min(40vh, 400px);
+      background: #eee;
+      position: relative;
+    }
+    .notion-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .notion-content {
+      padding: 50px 80px 80px;
+    }
+    .notion-title {
+      font-family: var(--font-display, sans-serif);
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      color: var(--color-text, #333);
+      line-height: 1.4;
+      margin-bottom: 24px;
+      letter-spacing: 0.05em;
+    }
+    .notion-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--color-border, #eee);
+    }
+    .notion-category {
+      background: var(--color-primary, #666);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 0;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    .notion-date {
+      color: #888;
+      font-size: 0.95rem;
+    }
+    .notion-body {
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: #333;
+      font-family: var(--font-base, sans-serif);
+    }
+    /* Simple rendering rules for textarea HTML preview */
+    .notion-body p { margin-bottom: 1.6em; }
+    .notion-body h2 { margin: 2.5em 0 1em; padding-bottom: 0.5em; border-bottom: 1px solid #eee; }
+    .notion-body img { max-width: 100%; height: auto; margin: 2em 0; }
+
+    /* Hide standard site header locally */
+    header.header { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- Admin Toolbar -->
+  <header class="admin-header">
+    <h1>ウイズささやま / お知らせ入稿画面 (Real-time Preview)</h1>
+    <button class="btn-save" id="btn-submit">記事を公開エリアへ保存</button>
+  </header>
+
+  <div class="admin-layout">
+    <!-- LEFT: Entry Form -->
+    <aside class="admin-pane-left">
+      <div class="form-group">
+        <label for="input-title">タイトル</label>
+        <input type="text" id="input-title" placeholder="例: 春の丹波篠山を巡るツアー開催" value="新しいお知らせ">
+      </div>
+
+      <div class="form-group">
+        <label for="input-date">公開日</label>
+        <input type="date" id="input-date">
+      </div>
+
+      <div class="form-group">
+        <label for="input-category">カテゴリー</label>
+        <select id="input-category">
+          <option value="お知らせ">お知らせ</option>
+          <option value="イベント">イベント</option>
+          <option value="レポート">レポート</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="input-image">アイキャッチ画像 (URL)</label>
+        <input type="text" id="input-image" placeholder="https://..." value="https://images.unsplash.com/photo-1596422846543-74c6e271ffd6?auto=format&fit=crop&w=1200&q=80">
+        <small style="display:block; margin-top:4px; color:#888;">※ 現状は外部画像URLを貼り付けてください。</small>
+      </div>
+
+      <div class="form-group">
+        <label for="input-body">本文 (HTML使用可)</label>
+        <textarea id="input-body" placeholder="<p>ここに本文を入力します。</p>"><p>ここに本文を入力します。</p></textarea>
+        <small style="display:block; margin-top:4px; color:#888;">※ &lt;h2&gt; や &lt;strong&gt;, &lt;img&gt;タグなどを記述できます。リアルタイムで右側に反映されます。</small>
+      </div>
+    </aside>
+
+    <!-- RIGHT: Live Preview -->
+    <main class="admin-pane-right">
+      <div class="preview-header">ライブプレビュー（実際の表示デザイン）</div>
+      
+      <div class="preview-container">
+        <article class="notion-card">
+          <div class="notion-cover">
+            <img id="preview-cover" src="" alt="アイキャッチ画像">
+          </div>
+          <div class="notion-content">
+            <h1 class="notion-title" id="preview-title"></h1>
+            <div class="notion-meta">
+              <span class="notion-category" id="preview-category"></span>
+              <span class="notion-date" id="preview-date"></span>
+            </div>
+            <div class="notion-body" id="preview-body"></div>
+          </div>
+        </article>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="/admin-news.js"></script>
+</body>
+</html>
