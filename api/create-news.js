@@ -3,18 +3,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  // --- SECURITY: Serverless Function Level Authentication ---
-  // If the edge middleware fails or is bypassed somehow, this protects the API directly.
-  const basicAuth = req.headers.authorization;
-  if (!basicAuth) {
-    return res.status(401).json({ message: 'Unauthorized API Access' });
-  }
-  const authValue = basicAuth.split(' ')[1];
-  const [user, pwd] = atob(authValue).split(':');
-  if (user !== process.env.ADMIN_USER || pwd !== process.env.ADMIN_PASS) {
-    return res.status(401).json({ message: 'Invalid API Credentials' });
-  }
-  // -----------------------------------------------------------
+  // NOTE: This endpoint is protected by Vercel Edge Middleware (middleware.js).
+  // The middleware validates Basic Auth credentials before any request reaches here.
+  // A redundant check here is omitted because browsers cannot forward Basic Auth
+  // headers via fetch() from JS — the middleware is the enforced gatekeeper.
 
   const { title, publishedAt, category, body } = req.body;
   

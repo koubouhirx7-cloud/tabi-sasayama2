@@ -133,8 +133,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       // call Vercel Serverless Function
+      // credentials:'same-origin' ensures browser forwards any stored auth context
       const res = await fetch('/api/create-news', {
         method: 'POST',
+        credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });

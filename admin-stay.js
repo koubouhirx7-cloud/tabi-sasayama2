@@ -202,8 +202,10 @@ document.addEventListener('DOMContentLoaded', () => {
     submitBtn.disabled = true;
 
     try {
+      // credentials:'same-origin' ensures browser forwards any stored auth context
       const res = await fetch('/api/create-stay', {
         method: 'POST',
+        credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
