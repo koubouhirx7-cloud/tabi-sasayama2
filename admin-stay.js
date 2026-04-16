@@ -371,4 +371,74 @@ document.addEventListener('DOMContentLoaded', async () => {
       submitBtn.disabled = false;
     }
   });
+
+  // --- Media Modal Logic ---
+  const btnOpenMediaMain = document.getElementById('btn-open-media-main');
+  const btnOpenMediaGallery = document.getElementById('btn-open-media-gallery');
+  const mediaModal = document.getElementById('media-modal');
+  const mediaModalClose = document.getElementById('media-modal-close');
+  const mediaModalBody = document.getElementById('media-modal-body');
+
+  let activeMediaTarget = null; // 'main' or 'gallery'
+
+  async function openMediaModal(target) {
+    activeMediaTarget = target;
+    mediaModal.style.display = 'flex';
+    mediaModalBody.innerHTML = '<div class="media-loading">画像一覧を取得中...</div>';
+    
+    try {
+      const res = await fetch('/api/get-media', { credentials: 'same-origin' });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.message || '取得エラー');
+      
+      const mediaList = json.data.media || [];
+      if (mediaList.length === 0) {
+        mediaModalBody.innerHTML = '<div class="media-loading">アップロードされた画像がありません。</div>';
+        return;
+      }
+      
+      const grid = document.createElement('div');
+      grid.className = 'media-grid';
+      mediaList.forEach(m => {
+        const item = document.createElement('div');
+        item.className = 'media-grid-item';
+        item.innerHTML = `<img src="${m.url}?w=300&h=300&fit=crop" loading="lazy" alt="Media">`;
+        item.addEventListener('click', () => {
+          if (activeMediaTarget === 'main') {
+            currentImageDataUrl = m.url;
+            p.thumbnail.src = currentImageDataUrl;
+            p.thumbnail.style.display = 'inline-block';
+            els.removeImgBtn.style.display = 'block';
+            els.eyecatchText.style.display = 'none';
+          } else if (activeMediaTarget === 'gallery') {
+            currentGalleryDataUrls.push(m.url);
+            const img = document.createElement('img');
+            img.src = m.url;
+            img.style.height = '60px';
+            img.style.objectFit = 'cover';
+            img.style.borderRadius = '4px';
+            els.galleryThumbnails.appendChild(img);
+          }
+          updatePreview();
+          mediaModal.style.display = 'none';
+        });
+        grid.appendChild(item);
+      });
+      
+      mediaModalBody.innerHTML = '';
+      mediaModalBody.appendChild(grid);
+    } catch (err) {
+      console.error(err);
+      mediaModalBody.innerHTML = `<div class="media-loading" style="color:red;">画像の読み込みに失敗しました: ${err.message}</div>`;
+    }
+  }
+
+  btnOpenMediaMain.addEventListener('click', (e) => { e.preventDefault(); openMediaModal('main'); });
+  btnOpenMediaGallery.addEventListener('click', (e) => { e.preventDefault(); openMediaModal('gallery'); });
+
+  mediaModalClose.addEventListener('click', () => mediaModal.style.display = 'none');
+  mediaModal.addEventListener('click', (e) => {
+    if (e.target === mediaModal) mediaModal.style.display = 'none';
+  });
+
 });

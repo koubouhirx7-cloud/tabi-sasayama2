@@ -286,4 +286,58 @@ document.addEventListener('DOMContentLoaded', async () => {
       submitBtn.disabled = false;
     }
   });
+
+  // --- Media Modal Logic ---
+  const btnOpenMedia = document.getElementById('btn-open-media');
+  const mediaModal = document.getElementById('media-modal');
+  const mediaModalClose = document.getElementById('media-modal-close');
+  const mediaModalBody = document.getElementById('media-modal-body');
+
+  btnOpenMedia.addEventListener('click', async (e) => {
+    e.preventDefault();
+    mediaModal.style.display = 'flex';
+    mediaModalBody.innerHTML = '<div class="media-loading">画像一覧を取得中...</div>';
+    
+    try {
+      const res = await fetch('/api/get-media', { credentials: 'same-origin' });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.message || '取得エラー');
+      
+      const mediaList = json.data.media || [];
+      if (mediaList.length === 0) {
+        mediaModalBody.innerHTML = '<div class="media-loading">アップロードされた画像がありません。</div>';
+        return;
+      }
+      
+      const grid = document.createElement('div');
+      grid.className = 'media-grid';
+      mediaList.forEach(m => {
+        const item = document.createElement('div');
+        item.className = 'media-grid-item';
+        item.innerHTML = `<img src="${m.url}?w=300&h=300&fit=crop" loading="lazy" alt="Media">`;
+        item.addEventListener('click', () => {
+          currentEyecatchDataUrl = m.url;
+          thumbnailPreview.src = currentEyecatchDataUrl;
+          thumbnailPreview.style.display = 'inline-block';
+          removeImgBtn.style.display = 'block';
+          eyecatchText.style.display = 'none';
+          updatePreview();
+          mediaModal.style.display = 'none';
+        });
+        grid.appendChild(item);
+      });
+      
+      mediaModalBody.innerHTML = '';
+      mediaModalBody.appendChild(grid);
+    } catch (err) {
+      console.error(err);
+      mediaModalBody.innerHTML = `<div class="media-loading" style="color:red;">画像の読み込みに失敗しました: ${err.message}</div>`;
+    }
+  });
+
+  mediaModalClose.addEventListener('click', () => mediaModal.style.display = 'none');
+  mediaModal.addEventListener('click', (e) => {
+    if (e.target === mediaModal) mediaModal.style.display = 'none';
+  });
+
 });
