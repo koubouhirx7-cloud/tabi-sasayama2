@@ -239,6 +239,15 @@
   <div class="admin-layout">
     <!-- LEFT: Entry Form -->
     <aside class="admin-pane-left">
+      <!-- 編集モードセレクター機能 -->
+      <div class="form-group" style="background: #f0f4ff; padding: 15px; border-radius: 8px; border: 1px dashed #a3bced;">
+        <label style="background: transparent; border: none; padding: 0; margin-bottom: 8px; color: #0056b3;">📝 既存の記事を編集する</label>
+        <select id="select-existing" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+          <option value="">-- ✨ 新規作成モード (選ぶと編集になります) --</option>
+        </select>
+        <small style="display:block; margin-top:5px; color:#555;">※記事を選ぶと自動的に内容がセットされます</small>
+      </div>
+
       <div class="form-group">
         <label for="input-title">タイトル</label>
         <input type="text" id="input-title" placeholder="例: 春の丹波篠山を巡るツアー開催" value="新しいお知らせ">

@@ -1,4 +1,6 @@
-document.addEventListener('DOMContentLoaded', () => {
+import { fetchAllNews, fetchNewsDetail } from './cms.js';
+
+document.addEventListener('DOMContentLoaded', async () => {
   // Elements: Inputs
   const titleInput = document.getElementById('input-title');
   const dateInput = document.getElementById('input-date');
@@ -60,6 +62,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const imagePreview = document.getElementById('preview-cover');
   const bodyPreview = document.getElementById('preview-body');
 
+  // Elements: Edit Mode
+  const selectExisting = document.getElementById('select-existing');
+  let currentEditId = null;
+
+  // Load Existing Articles for Edit Dropdown
+  try {
+    const existingList = await fetchAllNews(50); // Get recent 50
+    existingList.forEach(item => {
+      const option = document.createElement('option');
+      option.value = item.id;
+      const dateStr = item.publishedAt ? item.publishedAt.substring(0, 10).replace(/-/g, '.') : '';
+      option.textContent = `[${dateStr}] ${item.title}`;
+      selectExisting.appendChild(option);
+    });
+  } catch (err) {
+    console.warn('Failed to load existing news for edit selector', err);
+  }
+
   // Load today's date if empty
   if (!dateInput.value) {
     dateInput.value = new Date().toISOString().split('T')[0];
@@ -119,6 +139,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Submit button mock
   const submitBtn = document.getElementById('btn-submit');
+
+  // Handle Edit Selection
+  selectExisting.addEventListener('change', async (e) => {
+    const id = e.target.value;
+    if (!id) {
+      // Revert to Create Mode
+      currentEditId = null;
+      submitBtn.textContent = '記事を公開エリアへ保存';
+      titleInput.value = '';
+      dateInput.value = new Date().toISOString().split('T')[0];
+      quill.clipboard.dangerouslyPasteHTML('<p>ここに本文を入力します。</p>');
+      updatePreview();
+      return;
+    }
+
+    // Set to Edit Mode
+    selectExisting.disabled = true;
+    try {
+      const detail = await fetchNewsDetail(id);
+      if (detail) {
+        currentEditId = detail.id;
+        submitBtn.textContent = '編集内容を上書き保存する';
+        
+        titleInput.value = detail.title || '';
+        if (detail.publishedAt) dateInput.value = detail.publishedAt.split('T')[0];
+        if (detail.category && detail.category.length > 0) categoryInput.value = detail.category[0];
+        
+        quill.clipboard.dangerouslyPasteHTML(detail.body || '');
+        updatePreview();
+      }
+    } catch(err) {
+      alert('記事データの取得に失敗しました');
+    } finally {
+      selectExisting.disabled = false;
+    }
+  });
+
   submitBtn.addEventListener('click', async () => {
     const data = {
       title: titleInput.value,
@@ -128,14 +185,21 @@ document.addEventListener('DOMContentLoaded', () => {
       body: quill.root.innerHTML
     };
 
+    if (currentEditId) {
+      data.id = currentEditId;
+    }
+
     submitBtn.textContent = '保存中...';
     submitBtn.disabled = true;
 
     try {
       // call Vercel Serverless Function
       // credentials:'same-origin' ensures browser forwards any stored auth context
-      const res = await fetch('/api/create-news', {
-        method: 'POST',
+      const endpoint = currentEditId ? '/api/update-news' : '/api/create-news';
+      const method = currentEditId ? 'PATCH' : 'POST';
+
+      const res = await fetch(endpoint, {
+        method: method,
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -147,19 +211,21 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(resJson.message || '通信エラー');
       }
       
-      alert('記事が正常にmicroCMSへ公開保存されました！\n(※現在はシステム上画像のアップロード機能は除外して送信されています)');
+      alert(`記事が正常にmicroCMSへ${currentEditId ? '上書き保存' : '公開保存'}されました！\n(※現在はシステム上画像のアップロード機能は一部制限されています)`);
       console.log('Success:', resJson);
       
       // Reset form on success
-      titleInput.value = '';
-      quill.clipboard.dangerouslyPasteHTML('');
-      updatePreview();
+      if (!currentEditId) {
+        titleInput.value = '';
+        quill.clipboard.dangerouslyPasteHTML('');
+        updatePreview();
+      }
       
     } catch(err) {
       alert('エラーが発生しました: ' + err.message);
       console.error(err);
     } finally {
-      submitBtn.textContent = '記事を公開エリアへ保存';
+      submitBtn.textContent = currentEditId ? '編集内容を上書き保存する' : '記事を公開エリアへ保存';
       submitBtn.disabled = false;
     }
   });

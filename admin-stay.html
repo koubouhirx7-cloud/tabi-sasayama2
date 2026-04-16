@@ -163,6 +163,15 @@
 
   <div class="admin-layout">
     <aside class="admin-pane-left">
+      <!-- 編集モードセレクター機能 -->
+      <div class="form-group" style="background: #fff8e1; padding: 15px; border-radius: 8px; border: 1px dashed #ffd54f;">
+        <label style="background: transparent; border: none; padding: 0; margin-bottom: 8px; color: #f57c00;">📝 既存のプログラムを編集する</label>
+        <select id="select-existing" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+          <option value="">-- ✨ 新規作成モード (選ぶと編集になります) --</option>
+        </select>
+        <small style="display:block; margin-top:5px; color:#555;">※プログラムを選ぶと自動的に内容がセットされます</small>
+      </div>
+
       <div class="form-group">
         <label>タイトル（プログラム名）</label>
         <input type="text" id="input-title" value="里山古民家に滞在する特別な3日間">

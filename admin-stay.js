@@ -1,4 +1,6 @@
-document.addEventListener('DOMContentLoaded', () => {
+import { fetchStay, fetchStayDetail } from './cms.js';
+
+document.addEventListener('DOMContentLoaded', async () => {
   // Elements: Simple Inputs
   const els = {
     title: document.getElementById('input-title'),
@@ -180,10 +182,68 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // --- Initial Render ---
   updatePreview();
 
-  // Submit button
+  // --- Edit Mode Selector ---
+  const selectExisting = document.getElementById('select-existing');
+  let currentEditId = null;
   const submitBtn = document.getElementById('btn-submit');
+
+  try {
+    const existingList = await fetchStay(50); // Get up to 50 existing stays
+    existingList.forEach(item => {
+      const option = document.createElement('option');
+      option.value = item.id;
+      option.textContent = `[体験・滞在] ${item.title}`;
+      selectExisting.appendChild(option);
+    });
+  } catch(err) {
+    console.warn('Failed to load existing stays for selector', err);
+  }
+
+  selectExisting.addEventListener('change', async (e) => {
+    const id = e.target.value;
+    if (!id) {
+      currentEditId = null;
+      submitBtn.textContent = '保存する（新規公開）';
+      // simple reset
+      els.title.value = '';
+      els.subtitle.value = '';
+      updatePreview();
+      return;
+    }
+
+    selectExisting.disabled = true;
+    try {
+      const detail = await fetchStayDetail(id);
+      if (detail) {
+        currentEditId = detail.id;
+        submitBtn.textContent = '編集内容を上書き保存する';
+        
+        els.title.value = detail.title || '';
+        els.subtitle.value = detail.subtitle || '';
+        els.infoDates.value = detail.infoDates || '';
+        els.infoCapacity.value = detail.infoCapacity || '';
+        els.infoDecision.value = detail.infoDecision || '';
+        
+        editors.about.clipboard.dangerouslyPasteHTML(detail.aboutBody || '');
+        editors.schedule.clipboard.dangerouslyPasteHTML(detail.scheduleBody || '');
+        editors.includes.clipboard.dangerouslyPasteHTML(detail.includesBody || '');
+        editors.price.clipboard.dangerouslyPasteHTML(detail.infoPrice || '');
+        editors.cancel.clipboard.dangerouslyPasteHTML(detail.infoCancel || '');
+        
+        updatePreview();
+      }
+    } catch(err) {
+      alert('プログラムデータの取得に失敗しました');
+    } finally {
+      selectExisting.disabled = false;
+    }
+  });
+
+
+  // --- Submit button ---
   submitBtn.addEventListener('click', async () => {
     const data = {
       title: els.title.value,
@@ -198,13 +258,20 @@ document.addEventListener('DOMContentLoaded', () => {
       infoCancel: editors.cancel.root.innerHTML
     };
 
+    if (currentEditId) {
+      data.id = currentEditId;
+    }
+
     submitBtn.textContent = '保存中...';
     submitBtn.disabled = true;
 
     try {
+      const endpoint = currentEditId ? '/api/update-stay' : '/api/create-stay';
+      const method = currentEditId ? 'PATCH' : 'POST';
+
       // credentials:'same-origin' ensures browser forwards any stored auth context
-      const res = await fetch('/api/create-stay', {
-        method: 'POST',
+      const res = await fetch(endpoint, {
+        method: method,
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -215,13 +282,13 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(resJson.message || '通信エラー');
       }
       
-      alert('プログラムが正常にmicroCMSへ公開保存されました！');
+      alert(`プログラムが正常にmicroCMSへ${currentEditId ? '上書き保存' : '公開保存'}されました！`);
       console.log('Success:', resJson);
     } catch(err) {
       alert('エラーが発生しました: ' + err.message);
       console.error(err);
     } finally {
-      submitBtn.textContent = '保存する（デモ）';
+      submitBtn.textContent = currentEditId ? '編集内容を上書き保存する' : '保存する（新規公開）';
       submitBtn.disabled = false;
     }
   });
