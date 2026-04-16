@@ -1,16 +1,42 @@
 // cms.js - microCMSからデータを取得するためのモジュール
 const domain = import.meta.env.VITE_MICROCMS_SERVICE_DOMAIN;
-const apiKey = import.meta.env.VITE_MICROCMS_API_KEY;
+// ローカルでのVite開発中のみ使用するフォールバックキー（本番ではVercelのプロキシAPIを使用する）
+const localDevApiKey = import.meta.env.VITE_MICROCMS_API_KEY;
+
+/**
+ * 統合データ取得ヘルパー
+ * 本番環境(Vercel等)ではAPIキーを隠蔽するためにバックエンドのプロキシを経由し、
+ * ローカル開発環境(Vite)では直接microCMSを叩く設計にしています。
+ */
+async function fetchFromMicroCMS(endpoint, id = null, params = {}) {
+  // ローカル開発用 (npm run dev の状態)
+  if (import.meta.env.DEV && localDevApiKey) {
+    let url = `https://${domain}.microcms.io/api/v1/${endpoint}`;
+    if (id) url += `/${id}`;
+    const search = new URLSearchParams(params).toString();
+    if (search) url += `?${search}`;
+    
+    const res = await fetch(url, { headers: { 'X-MICROCMS-API-KEY': localDevApiKey} });
+    if (!res.ok) throw new Error(`API Error: ${res.status}`);
+    return await res.json();
+  }
+  
+  // 本番用 (Vercel Serverless Proxy経由で安全に取得)
+  let url = `/api/get-content?endpoint=${endpoint}`;
+  if (id) url += `&id=${id}`;
+  for (const [k, v] of Object.entries(params)) {
+    if (v !== undefined && v !== null) url += `&${k}=${v}`;
+  }
+  
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Proxy Error: ${res.status}`);
+  return await res.json();
+}
 
 export async function fetchNews(limit = 3) {
-  if (!domain || !apiKey) return [];
   try {
-    const res = await fetch(`https://${domain}.microcms.io/api/v1/news?limit=${limit}`, {
-      headers: { 'X-MICROCMS-API-KEY': apiKey }
-    });
-    if (!res.ok) throw new Error('API Error');
-    const data = await res.json();
-    return data.contents;
+    const data = await fetchFromMicroCMS('news', null, { limit });
+    return data.contents || [];
   } catch (error) {
     console.error('ニュース取得エラー:', error);
     return [];
@@ -18,14 +44,9 @@ export async function fetchNews(limit = 3) {
 }
 
 export async function fetchStay(limit = 6) {
-  if (!domain || !apiKey) return [];
   try {
-    const res = await fetch(`https://${domain}.microcms.io/api/v1/stay?limit=${limit}`, {
-      headers: { 'X-MICROCMS-API-KEY': apiKey }
-    });
-    if (!res.ok) throw new Error('API Error');
-    const data = await res.json();
-    return data.contents;
+    const data = await fetchFromMicroCMS('stay', null, { limit });
+    return data.contents || [];
   } catch (error) {
     console.error('STAY取得エラー:', error);
     return [];
@@ -33,20 +54,9 @@ export async function fetchStay(limit = 6) {
 }
 
 export async function fetchStayDetail(id, draftKey = null) {
-  if (!domain || !apiKey || !id) return null;
   try {
-    const url = draftKey 
-      ? `https://${domain}.microcms.io/api/v1/stay/${id}?draftKey=${draftKey}`
-      : `https://${domain}.microcms.io/api/v1/stay/${id}`;
-      
-    const res = await fetch(url, {
-      headers: { 'X-MICROCMS-API-KEY': apiKey }
-    });
-    if (!res.ok) {
-      if (res.status === 404) return null; // 記事が見つからない場合
-      throw new Error(`API Error: ${res.status}`);
-    }
-    return await res.json();
+    const params = draftKey ? { draftKey } : {};
+    return await fetchFromMicroCMS('stay', id, params);
   } catch (error) {
     console.error(`STAY詳細(${id})取得エラー:`, error);
     return null;
@@ -54,14 +64,9 @@ export async function fetchStayDetail(id, draftKey = null) {
 }
 
 export async function fetchAllNews(limit = 100) {
-  if (!domain || !apiKey) return [];
   try {
-    const res = await fetch(`https://${domain}.microcms.io/api/v1/news?limit=${limit}`, {
-      headers: { 'X-MICROCMS-API-KEY': apiKey }
-    });
-    if (!res.ok) throw new Error('API Error');
-    const data = await res.json();
-    return data.contents;
+    const data = await fetchFromMicroCMS('news', null, { limit });
+    return data.contents || [];
   } catch (error) {
     console.error('ニュース一括取得エラー:', error);
     return [];
@@ -69,18 +74,9 @@ export async function fetchAllNews(limit = 100) {
 }
 
 export async function fetchNewsDetail(id, draftKey = null) {
-  if (!domain || !apiKey || !id) return null;
   try {
-    const url = draftKey 
-      ? `https://${domain}.microcms.io/api/v1/news/${id}?draftKey=${draftKey}`
-      : `https://${domain}.microcms.io/api/v1/news/${id}`;
-
-    const res = await fetch(url, {
-      headers: { 'X-MICROCMS-API-KEY': apiKey }
-    });
-    if (!res.ok) throw new Error('API Error');
-    const data = await res.json();
-    return data;
+    const params = draftKey ? { draftKey } : {};
+    return await fetchFromMicroCMS('news', id, params);
   } catch (error) {
     console.error('ニュース詳細取得エラー:', error);
     return null;
@@ -89,14 +85,9 @@ export async function fetchNewsDetail(id, draftKey = null) {
 
 // Download情報を取得 (外部PDFアップロードリスト)
 export async function fetchDownloads(limit = 100) {
-  if (!domain || !apiKey) return [];
   try {
-    const res = await fetch(`https://${domain}.microcms.io/api/v1/downloads?limit=${limit}`, {
-      headers: { 'X-MICROCMS-API-KEY': apiKey }
-    });
-    if (!res.ok) throw new Error('API Error');
-    const data = await res.json();
-    return data.contents;
+    const data = await fetchFromMicroCMS('downloads', null, { limit });
+    return data.contents || [];
   } catch (error) {
     console.error('Download取得エラー:', error);
     return [];

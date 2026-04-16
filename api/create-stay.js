@@ -12,10 +12,10 @@ export default async function handler(req, res) {
   
   // Use a strictly SEPARATE variable for the write key to prevent frontend exposure
   const domain = process.env.VITE_MICROCMS_SERVICE_DOMAIN || process.env.MICROCMS_SERVICE_DOMAIN;
-  const writeApiKey = process.env.MICROCMS_WRITE_API_KEY;
+  const writeApiKey = process.env.MICROCMS_API_KEY;
 
   if (!domain || !writeApiKey) {
-    return res.status(500).json({ message: 'サーバーに環境変数(MICROCMS_WRITE_API_KEY)が設定されていません。' });
+    return res.status(500).json({ message: 'サーバーに環境変数(MICROCMS_API_KEY)が設定されていません。' });
   }
 
   try {
