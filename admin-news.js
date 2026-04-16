@@ -200,6 +200,37 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Submit button mock
   const submitBtn = document.getElementById('btn-submit');
+  const unpublishBtn = document.getElementById('btn-unpublish');
+
+  if (unpublishBtn) {
+    unpublishBtn.addEventListener('click', async () => {
+      if (!currentEditId) return;
+      if (!confirm('本当にこの記事の公開を停止して下書きに戻しますか？\n（サイト上から非表示になります）')) return;
+
+      const originalText = unpublishBtn.textContent;
+      unpublishBtn.textContent = '処理中...';
+      unpublishBtn.disabled = true;
+
+      try {
+        const res = await fetch('/api/unpublish', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ endpoint: 'news', id: currentEditId })
+        });
+        const resJson = await res.json();
+        
+        if (!res.ok) throw new Error(resJson.message || '通信エラー');
+        
+        alert('公開を停止しました。下書き状態に戻りました。');
+        window.location.reload();
+      } catch (err) {
+        alert('管理用APIキーが未設定か、エラーが発生しました:\n' + err.message);
+      } finally {
+        unpublishBtn.textContent = originalText;
+        unpublishBtn.disabled = false;
+      }
+    });
+  }
 
   // Handle Edit Selection
   selectExisting.addEventListener('change', async (e) => {
@@ -212,8 +243,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       dateInput.value = new Date().toISOString().split('T')[0];
       currentEyecatchDataUrl = '';
       thumbnailPreview.style.display = 'none';
+      thumbnailPreview.style.display = 'none';
       removeImgBtn.style.display = 'none';
       eyecatchText.style.display = 'block';
+      if (unpublishBtn) unpublishBtn.style.display = 'none';
 
       quill.clipboard.dangerouslyPasteHTML('<p>ここに本文を入力します。</p>');
       updatePreview();
@@ -231,6 +264,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         titleInput.value = detail.title || '';
         if (detail.publishedAt) dateInput.value = detail.publishedAt.split('T')[0];
         if (detail.category && detail.category.length > 0) categoryInput.value = detail.category[0];
+        
+        if (unpublishBtn) {
+          unpublishBtn.style.display = detail.publishedAt ? 'block' : 'none';
+        }
         
         if (detail.eyecatch && detail.eyecatch.url) {
           currentEyecatchDataUrl = detail.eyecatch.url;

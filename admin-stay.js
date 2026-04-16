@@ -300,6 +300,37 @@ document.addEventListener('DOMContentLoaded', async () => {
   const selectExisting = document.getElementById('select-existing');
   let currentEditId = null;
   const submitBtn = document.getElementById('btn-submit');
+  const unpublishBtn = document.getElementById('btn-unpublish');
+
+  if (unpublishBtn) {
+    unpublishBtn.addEventListener('click', async () => {
+      if (!currentEditId) return;
+      if (!confirm('本当にこのプログラムの公開を停止して下書きに戻しますか？\n（サイト上から非表示になります）')) return;
+
+      const originalText = unpublishBtn.textContent;
+      unpublishBtn.textContent = '処理中...';
+      unpublishBtn.disabled = true;
+
+      try {
+        const res = await fetch('/api/unpublish', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ endpoint: 'stay', id: currentEditId })
+        });
+        const resJson = await res.json();
+        
+        if (!res.ok) throw new Error(resJson.message || '通信エラー');
+        
+        alert('公開を停止しました。下書き状態に戻りました。');
+        window.location.reload();
+      } catch (err) {
+        alert('管理用APIキーが未設定か、エラーが発生しました:\n' + err.message);
+      } finally {
+        unpublishBtn.textContent = originalText;
+        unpublishBtn.disabled = false;
+      }
+    });
+  }
 
   try {
     const existingList = await fetchStay(50); // Get up to 50 existing stays
@@ -326,6 +357,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       p.thumbnail.style.display = 'none';
       els.removeImgBtn.style.display = 'none';
       els.eyecatchText.style.display = 'block';
+      if (unpublishBtn) unpublishBtn.style.display = 'none';
       currentGalleryDataUrls = [];
       els.galleryThumbnails.innerHTML = '';
       
@@ -345,6 +377,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         els.infoDates.value = detail.infoDates || '';
         els.infoCapacity.value = detail.infoCapacity || '';
         els.infoDecision.value = detail.infoDecision || '';
+        
+        if (unpublishBtn) {
+          unpublishBtn.style.display = detail.publishedAt ? 'block' : 'none';
+        }
         
         if (detail.image && detail.image.url) {
           currentImageDataUrl = detail.image.url;
