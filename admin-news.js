@@ -132,17 +132,30 @@ document.addEventListener('DOMContentLoaded', () => {
     submitBtn.disabled = true;
 
     try {
-      // In Phase 2, this will hit our secure Vercel API
-      // const res = await fetch('/api/create-news', { ... })
+      // call Vercel Serverless Function
+      const res = await fetch('/api/create-news', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
       
-      console.log('Publish Data Payload:', data);
+      const resJson = await res.json();
       
-      // Simulate network request
-      await new Promise(r => setTimeout(r, 1000));
+      if (!res.ok) {
+        throw new Error(resJson.message || '通信エラー');
+      }
       
-      alert('記事が保存されました！（※現在はUIプレビュー版のため実際には送信されていません。Phase 2でAPI連携を行います）');
+      alert('記事が正常にmicroCMSへ公開保存されました！\n(※現在はシステム上画像のアップロード機能は除外して送信されています)');
+      console.log('Success:', resJson);
+      
+      // Reset form on success
+      titleInput.value = '';
+      quill.clipboard.dangerouslyPasteHTML('');
+      updatePreview();
+      
     } catch(err) {
       alert('エラーが発生しました: ' + err.message);
+      console.error(err);
     } finally {
       submitBtn.textContent = '記事を公開エリアへ保存';
       submitBtn.disabled = false;

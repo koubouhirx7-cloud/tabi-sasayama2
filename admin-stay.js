@@ -182,9 +182,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
   updatePreview();
 
-  // Submit button mock
+  // Submit button
   const submitBtn = document.getElementById('btn-submit');
-  submitBtn.addEventListener('click', () => {
-    alert('保存処理が走ります！(現在はUI確認用のデモ版です)');
+  submitBtn.addEventListener('click', async () => {
+    const data = {
+      title: els.title.value,
+      subtitle: els.subtitle.value,
+      infoDates: els.infoDates.value,
+      infoCapacity: els.infoCapacity.value,
+      infoDecision: els.infoDecision.value,
+      aboutBody: editors.about.root.innerHTML,
+      scheduleBody: editors.schedule.root.innerHTML,
+      includesBody: editors.includes.root.innerHTML,
+      infoPrice: editors.price.root.innerHTML,
+      infoCancel: editors.cancel.root.innerHTML
+    };
+
+    submitBtn.textContent = '保存中...';
+    submitBtn.disabled = true;
+
+    try {
+      const res = await fetch('/api/create-stay', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      
+      const resJson = await res.json();
+      if (!res.ok) {
+        throw new Error(resJson.message || '通信エラー');
+      }
+      
+      alert('プログラムが正常にmicroCMSへ公開保存されました！');
+      console.log('Success:', resJson);
+    } catch(err) {
+      alert('エラーが発生しました: ' + err.message);
+      console.error(err);
+    } finally {
+      submitBtn.textContent = '保存する（デモ）';
+      submitBtn.disabled = false;
+    }
   });
 });
