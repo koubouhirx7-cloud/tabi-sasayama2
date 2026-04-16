@@ -28,11 +28,18 @@ export default function middleware(request) {
       }
     }
 
+    // --- 6 Hour Session Timeout Logic ---
+    // Generate a new Basic Auth Realm name every 6 hours.
+    // When the realm name changes, the browser automatically discards the cached password
+    // and forces the user to log in again.
+    const TIME_INTERVAL = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
+    const currentSessionBlock = Math.floor(Date.now() / TIME_INTERVAL);
+
     // Require Auth
     return new Response('Basic Auth required', {
       status: 401,
       headers: {
-        'WWW-Authenticate': 'Basic realm="Secure Admin Area"'
+        'WWW-Authenticate': `Basic realm="Secure Admin Area (Session ${currentSessionBlock})"`
       }
     });
   }
