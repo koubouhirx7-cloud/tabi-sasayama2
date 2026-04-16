@@ -1,10 +1,9 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // Elements: Inputs
-  const titleInput = document.getElementById('input-title');
   const dateInput = document.getElementById('input-date');
   const categoryInput = document.getElementById('input-category');
   const imageInput = document.getElementById('input-image');
   const thumbnailPreview = document.getElementById('eyecatch-thumbnail');
+  const removeImgBtn = document.getElementById('btn-remove-image');
+  const eyecatchText = document.getElementById('eyecatch-text');
 
   // Initialize Quill Editor
   const quill = new Quill('#editor-container', {
@@ -82,11 +81,25 @@ document.addEventListener('DOMContentLoaded', () => {
       reader.onload = (event) => {
         currentEyecatchDataUrl = event.target.result;
         thumbnailPreview.src = currentEyecatchDataUrl;
-        thumbnailPreview.style.display = 'block';
+        thumbnailPreview.style.display = 'inline-block';
+        removeImgBtn.style.display = 'block';
+        eyecatchText.style.display = 'none';
         updatePreview();
       };
       reader.readAsDataURL(file);
     }
+  });
+
+  // Handle Image Removal
+  removeImgBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation(); // prevent file input click
+    currentEyecatchDataUrl = '';
+    imageInput.value = '';
+    thumbnailPreview.style.display = 'none';
+    removeImgBtn.style.display = 'none';
+    eyecatchText.style.display = 'block';
+    updatePreview();
   });
 
   // Attach event listeners for real-time reactivity

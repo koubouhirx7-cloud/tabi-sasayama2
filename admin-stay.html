@@ -98,6 +98,16 @@
     .image-preview-thumbnail {
       max-width: 100%; max-height: 150px; margin-top: 10px; display: none; border-radius: 4px;
     }
+    .btn-remove-image {
+      position: absolute;
+      top: 5px; right: 5px;
+      background: rgba(255,0,0,0.8); color: white;
+      border: none; border-radius: 50%;
+      width: 24px; height: 24px;
+      cursor: pointer; display: none; z-index: 10;
+      font-size: 12px; font-weight: bold;
+    }
+    .btn-remove-image:hover { background: red; }
     .ql-toolbar { border-radius: 4px 4px 0 0; background: #fafafa; }
     .ql-container {
       border-radius: 0 0 4px 4px;
@@ -164,9 +174,10 @@
       <div class="form-group">
         <label>メイン画像</label>
         <div class="image-upload-zone">
-          <span style="color: #666; font-size: 0.9rem;">クリックまたはドラッグ＆ドロップ</span>
+          <span id="eyecatch-text" style="color: #666; font-size: 0.9rem;">クリックまたはドラッグ＆ドロップ</span>
           <input type="file" id="input-image" accept="image/*">
           <img src="" class="image-preview-thumbnail" id="preview-thumbnail">
+          <button class="btn-remove-image" id="btn-remove-image" aria-label="画像を削除" title="画像を削除">×</button>
         </div>
       </div>
       

@@ -6,7 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     infoDates: document.getElementById('input-info-dates'),
     infoCapacity: document.getElementById('input-info-capacity'),
     infoDecision: document.getElementById('input-info-decision'),
-    imageInput: document.getElementById('input-image')
+    imageInput: document.getElementById('input-image'),
+    removeImgBtn: document.getElementById('btn-remove-image'),
+    eyecatchText: document.getElementById('eyecatch-text')
   };
 
   // Elements: Previews
@@ -116,11 +118,25 @@ document.addEventListener('DOMContentLoaded', () => {
       reader.onload = (event) => {
         currentImageDataUrl = event.target.result;
         p.thumbnail.src = currentImageDataUrl;
-        p.thumbnail.style.display = 'block';
+        p.thumbnail.style.display = 'inline-block';
+        els.removeImgBtn.style.display = 'block';
+        els.eyecatchText.style.display = 'none';
         updatePreview();
       };
       reader.readAsDataURL(file);
     }
+  });
+
+  // Handle Image Removal
+  els.removeImgBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation(); // prevent file input click
+    currentImageDataUrl = '';
+    els.imageInput.value = '';
+    p.thumbnail.style.display = 'none';
+    els.removeImgBtn.style.display = 'none';
+    els.eyecatchText.style.display = 'block';
+    updatePreview();
   });
 
   updatePreview();
