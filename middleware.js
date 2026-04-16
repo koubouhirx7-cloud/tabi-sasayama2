@@ -1,11 +1,11 @@
 export const config = {
-  matcher: '/admin-(.*)'
+  matcher: ['/admin-(.*)', '/api/create-(.*)']
 };
 
 export default function middleware(request) {
-  // Only apply to paths starting with /admin-
+  // Apply to both admin pages and API endpoints
   const url = new URL(request.url);
-  if (url.pathname.startsWith('/admin-')) {
+  if (url.pathname.startsWith('/admin-') || url.pathname.startsWith('/api/create-')) {
     const basicAuth = request.headers.get('authorization');
 
     if (basicAuth) {
