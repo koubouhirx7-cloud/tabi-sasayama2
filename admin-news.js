@@ -15,14 +15,41 @@ document.addEventListener('DOMContentLoaded', async () => {
     theme: 'snow',
     placeholder: 'ここに本文を入力します...',
     modules: {
-      toolbar: [
-        [{ 'header': [2, 3, false] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ 'color': [] }, { 'background': [] }],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        ['link', 'image', 'video'],
-        ['clean']
-      ]
+      toolbar: {
+        container: [
+          [{ 'header': [2, 3, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          ['link', 'image', 'video'],
+          ['clean']
+        ],
+        handlers: {
+          image: function() {
+            const quillInstance = this.quill;
+            const input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/png, image/jpeg, image/webp');
+            input.click();
+            input.onchange = async () => {
+              const file = input.files[0];
+              if (!file) return;
+              try {
+                const range = quillInstance.getSelection(true);
+                quillInstance.insertText(range.index, '🚀 画像をアップロード中...', 'color', 'blue');
+                
+                const dataUrl = await compressImage(file, 1200, 0.8);
+                const realUrl = await uploadMediaIfBase64(dataUrl, file.name);
+                
+                quillInstance.deleteText(range.index, 17);
+                quillInstance.insertEmbed(range.index, 'image', realUrl);
+              } catch(e) {
+                alert('画像のアップロードに失敗しました: ' + e.message);
+              }
+            };
+          }
+        }
+      }
     }
   });
 
@@ -289,12 +316,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // --- Media Modal Logic ---
   const btnOpenMedia = document.getElementById('btn-open-media');
+  const btnOpenMediaQuill = document.getElementById('btn-open-media-quill');
   const mediaModal = document.getElementById('media-modal');
   const mediaModalClose = document.getElementById('media-modal-close');
   const mediaModalBody = document.getElementById('media-modal-body');
 
-  btnOpenMedia.addEventListener('click', async (e) => {
-    e.preventDefault();
+  let activeMediaTarget = null; // 'eyecatch' or 'quill'
+
+  async function openMediaModal(target) {
+    activeMediaTarget = target;
     mediaModal.style.display = 'flex';
     mediaModalBody.innerHTML = '<div class="media-loading">画像一覧を取得中...</div>';
     
@@ -316,11 +346,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         item.className = 'media-grid-item';
         item.innerHTML = `<img src="${m.url}?w=300&h=300&fit=crop" loading="lazy" alt="Media">`;
         item.addEventListener('click', () => {
-          currentEyecatchDataUrl = m.url;
-          thumbnailPreview.src = currentEyecatchDataUrl;
-          thumbnailPreview.style.display = 'inline-block';
-          removeImgBtn.style.display = 'block';
-          eyecatchText.style.display = 'none';
+          if (activeMediaTarget === 'eyecatch') {
+            currentEyecatchDataUrl = m.url;
+            thumbnailPreview.src = currentEyecatchDataUrl;
+            thumbnailPreview.style.display = 'inline-block';
+            removeImgBtn.style.display = 'block';
+            eyecatchText.style.display = 'none';
+          } else if (activeMediaTarget === 'quill') {
+            const range = quill.getSelection(true);
+            quill.insertEmbed(range.index, 'image', m.url);
+          }
           updatePreview();
           mediaModal.style.display = 'none';
         });
@@ -333,7 +368,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error(err);
       mediaModalBody.innerHTML = `<div class="media-loading" style="color:red;">画像の読み込みに失敗しました: ${err.message}</div>`;
     }
-  });
+  }
+
+  btnOpenMedia.addEventListener('click', (e) => { e.preventDefault(); openMediaModal('eyecatch'); });
+  if (btnOpenMediaQuill) btnOpenMediaQuill.addEventListener('click', (e) => { e.preventDefault(); openMediaModal('quill'); });
 
   mediaModalClose.addEventListener('click', () => mediaModal.style.display = 'none');
   mediaModal.addEventListener('click', (e) => {

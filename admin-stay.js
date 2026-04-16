@@ -35,13 +35,43 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Setup multiple Quill Editors
   const editorConfig = {
     theme: 'snow',
+    placeholder: 'ここに入力...',
     modules: {
-      toolbar: [
-        [{ 'header': [2, 3, false] }],
-        ['bold', 'italic'],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        ['link', 'clean']
-      ]
+      toolbar: {
+        container: [
+          [{ 'header': [2, 3, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          ['link', 'image', 'video'],
+          ['clean']
+        ],
+        handlers: {
+          image: function() {
+            const quillInstance = this.quill;
+            const input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/png, image/jpeg, image/webp');
+            input.click();
+            input.onchange = async () => {
+              const file = input.files[0];
+              if (!file) return;
+              try {
+                const range = quillInstance.getSelection(true);
+                quillInstance.insertText(range.index, '🚀 画像をアップロード中...', 'color', 'blue');
+                
+                const dataUrl = await compressImage(file, 1200, 0.8);
+                const realUrl = await uploadMediaIfBase64(dataUrl, file.name);
+                
+                quillInstance.deleteText(range.index, 17);
+                quillInstance.insertEmbed(range.index, 'image', realUrl);
+              } catch(e) {
+                alert('画像のアップロードに失敗しました: ' + e.message);
+              }
+            };
+          }
+        }
+      }
     }
   };
 
@@ -375,16 +405,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   // --- Media Modal Logic ---
   const btnOpenMediaMain = document.getElementById('btn-open-media-main');
   const btnOpenMediaGallery = document.getElementById('btn-open-media-gallery');
+  const btnsOpenMediaQuill = document.querySelectorAll('.btn-open-media-quill');
   const mediaModal = document.getElementById('media-modal');
   const mediaModalClose = document.getElementById('media-modal-close');
   const mediaModalBody = document.getElementById('media-modal-body');
 
-  let activeMediaTarget = null; // 'main' or 'gallery'
+  let activeMediaTarget = null; // 'main', 'gallery', or editor name ('about')
 
   async function openMediaModal(target) {
     activeMediaTarget = target;
     mediaModal.style.display = 'flex';
     mediaModalBody.innerHTML = '<div class="media-loading">画像一覧を取得中...</div>';
+    
+    // fetch logic is already higher above so we don't need to replace it here... wait!
+    // I am doing endline 444 so let's preserve everything correctly down to btn assignments.
+
     
     try {
       const res = await fetch('/api/get-media', { credentials: 'same-origin' });
@@ -418,6 +453,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             img.style.objectFit = 'cover';
             img.style.borderRadius = '4px';
             els.galleryThumbnails.appendChild(img);
+          } else {
+            // Quill editor target (about, schedule, includes, price, cancel)
+            const quillEditor = editors[activeMediaTarget];
+            if (quillEditor) {
+              const range = quillEditor.getSelection(true);
+              quillEditor.insertEmbed(range.index, 'image', m.url);
+            }
           }
           updatePreview();
           mediaModal.style.display = 'none';
@@ -435,6 +477,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   btnOpenMediaMain.addEventListener('click', (e) => { e.preventDefault(); openMediaModal('main'); });
   btnOpenMediaGallery.addEventListener('click', (e) => { e.preventDefault(); openMediaModal('gallery'); });
+  btnsOpenMediaQuill.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openMediaModal(btn.getAttribute('data-target'));
+    });
+  });
 
   mediaModalClose.addEventListener('click', () => mediaModal.style.display = 'none');
   mediaModal.addEventListener('click', (e) => {
