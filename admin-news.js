@@ -85,6 +85,42 @@ document.addEventListener('DOMContentLoaded', async () => {
     dateInput.value = new Date().toISOString().split('T')[0];
   }
 
+  // Utility: Image Compression
+  function compressImage(file, maxSize = 1200, quality = 0.8) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > maxSize || height > maxSize) {
+            if (width > height) { height = Math.round(height * maxSize / width); width = maxSize; } 
+            else { width = Math.round(width * maxSize / height); height = maxSize; }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width; canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Utility: Media Upload Proxy
+  async function uploadMediaIfBase64(dataUrl, filename) {
+    if (!dataUrl || !dataUrl.startsWith('data:image')) return dataUrl; // return as is if empty or absolute URL
+    const res = await fetch('/api/upload-media', {
+      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageBase64: dataUrl, filename })
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.message || '画像アップロードに失敗しました');
+    return json.data.url; 
+  }
+
   // Update logic
   function updatePreview() {
     titlePreview.textContent = titleInput.value || 'タイトル未入力';
@@ -97,19 +133,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Handle Visual Image Upload (Eyecatch)
-  imageInput.addEventListener('change', (e) => {
+  imageInput.addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        currentEyecatchDataUrl = event.target.result;
-        thumbnailPreview.src = currentEyecatchDataUrl;
-        thumbnailPreview.style.display = 'inline-block';
-        removeImgBtn.style.display = 'block';
-        eyecatchText.style.display = 'none';
-        updatePreview();
-      };
-      reader.readAsDataURL(file);
+      eyecatchText.textContent = '圧縮処理中...';
+      currentEyecatchDataUrl = await compressImage(file);
+      thumbnailPreview.src = currentEyecatchDataUrl;
+      thumbnailPreview.style.display = 'inline-block';
+      removeImgBtn.style.display = 'block';
+      eyecatchText.style.display = 'none';
+      updatePreview();
     }
   });
 
@@ -177,23 +210,29 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   submitBtn.addEventListener('click', async () => {
-    const data = {
-      title: titleInput.value,
-      publishedAt: new Date(dateInput.value).toISOString(),
-      category: [categoryInput.value],
-      eyecatch: currentEyecatchDataUrl, // In Phase 2, this will be uploaded to microCMS media first
-      body: quill.root.innerHTML
-    };
-
-    if (currentEditId) {
-      data.id = currentEditId;
-    }
-
-    submitBtn.textContent = '保存中...';
+    submitBtn.textContent = '画像をサーバーへ保存中...';
     submitBtn.disabled = true;
 
     try {
-      // call Vercel Serverless Function
+      // 1. Upload Images to MicroCMS Media API if needed
+      const realEyecatchUrl = await uploadMediaIfBase64(currentEyecatchDataUrl, 'news-eyecatch.jpg');
+
+      // 2. Prepare payload
+      const data = {
+        title: titleInput.value,
+        publishedAt: new Date(dateInput.value).toISOString(),
+        category: [categoryInput.value],
+        eyecatch: realEyecatchUrl,
+        body: quill.root.innerHTML
+      };
+
+      if (currentEditId) {
+        data.id = currentEditId;
+      }
+
+      submitBtn.textContent = 'データ保存中...';
+
+      // 3. call Vercel Serverless Function
       // credentials:'same-origin' ensures browser forwards any stored auth context
       const endpoint = currentEditId ? '/api/update-news' : '/api/create-news';
       const method = currentEditId ? 'PATCH' : 'POST';

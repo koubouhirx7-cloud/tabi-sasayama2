@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   // A redundant check here is omitted because browsers cannot forward Basic Auth
   // headers via fetch() from JS — the middleware is the enforced gatekeeper.
 
-  const { title, publishedAt, category, body } = req.body;
+  const { title, publishedAt, category, eyecatch, body } = req.body;
   
   // Use a strictly SEPARATE variable for the write key to prevent frontend exposure
   const domain = process.env.VITE_MICROCMS_SERVICE_DOMAIN || process.env.MICROCMS_SERVICE_DOMAIN;
@@ -18,11 +18,12 @@ export default async function handler(req, res) {
     return res.status(500).json({ message: 'サーバーに環境変数(MICROCMS_API_KEY)が設定されていません。' });
   }
 
-  // microCMSに送信するペイロード (Media画像の直接POSTはManagement APIが必須なため一時的に除外しています)
+  // microCMSに送信するペイロード
   const payload = {
     title,
     publishedAt,
     category,
+    eyecatch,
     body
   };
 

@@ -87,6 +87,42 @@ document.addEventListener('DOMContentLoaded', async () => {
     quill.clipboard.addMatcher(Node.TEXT_NODE, matcher);
   });
 
+  // Utility: Image Compression
+  function compressImage(file, maxSize = 1200, quality = 0.8) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > maxSize || height > maxSize) {
+            if (width > height) { height = Math.round(height * maxSize / width); width = maxSize; } 
+            else { width = Math.round(width * maxSize / height); height = maxSize; }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width; canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Utility: Media Upload Proxy
+  async function uploadMediaIfBase64(dataUrl, filename) {
+    if (!dataUrl || !dataUrl.startsWith('data:image')) return dataUrl;
+    const res = await fetch('/api/upload-media', {
+      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageBase64: dataUrl, filename })
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.message || '画像アップロードに失敗しました');
+    return json.data.url; 
+  }
+
   let currentImageDataUrl = '';
   let currentGalleryDataUrls = [];
 
@@ -126,19 +162,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // Image Upload
-  els.imageInput.addEventListener('change', (e) => {
+  els.imageInput.addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        currentImageDataUrl = event.target.result;
-        p.thumbnail.src = currentImageDataUrl;
-        p.thumbnail.style.display = 'inline-block';
-        els.removeImgBtn.style.display = 'block';
-        els.eyecatchText.style.display = 'none';
-        updatePreview();
-      };
-      reader.readAsDataURL(file);
+      els.eyecatchText.textContent = '圧縮処理中...';
+      currentImageDataUrl = await compressImage(file);
+      p.thumbnail.src = currentImageDataUrl;
+      p.thumbnail.style.display = 'inline-block';
+      els.removeImgBtn.style.display = 'block';
+      els.eyecatchText.style.display = 'none';
+      updatePreview();
     }
   });
 
@@ -155,31 +188,27 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // Gallery Upload
-  els.galleryInput.addEventListener('change', (e) => {
+  els.galleryInput.addEventListener('change', async (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
 
-    // Append to existing array if you want cumulative uploads, or overwrite. Let's overwrite for simplicity like eyecatch.
+    // Overwrite existing array
     currentGalleryDataUrls = [];
     els.galleryThumbnails.innerHTML = '';
 
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const url = event.target.result;
-        currentGalleryDataUrls.push(url);
-        
-        const img = document.createElement('img');
-        img.src = url;
-        img.style.height = '60px';
-        img.style.objectFit = 'cover';
-        img.style.borderRadius = '4px';
-        els.galleryThumbnails.appendChild(img);
-        
-        updatePreview();
-      };
-      reader.readAsDataURL(file);
-    });
+    for (let file of files) {
+      const url = await compressImage(file);
+      currentGalleryDataUrls.push(url);
+      
+      const img = document.createElement('img');
+      img.src = url;
+      img.style.height = '60px';
+      img.style.objectFit = 'cover';
+      img.style.borderRadius = '4px';
+      els.galleryThumbnails.appendChild(img);
+      
+      updatePreview();
+    }
   });
 
   // --- Initial Render ---
@@ -245,27 +274,41 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // --- Submit button ---
   submitBtn.addEventListener('click', async () => {
-    const data = {
-      title: els.title.value,
-      subtitle: els.subtitle.value,
-      infoDates: els.infoDates.value,
-      infoCapacity: els.infoCapacity.value,
-      infoDecision: els.infoDecision.value,
-      aboutBody: editors.about.root.innerHTML,
-      scheduleBody: editors.schedule.root.innerHTML,
-      includesBody: editors.includes.root.innerHTML,
-      infoPrice: editors.price.root.innerHTML,
-      infoCancel: editors.cancel.root.innerHTML
-    };
-
-    if (currentEditId) {
-      data.id = currentEditId;
-    }
-
-    submitBtn.textContent = '保存中...';
+    submitBtn.textContent = '画像をサーバーへ保存中...';
     submitBtn.disabled = true;
 
     try {
+      // 1. Upload Media
+      const realImage = await uploadMediaIfBase64(currentImageDataUrl, 'stay-main.jpg');
+      
+      const realGallery = [];
+      for (let i = 0; i < currentGalleryDataUrls.length; i++) {
+        const gUrl = await uploadMediaIfBase64(currentGalleryDataUrls[i], `gallery-${i}.jpg`);
+        // If data from microCMS already, it might be an object or string
+        realGallery.push(typeof gUrl === 'string' ? { url: gUrl } : gUrl); 
+      }
+
+      // 2. Prepare Payload
+      const data = {
+        title: els.title.value,
+        subtitle: els.subtitle.value,
+        image: realImage,
+        gallery: realGallery,
+        infoDates: els.infoDates.value,
+        infoCapacity: els.infoCapacity.value,
+        infoDecision: els.infoDecision.value,
+        aboutBody: editors.about.root.innerHTML,
+        scheduleBody: editors.schedule.root.innerHTML,
+        includesBody: editors.includes.root.innerHTML,
+        infoPrice: editors.price.root.innerHTML,
+        infoCancel: editors.cancel.root.innerHTML
+      };
+
+      if (currentEditId) {
+        data.id = currentEditId;
+      }
+
+      submitBtn.textContent = 'データ保存中...';
       const endpoint = currentEditId ? '/api/update-stay' : '/api/create-stay';
       const method = currentEditId ? 'PATCH' : 'POST';
 

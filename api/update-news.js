@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { id, title, publishedAt, category, body } = req.body;
+  const { id, title, publishedAt, category, eyecatch, body } = req.body;
   if (!id) return res.status(400).json({ message: 'Article ID is required for update' });
   
   const domain = process.env.VITE_MICROCMS_SERVICE_DOMAIN || process.env.MICROCMS_SERVICE_DOMAIN;
@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ message: 'Server Configuration Missing' });
   }
 
-  const payload = { title, publishedAt, category, body };
+  const payload = { title, publishedAt, category, eyecatch, body };
 
   try {
     const response = await fetch(`https://${domain}.microcms.io/api/v1/news/${id}`, {
