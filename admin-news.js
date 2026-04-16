@@ -1,3 +1,6 @@
+document.addEventListener('DOMContentLoaded', () => {
+  // Elements: Inputs
+  const titleInput = document.getElementById('input-title');
   const dateInput = document.getElementById('input-date');
   const categoryInput = document.getElementById('input-category');
   const imageInput = document.getElementById('input-image');
