@@ -12,11 +12,15 @@ export default function middleware(request) {
       const authValue = basicAuth.split(' ')[1];
       const [user, pwd] = atob(authValue).split(':');
 
-      // TODO: In a production environment, use process.env to store credentials.
-      // For now, hardcoding an initial password for user demonstration.
-      // E.g., user: admin, password: withsasayama
-      const expectedUser = process.env.ADMIN_USER || 'admin';
-      const expectedPwd = process.env.ADMIN_PASS || 'withsasayama';
+      const expectedUser = process.env.ADMIN_USER;
+      const expectedPwd = process.env.ADMIN_PASS;
+
+      // Fail securely if environment variables are not configured
+      if (!expectedUser || !expectedPwd) {
+        return new Response('Server configuration error: Authentication credentials not configured. Please set ADMIN_USER and ADMIN_PASS in Vercel.', {
+          status: 500
+        });
+      }
 
       if (user === expectedUser && pwd === expectedPwd) {
         // Validation succeeded, continue to the static file
