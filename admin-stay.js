@@ -214,28 +214,34 @@ document.addEventListener('DOMContentLoaded', async () => {
   let currentGalleryDataUrls = [];
 
   function updatePreview() {
-    p.title.textContent = els.title.value || 'タイトル未入力';
-    p.subtitle.textContent = els.subtitle.value;
-    p.infoDates.textContent = els.infoDates.value;
-    p.infoCapacity.textContent = els.infoCapacity.value;
-    p.infoDecision.textContent = els.infoDecision.value;
-    
-    p.image.src = currentImageDataUrl;
-    
-    // Gallery
-    if (currentGalleryDataUrls.length > 0) {
-      p.gallery.style.display = 'grid'; // CSS dictates grid-template-columns
-      p.gallery.innerHTML = currentGalleryDataUrls.map(url => `<img src="${url}" alt="gallery">`).join('');
-    } else {
-      p.gallery.style.display = 'none';
-      p.gallery.innerHTML = '';
+    try {
+      p.title.textContent = els.title.value || 'タイトル未入力';
+      p.subtitle.textContent = els.subtitle.value;
+      p.infoDates.textContent = els.infoDates.value;
+      p.infoCapacity.textContent = els.infoCapacity.value;
+      p.infoDecision.textContent = els.infoDecision.value;
+      
+      p.image.src = currentImageDataUrl;
+      
+      // Gallery
+      if (currentGalleryDataUrls.length > 0) {
+        p.gallery.style.display = 'grid'; // CSS dictates grid-template-columns
+        p.gallery.innerHTML = currentGalleryDataUrls.map(url => `<img src="${url}" alt="gallery">`).join('');
+      } else {
+        p.gallery.style.display = 'none';
+        p.gallery.innerHTML = '';
+      }
+      
+      p.about.innerHTML = editors.about.root.innerHTML;
+      p.schedule.innerHTML = editors.schedule.root.innerHTML;
+      p.includes.innerHTML = editors.includes.root.innerHTML;
+      p.price.innerHTML = editors.price.root.innerHTML;
+      p.cancel.innerHTML = editors.cancel.root.innerHTML;
+    } catch(err) {
+      console.error('Preview Update Error:', err);
+      // Optional: alert out to user if debugging is severely needed
+      // alert('ライブプレビューの更新でエラーが発生しました: ' + err.message);
     }
-    
-    p.about.innerHTML = editors.about.root.innerHTML;
-    p.schedule.innerHTML = editors.schedule.root.innerHTML;
-    p.includes.innerHTML = editors.includes.root.innerHTML;
-    p.price.innerHTML = editors.price.root.innerHTML;
-    p.cancel.innerHTML = editors.cancel.root.innerHTML;
   }
 
   // Bind Standard Inputs
