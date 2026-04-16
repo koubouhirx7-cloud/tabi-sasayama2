@@ -50,11 +50,14 @@
     }
     /* LEFT PANE: Form */
     .admin-pane-left {
-      width: 400px;
+      width: 450px;
+      min-width: 350px;
+      max-width: 60vw;
+      resize: horizontal;
       background: white;
       border-right: 1px solid #ddd;
       padding: 30px;
-      overflow-y: auto;
+      overflow: auto;
       box-shadow: 2px 0 10px rgba(0,0,0,0.05);
       z-index: 5;
     }
@@ -118,7 +121,10 @@
     }
     .ql-container {
       border-radius: 0 0 4px 4px;
-      min-height: 300px;
+      min-height: 400px;
+      height: auto;
+      resize: vertical;
+      overflow-y: auto;
       font-size: 1rem;
       background: #fff;
     }

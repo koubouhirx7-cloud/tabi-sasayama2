@@ -22,6 +22,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Auto-recognize URLs when pasting plain text
+  const Delta = Quill.import('delta');
+  quill.clipboard.addMatcher(Node.TEXT_NODE, function(node, delta) {
+    if (typeof node.data !== 'string') return delta;
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    if (node.data.match(urlRegex)) {
+      const newDelta = new Delta();
+      let lastIndex = 0;
+      node.data.replace(urlRegex, (match, p1, offset) => {
+        if (offset > lastIndex) {
+          newDelta.insert(node.data.substring(lastIndex, offset));
+        }
+        newDelta.insert(match, { link: match });
+        lastIndex = offset + match.length;
+      });
+      if (lastIndex < node.data.length) {
+        newDelta.insert(node.data.substring(lastIndex));
+      }
+      return newDelta;
+    }
+    return delta;
+  });
+
   // Set default Quill content
   quill.clipboard.dangerouslyPasteHTML('<p>ここに本文を入力します。</p>');
 
