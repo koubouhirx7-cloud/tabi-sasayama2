@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         throw new Error(resJson.message || '通信エラー');
       }
       
-      alert(`記事が正常にmicroCMSへ${currentEditId ? '上書き保存' : '公開保存'}されました！\n(※現在はシステム上画像のアップロード機能は一部制限されています)`);
+      alert(`記事が正常にmicroCMSへ${currentEditId ? '上書き保存' : '公開保存'}されました！`);
       console.log('Success:', resJson);
       
       // Reset form on success
