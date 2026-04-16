@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     quill.clipboard.addMatcher(Node.TEXT_NODE, matcher);
   });
 
-  let currentImageDataUrl = 'https://images.unsplash.com/photo-1596422846543-74c6e271ffd6?auto=format&fit=crop&w=1200&q=80';
+  let currentImageDataUrl = '';
   let currentGalleryDataUrls = [];
 
   function updatePreview() {

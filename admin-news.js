@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
   quill.clipboard.dangerouslyPasteHTML('<p>ここに本文を入力します。</p>');
 
   // Base64 storage for the eyecatch image data to send to API later
-  let currentEyecatchDataUrl = 'https://images.unsplash.com/photo-1596422846543-74c6e271ffd6?auto=format&fit=crop&w=1200&q=80';
+  let currentEyecatchDataUrl = '';
 
   // Elements: Preview
   const titlePreview = document.getElementById('preview-title');
