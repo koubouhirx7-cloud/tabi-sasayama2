@@ -4,7 +4,29 @@ document.addEventListener('DOMContentLoaded', () => {
   const dateInput = document.getElementById('input-date');
   const categoryInput = document.getElementById('input-category');
   const imageInput = document.getElementById('input-image');
-  const bodyInput = document.getElementById('input-body');
+  const thumbnailPreview = document.getElementById('eyecatch-thumbnail');
+
+  // Initialize Quill Editor
+  const quill = new Quill('#editor-container', {
+    theme: 'snow',
+    placeholder: 'ここに本文を入力します...',
+    modules: {
+      toolbar: [
+        [{ 'header': [2, 3, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        ['link', 'image', 'video'],
+        ['clean']
+      ]
+    }
+  });
+
+  // Set default Quill content
+  quill.clipboard.dangerouslyPasteHTML('<p>ここに本文を入力します。</p>');
+
+  // Base64 storage for the eyecatch image data to send to API later
+  let currentEyecatchDataUrl = 'https://images.unsplash.com/photo-1596422846543-74c6e271ffd6?auto=format&fit=crop&w=1200&q=80';
 
   // Elements: Preview
   const titlePreview = document.getElementById('preview-title');
@@ -24,14 +46,33 @@ document.addEventListener('DOMContentLoaded', () => {
     // Format Date from YYYY-MM-DD to YYYY.MM.DD
     datePreview.textContent = dateInput.value ? dateInput.value.replace(/-/g, '.') : '';
     categoryPreview.textContent = categoryInput.value;
-    imagePreview.src = imageInput.value || '';
-    imagePreview.style.display = imageInput.value ? 'block' : 'none';
-    bodyPreview.innerHTML = bodyInput.value;
+    imagePreview.src = currentEyecatchDataUrl;
+    imagePreview.style.display = currentEyecatchDataUrl ? 'block' : 'none';
+    bodyPreview.innerHTML = quill.root.innerHTML;
   }
 
+  // Handle Visual Image Upload (Eyecatch)
+  imageInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        currentEyecatchDataUrl = event.target.result;
+        thumbnailPreview.src = currentEyecatchDataUrl;
+        thumbnailPreview.style.display = 'block';
+        updatePreview();
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
   // Attach event listeners for real-time reactivity
-  [titleInput, dateInput, categoryInput, imageInput, bodyInput].forEach(el => {
+  [titleInput, dateInput, categoryInput].forEach(el => {
     el.addEventListener('input', updatePreview);
+  });
+
+  quill.on('text-change', () => {
+    updatePreview();
   });
 
   // Initial render
@@ -44,8 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
       title: titleInput.value,
       publishedAt: new Date(dateInput.value).toISOString(),
       category: [categoryInput.value],
-      eyecatch: { url: imageInput.value },
-      body: bodyInput.value
+      eyecatch: currentEyecatchDataUrl, // In Phase 2, this will be uploaded to microCMS media first
+      body: quill.root.innerHTML
     };
 
     submitBtn.textContent = '保存中...';

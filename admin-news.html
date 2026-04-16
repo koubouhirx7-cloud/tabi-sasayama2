@@ -83,6 +83,45 @@
       min-height: 250px;
       resize: vertical;
     }
+    /* Image Upload UI */
+    .image-upload-zone {
+      border: 2px dashed #ccc;
+      border-radius: 6px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
+      background: #fafafa;
+      position: relative;
+    }
+    .image-upload-zone:hover {
+      border-color: var(--color-primary, #333);
+      background: #f0f0f0;
+    }
+    .image-upload-zone input[type="file"] {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0; cursor: pointer;
+    }
+    .image-preview-thumbnail {
+      max-width: 100%;
+      max-height: 150px;
+      margin-top: 10px;
+      display: none;
+      border-radius: 4px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    /* Quill Customization */
+    .ql-toolbar {
+      border-radius: 4px 4px 0 0;
+      background: #fafafa;
+    }
+    .ql-container {
+      border-radius: 0 0 4px 4px;
+      min-height: 300px;
+      font-size: 1rem;
+      background: #fff;
+    }
     /* RIGHT PANE: Preview */
     .admin-pane-right {
       flex: 1;
@@ -204,15 +243,18 @@
       </div>
 
       <div class="form-group">
-        <label for="input-image">アイキャッチ画像 (URL)</label>
-        <input type="text" id="input-image" placeholder="https://..." value="https://images.unsplash.com/photo-1596422846543-74c6e271ffd6?auto=format&fit=crop&w=1200&q=80">
-        <small style="display:block; margin-top:4px; color:#888;">※ 現状は外部画像URLを貼り付けてください。</small>
+        <label>アイキャッチ画像 (アップロード)</label>
+        <div class="image-upload-zone" id="eyecatch-zone">
+          <span style="color: #666; font-size: 0.9rem;">クリックまたはドラッグ＆ドロップで画像を選択</span>
+          <input type="file" id="input-image" accept="image/png, image/jpeg, image/webp">
+          <img src="" class="image-preview-thumbnail" id="eyecatch-thumbnail">
+        </div>
       </div>
 
       <div class="form-group">
-        <label for="input-body">本文 (HTML使用可)</label>
-        <textarea id="input-body" placeholder="<p>ここに本文を入力します。</p>"><p>ここに本文を入力します。</p></textarea>
-        <small style="display:block; margin-top:4px; color:#888;">※ &lt;h2&gt; や &lt;strong&gt;, &lt;img&gt;タグなどを記述できます。リアルタイムで右側に反映されます。</small>
+        <label>本文 (リッチエディター)</label>
+        <div id="editor-container"></div>
+        <small style="display:block; margin-top:4px; color:#888;">※ 文字の装飾や画像の挿入が可能です。右側の画面にリアルタイムで反映されます。</small>
       </div>
     </aside>
 
@@ -238,6 +280,8 @@
     </main>
   </div>
 
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <script type="module" src="/admin-news.js"></script>
 </body>
 </html>
