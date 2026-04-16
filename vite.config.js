@@ -17,6 +17,7 @@ export default defineConfig({
         company: resolve(__dirname, 'company.html'),
         contact: resolve(__dirname, 'contact.html'),
         stayApply: resolve(__dirname, 'stay-apply.html'),
+        adminMenu: resolve(__dirname, 'admin-menu.html'),
         adminNews: resolve(__dirname, 'admin-news.html'),
         adminStay: resolve(__dirname, 'admin-stay.html'),
       }
