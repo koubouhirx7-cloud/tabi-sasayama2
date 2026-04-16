@@ -182,6 +182,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       submitBtn.textContent = '記事を公開エリアへ保存';
       titleInput.value = '';
       dateInput.value = new Date().toISOString().split('T')[0];
+      currentEyecatchDataUrl = '';
+      thumbnailPreview.style.display = 'none';
+      removeImgBtn.style.display = 'none';
+      eyecatchText.style.display = 'block';
+
       quill.clipboard.dangerouslyPasteHTML('<p>ここに本文を入力します。</p>');
       updatePreview();
       return;
@@ -199,6 +204,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (detail.publishedAt) dateInput.value = detail.publishedAt.split('T')[0];
         if (detail.category && detail.category.length > 0) categoryInput.value = detail.category[0];
         
+        if (detail.eyecatch && detail.eyecatch.url) {
+          currentEyecatchDataUrl = detail.eyecatch.url;
+          thumbnailPreview.src = currentEyecatchDataUrl;
+          thumbnailPreview.style.display = 'inline-block';
+          removeImgBtn.style.display = 'block';
+          eyecatchText.style.display = 'none';
+        } else {
+          currentEyecatchDataUrl = '';
+          thumbnailPreview.style.display = 'none';
+          removeImgBtn.style.display = 'none';
+          eyecatchText.style.display = 'block';
+        }
+
         quill.clipboard.dangerouslyPasteHTML(detail.body || '');
         updatePreview();
       }

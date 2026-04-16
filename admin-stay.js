@@ -239,6 +239,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       // simple reset
       els.title.value = '';
       els.subtitle.value = '';
+      currentImageDataUrl = '';
+      p.thumbnail.style.display = 'none';
+      els.removeImgBtn.style.display = 'none';
+      els.eyecatchText.style.display = 'block';
+      currentGalleryDataUrls = [];
+      els.galleryThumbnails.innerHTML = '';
+      
       updatePreview();
       return;
     }
@@ -255,6 +262,35 @@ document.addEventListener('DOMContentLoaded', async () => {
         els.infoDates.value = detail.infoDates || '';
         els.infoCapacity.value = detail.infoCapacity || '';
         els.infoDecision.value = detail.infoDecision || '';
+        
+        if (detail.image && detail.image.url) {
+          currentImageDataUrl = detail.image.url;
+          p.thumbnail.src = currentImageDataUrl;
+          p.thumbnail.style.display = 'inline-block';
+          els.removeImgBtn.style.display = 'block';
+          els.eyecatchText.style.display = 'none';
+        } else {
+          currentImageDataUrl = '';
+          p.thumbnail.style.display = 'none';
+          els.removeImgBtn.style.display = 'none';
+          els.eyecatchText.style.display = 'block';
+        }
+
+        currentGalleryDataUrls = [];
+        els.galleryThumbnails.innerHTML = '';
+        if (detail.gallery && detail.gallery.length > 0) {
+          detail.gallery.forEach(g => {
+            if (g && g.url) {
+              currentGalleryDataUrls.push(g.url);
+              const img = document.createElement('img');
+              img.src = g.url;
+              img.style.height = '60px';
+              img.style.objectFit = 'cover';
+              img.style.borderRadius = '4px';
+              els.galleryThumbnails.appendChild(img);
+            }
+          });
+        }
         
         editors.about.clipboard.dangerouslyPasteHTML(detail.aboutBody || '');
         editors.schedule.clipboard.dangerouslyPasteHTML(detail.scheduleBody || '');
