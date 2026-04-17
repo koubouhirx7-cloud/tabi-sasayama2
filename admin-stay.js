@@ -478,7 +478,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       const resJson = await res.json();
       if (!res.ok) {
-        throw new Error(resJson.message || '通信エラー');
+        const detailMessage = typeof resJson.error === 'object' ? JSON.stringify(resJson.error) : (resJson.error || '');
+        throw new Error((resJson.message || '通信エラー') + (detailMessage ? '\n詳細: ' + detailMessage : ''));
       }
       
       alert(isDraft ? `下書きを保存しました！` : `プログラムが正常にmicroCMSへ${currentEditId ? '上書き保存' : '公開保存'}されました！`);
