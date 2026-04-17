@@ -43,6 +43,20 @@
     .btn-save:hover {
       background: #eee;
     }
+    .btn-draft {
+      background: #64748b;
+      color: white !important;
+    }
+    .btn-draft:hover {
+      background: #475569;
+    }
+    .btn-unpublish {
+      background: #ef4444;
+      color: white !important;
+    }
+    .btn-unpublish:hover {
+      background: #dc2626;
+    }
     .admin-layout {
       display: flex;
       flex: 1;
@@ -277,8 +291,8 @@
   <header class="admin-header">
     <h1>ウイズささやま / お知らせ入稿画面 (Real-time Preview)</h1>
     <div style="display: flex; gap: 10px;">
-      <button class="btn-save" id="btn-unpublish" style="background: #ef4444; display: none;">公開を停止（下書きに戻す）</button>
-      <button class="btn-save" id="btn-draft" style="background: #94a3b8;">下書きとして保存する</button>
+      <button class="btn-save btn-unpublish" id="btn-unpublish" style="display: none;">公開を停止（下書きに戻す）</button>
+      <button class="btn-save btn-draft" id="btn-draft">下書きとして保存する</button>
       <button class="btn-save" id="btn-submit">記事を公開エリアへ保存</button>
     </div>
   </header>
