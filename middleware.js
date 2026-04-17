@@ -1,11 +1,26 @@
 export const config = {
-  matcher: ['/admin-(.*)', '/api/create-(.*)']
+  matcher: [
+    '/admin-(.*)', 
+    '/api/create-:path*', 
+    '/api/update-:path*', 
+    '/api/upload-media', 
+    '/api/get-media', 
+    '/api/unpublish', 
+    '/api/manage-templates'
+  ]
 };
 
 export default function middleware(request) {
-  // Apply to both admin pages and API endpoints
+  // Apply to both admin pages and mutating API endpoints
   const url = new URL(request.url);
-  if (url.pathname.startsWith('/admin-') || url.pathname.startsWith('/api/create-')) {
+  const p = url.pathname;
+  
+  if (
+    p.startsWith('/admin-') || 
+    p.startsWith('/api/create-') ||
+    p.startsWith('/api/update-') ||
+    ['/api/upload-media', '/api/get-media', '/api/unpublish', '/api/manage-templates'].includes(p)
+  ) {
     const basicAuth = request.headers.get('authorization');
 
     if (basicAuth) {
