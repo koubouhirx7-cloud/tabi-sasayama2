@@ -447,7 +447,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const data = {
         title: els.title.value,
         subtitle: els.subtitle.value,
-        image: realImage,
+        heroImage: realImage,
         gallery: realGallery,
         infoDates: els.infoDates.value,
         infoCapacity: els.infoCapacity.value,
