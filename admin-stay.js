@@ -439,8 +439,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       const realGallery = [];
       for (let i = 0; i < currentGalleryDataUrls.length; i++) {
         const gUrl = await uploadMediaIfBase64(currentGalleryDataUrls[i], `gallery-${i}.jpg`);
-        // If data from microCMS already, it might be an object or string
-        realGallery.push(typeof gUrl === 'string' ? { url: gUrl } : gUrl); 
+        // microCMS expects an array of string URLs for multiple image fields
+        realGallery.push(typeof gUrl === 'string' ? gUrl : gUrl.url); 
       }
 
       // 2. Prepare Payload
