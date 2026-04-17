@@ -93,3 +93,14 @@ export async function fetchDownloads(limit = 100) {
     return [];
   }
 }
+
+// お客様の声を取得
+export async function fetchVoices(limit = 100) {
+  try {
+    const data = await fetchFromMicroCMS('voices', null, { limit });
+    return data.contents || [];
+  } catch (error) {
+    console.error('お客様の声取得エラー:', error);
+    return [];
+  }
+}
