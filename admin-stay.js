@@ -497,45 +497,71 @@ document.addEventListener('DOMContentLoaded', async () => {
   submitBtn.addEventListener('click', () => submitArticle(false));
   if (draftBtn) draftBtn.addEventListener('click', () => submitArticle(true));
 
-  // --- Template UI Logic (LocalStorage) ---
-  const LS_KEY_TEMPLATES = 'withSasayama_stayTemplates';
+  // --- Template UI Logic (microCMS Sync) ---
   const selectTemplate = document.getElementById('select-template');
   const btnSaveTemplate = document.getElementById('btn-save-template');
   const btnLoadTemplate = document.getElementById('btn-load-template');
   const btnDeleteTemplate = document.getElementById('btn-delete-template');
+  let currentTemplates = [];
 
-  function getTemplates() {
+  async function getTemplates() {
     try {
-      const data = localStorage.getItem(LS_KEY_TEMPLATES);
-      return data ? JSON.parse(data) : [];
+      const res = await fetch('/api/get-content?endpoint=stay-templates&limit=100', { credentials: 'same-origin' });
+      if (!res.ok) throw new Error('Failed to load templates');
+      const json = await res.json();
+      return json.contents || [];
     } catch(err) {
+      console.error(err);
       return [];
     }
   }
 
-  function saveTemplates(templates) {
-    localStorage.setItem(LS_KEY_TEMPLATES, JSON.stringify(templates));
+  async function saveTemplate(template) {
+    const res = await fetch('/api/manage-templates', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(template)
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(errText);
+    }
+    return res.json();
   }
 
-  function renderTemplatesDropdown() {
+  async function deleteTemplate(id) {
+    const res = await fetch(`/api/manage-templates?id=${id}`, {
+      method: 'DELETE'
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(errText);
+    }
+  }
+
+  async function renderTemplatesDropdown() {
     if (!selectTemplate) return;
-    const templates = getTemplates();
+    selectTemplate.innerHTML = '<option value="">読込中...</option>';
+    selectTemplate.disabled = true;
+    
+    currentTemplates = await getTemplates();
+    
     selectTemplate.innerHTML = '<option value="">▼ 呼び出すテンプレートを選択</option>';
-    templates.forEach(t => {
+    currentTemplates.forEach(t => {
       const opt = document.createElement('option');
       opt.value = t.id;
       opt.textContent = t.name;
       selectTemplate.appendChild(opt);
     });
+    selectTemplate.disabled = false;
   }
 
   if (btnSaveTemplate) {
-    btnSaveTemplate.addEventListener('click', () => {
+    btnSaveTemplate.addEventListener('click', async () => {
       const name = prompt('現在の基本情報（日程、定員、判断、料金、キャンセル等）を\nテンプレートとして保存します。\nテンプレート名を入力してください：');
       if (!name) return;
 
       const template = {
-        id: Date.now().toString(),
         name: name,
         infoDates: els.infoDates.value,
         infoCapacity: els.infoCapacity.value,
@@ -544,12 +570,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         infoCancel: editors.cancel.root.innerHTML
       };
 
-      const templates = getTemplates();
-      templates.push(template);
-      saveTemplates(templates);
-      renderTemplatesDropdown();
-      alert('テンプレートを保存しました。');
-      selectTemplate.value = template.id;
+      const originalText = btnSaveTemplate.textContent;
+      btnSaveTemplate.textContent = '保存中...';
+      btnSaveTemplate.disabled = true;
+
+      try {
+        await saveTemplate(template);
+        alert('テンプレートをクラウドに保存しました！他のマシンからも呼び出せます。');
+        await renderTemplatesDropdown();
+      } catch (err) {
+        alert('保存エラー: microCMS側で「滞在基本テンプレート(stay-templates)」のAPIを指示通り作成しているか確認してください。\n詳細: ' + err.message);
+      } finally {
+        btnSaveTemplate.textContent = originalText;
+        btnSaveTemplate.disabled = false;
+      }
     });
   }
 
@@ -560,8 +594,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert('テンプレートを選択してください');
         return;
       }
-      const templates = getTemplates();
-      const template = templates.find(t => t.id === selectedId);
+      const template = currentTemplates.find(t => t.id === selectedId);
       if (!template) return;
 
       if (!confirm(`「${template.name}」の内容を表示中の入力欄に上書きしますか？`)) return;
@@ -576,20 +609,30 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   if (btnDeleteTemplate) {
-    btnDeleteTemplate.addEventListener('click', () => {
+    btnDeleteTemplate.addEventListener('click', async () => {
       const selectedId = selectTemplate.value;
       if (!selectedId) {
         alert('削除するテンプレートを選択してください');
         return;
       }
       
-      const templates = getTemplates();
-      const template = templates.find(t => t.id === selectedId);
-      if (!confirm(`テンプレート「${template?.name}」を削除しますか？`)) return;
+      const template = currentTemplates.find(t => t.id === selectedId);
+      if (!confirm(`テンプレート「${template?.name}」を完全に削除しますか？`)) return;
       
-      const filtered = templates.filter(t => t.id !== selectedId);
-      saveTemplates(filtered);
-      renderTemplatesDropdown();
+      const originalText = btnDeleteTemplate.textContent;
+      btnDeleteTemplate.textContent = '削除中...';
+      btnDeleteTemplate.disabled = true;
+
+      try {
+        await deleteTemplate(selectedId);
+        alert('削除しました。');
+        await renderTemplatesDropdown();
+      } catch(err) {
+        alert('削除エラー: ' + err.message);
+      } finally {
+        btnDeleteTemplate.textContent = originalText;
+        btnDeleteTemplate.disabled = false;
+      }
     });
   }
 
