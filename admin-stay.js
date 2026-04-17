@@ -497,6 +497,105 @@ document.addEventListener('DOMContentLoaded', async () => {
   submitBtn.addEventListener('click', () => submitArticle(false));
   if (draftBtn) draftBtn.addEventListener('click', () => submitArticle(true));
 
+  // --- Template UI Logic (LocalStorage) ---
+  const LS_KEY_TEMPLATES = 'withSasayama_stayTemplates';
+  const selectTemplate = document.getElementById('select-template');
+  const btnSaveTemplate = document.getElementById('btn-save-template');
+  const btnLoadTemplate = document.getElementById('btn-load-template');
+  const btnDeleteTemplate = document.getElementById('btn-delete-template');
+
+  function getTemplates() {
+    try {
+      const data = localStorage.getItem(LS_KEY_TEMPLATES);
+      return data ? JSON.parse(data) : [];
+    } catch(err) {
+      return [];
+    }
+  }
+
+  function saveTemplates(templates) {
+    localStorage.setItem(LS_KEY_TEMPLATES, JSON.stringify(templates));
+  }
+
+  function renderTemplatesDropdown() {
+    if (!selectTemplate) return;
+    const templates = getTemplates();
+    selectTemplate.innerHTML = '<option value="">▼ 呼び出すテンプレートを選択</option>';
+    templates.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t.id;
+      opt.textContent = t.name;
+      selectTemplate.appendChild(opt);
+    });
+  }
+
+  if (btnSaveTemplate) {
+    btnSaveTemplate.addEventListener('click', () => {
+      const name = prompt('現在の基本情報（日程、定員、判断、料金、キャンセル等）を\nテンプレートとして保存します。\nテンプレート名を入力してください：');
+      if (!name) return;
+
+      const template = {
+        id: Date.now().toString(),
+        name: name,
+        infoDates: els.infoDates.value,
+        infoCapacity: els.infoCapacity.value,
+        infoDecision: els.infoDecision.value,
+        infoPrice: editors.price.root.innerHTML,
+        infoCancel: editors.cancel.root.innerHTML
+      };
+
+      const templates = getTemplates();
+      templates.push(template);
+      saveTemplates(templates);
+      renderTemplatesDropdown();
+      alert('テンプレートを保存しました。');
+      selectTemplate.value = template.id;
+    });
+  }
+
+  if (btnLoadTemplate) {
+    btnLoadTemplate.addEventListener('click', () => {
+      const selectedId = selectTemplate.value;
+      if (!selectedId) {
+        alert('テンプレートを選択してください');
+        return;
+      }
+      const templates = getTemplates();
+      const template = templates.find(t => t.id === selectedId);
+      if (!template) return;
+
+      if (!confirm(`「${template.name}」の内容を表示中の入力欄に上書きしますか？`)) return;
+
+      els.infoDates.value = template.infoDates || '';
+      els.infoCapacity.value = template.infoCapacity || '';
+      els.infoDecision.value = template.infoDecision || '';
+      editors.price.clipboard.dangerouslyPasteHTML(template.infoPrice || '');
+      editors.cancel.clipboard.dangerouslyPasteHTML(template.infoCancel || '');
+      updatePreview();
+    });
+  }
+
+  if (btnDeleteTemplate) {
+    btnDeleteTemplate.addEventListener('click', () => {
+      const selectedId = selectTemplate.value;
+      if (!selectedId) {
+        alert('削除するテンプレートを選択してください');
+        return;
+      }
+      
+      const templates = getTemplates();
+      const template = templates.find(t => t.id === selectedId);
+      if (!confirm(`テンプレート「${template?.name}」を削除しますか？`)) return;
+      
+      const filtered = templates.filter(t => t.id !== selectedId);
+      saveTemplates(filtered);
+      renderTemplatesDropdown();
+    });
+  }
+
+  // Initial render
+  renderTemplatesDropdown();
+
   // --- Media Modal Logic ---
   const btnOpenMediaMain = document.getElementById('btn-open-media-main');
   const btnOpenMediaGallery = document.getElementById('btn-open-media-gallery');
