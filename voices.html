@@ -10,11 +10,84 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Barlow+Semi+Condensed:wght@300;400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./style-home.css" />
     <style>
-      /* Voices 専用スタイル追加分 */
       .voices-page-header {
         padding: 8rem 1rem 4rem;
         background: #fdfaf6; /* base bg */
         text-align: center;
+      }
+      .voices-detail-list {
+        max-width: 1000px;
+        margin: 0 auto 5rem;
+        padding: 0 5%;
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+      }
+      .voice-row {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        padding-top: 3rem;
+        border-top: 1px solid #ddd;
+      }
+      .voice-row:first-child {
+        border-top: none;
+        padding-top: 0;
+      }
+      @media (min-width: 768px) {
+        .voice-row {
+          flex-direction: row;
+          justify-content: space-between;
+        }
+      }
+      .voice-text {
+        flex: 1;
+      }
+      @media (min-width: 768px) {
+        .voice-text { padding-right: 3rem; }
+      }
+      .voice-image {
+        width: 100%;
+        max-width: 400px;
+        flex-shrink: 0;
+      }
+      .voice-image img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+      }
+      .voice-headline {
+        font-family: var(--font-display, "Noto Serif JP", serif);
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.8rem;
+        line-height: 1.5;
+        color: #222;
+      }
+      .voice-headline::before {
+        content: "";
+        display: block;
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        border: 1.5px solid #444;
+        margin-top: 0.3rem;
+      }
+      .voice-meta-group {
+        font-size: 0.9rem;
+        color: #666;
+        line-height: 1.8;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+      }
+      .voice-full-comment {
+        font-size: 0.95rem;
+        line-height: 2;
+        color: #111;
       }
       .voices-card-list {
         max-width: 1400px;
@@ -121,7 +194,7 @@
 
     <!-- コンテンツエリア -->
     <main>
-      <div id="voices-container" class="voices-card-list">
+      <div id="voices-container" class="voices-detail-list">
         <!-- 読み込み中 -->
         <p style="text-align:center; color:#888; width:100%;">読み込み中...</p>
       </div>

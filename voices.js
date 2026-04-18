@@ -47,21 +47,33 @@ document.addEventListener('DOMContentLoaded', async () => {
       const comment = (voice.comment || '').replace(/\n/g, '<br>');
       const purpose = voice.purpose || '';
       
-      const imgHtml = voice.image?.url 
-        ? `<img src="${voice.image.url}?fm=webp&w=400&h=300&fit=crop" alt="お客様スナップ" loading="lazy">` 
-        : '';
+        const rawComment = voice.comment || '';
+        let headline = purpose;
+        if (!headline) {
+          const sentences = rawComment.split('。');
+          headline = sentences[0] ? sentences[0] + '。' : '丹波篠山での滞在について';
+        }
 
-      const html = `
-        <article class="voice-list-card fade-in" style="transition-delay: ${index * 0.05}s">
-          ${imgHtml}
-          <div class="voice-list-content">
-            <div class="meta">${metaText}</div>
-            <h2 class="program-name">${programName}</h2>
-            <div class="comment">${comment}</div>
-            ${purpose ? `<div class="purpose"><strong>参加目的:</strong> ${purpose}</div>` : ''}
-          </div>
-        </article>
-      `;
+        const imgHtml = voice.image?.url 
+          ? `<div class="voice-image"><img src="${voice.image.url}?fm=webp&w=800&q=80" alt="お客様スナップ" loading="lazy"></div>` 
+          : '';
+
+        const html = `
+          <article class="voice-row fade-in" style="transition-delay: ${index * 0.1}s">
+            <div class="voice-text">
+              <div class="voice-headline">${headline}</div>
+              <div class="voice-meta-group">
+                参加プログラム：${programName}<br>
+                地域：${origin || '未設定'}<br>
+                ${age} ${gender}
+              </div>
+              <div class="voice-full-comment">
+                ${rawComment.replace(/\n/g, '<br>')}
+              </div>
+            </div>
+            ${imgHtml}
+          </article>
+        `;
       container.insertAdjacentHTML('beforeend', html);
     });
 
