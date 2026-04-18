@@ -13,7 +13,11 @@ export default async function handler(req, res) {
     return res.status(500).json({ message: 'Server Configuration Missing' });
   }
 
-  const payload = { age, gender, stayProgram, fromOrigin, purpose, comment, image };
+  const payload = { age, gender, stayProgram, fromOrigin, purpose, comment };
+  // imageはURLがある時だけ付与（undefinedをmicroCMSへ送るとエラーになるため）
+  if (image && typeof image === 'string' && image.startsWith('http')) {
+    payload.image = image;
+  }
 
   try {
     const endpoint = `https://${domain}.microcms.io/api/v1/voices/${id}${req.body.isDraft ? '?status=draft' : ''}`;

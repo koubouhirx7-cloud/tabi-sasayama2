@@ -18,9 +18,12 @@ export default async function handler(req, res) {
     stayProgram,
     fromOrigin,
     purpose,
-    comment,
-    image
+    comment
   };
+  // imageはURLがある時だけ付与（undefinedをmicroCMSへ送るとエラーになるため）
+  if (image && typeof image === 'string' && image.startsWith('http')) {
+    payload.image = image;
+  }
 
   try {
     const endpoint = `https://${domain}.microcms.io/api/v1/voices${isDraft ? '?status=draft' : ''}`;
