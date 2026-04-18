@@ -135,27 +135,52 @@ initTranslate();
   const stayContainer = document.getElementById('stay-container');
   const newsContainer = document.getElementById('news-container');
 
-  if (stayContainer) {
-    const stays = await fetchStay(6);
+    const stays = await fetchStay(12); // Fetch more to share between sections if needed
     if (stays && stays.length > 0) {
-      stayContainer.innerHTML = '';
-      stays.forEach((stay, index) => {
-        const delay = (index % 3) * 0.1;
-        const imgUrl = stay.image ? stay.image.url + '?fm=webp&w=800&q=80' : '/images/PB182518.jpg';
-        const excerpt = stay.description ? stay.description.substr(0, 40) + '...' : '';
-        const html = `
-          <a href="stay.html" class="content-card fade-in is-visible" style="transition-delay:${delay}s">
-            <div class="card-img-wrap"><img src="${imgUrl}" alt="${stay.title}" /></div>
-            <div class="card-body">
-              <span class="card-tag-en">STAY</span>
-              <h3 class="card-title">${stay.title}</h3>
-              <p class="card-desc">${excerpt}</p>
-              <span class="card-arrow">→</span>
-            </div>
-          </a>
-        `;
-        stayContainer.insertAdjacentHTML('beforeend', html);
-      });
+      if (stayContainer) {
+        stayContainer.innerHTML = '';
+        stays.slice(0, 6).forEach((stay, index) => {
+          const delay = (index % 3) * 0.1;
+          const imgUrl = stay.image ? stay.image.url + '?fm=webp&w=800&q=80' : '/images/PB182518.jpg';
+          const excerpt = stay.description ? stay.description.substr(0, 40) + '...' : '';
+          const html = `
+            <a href="stay.html" class="content-card fade-in is-visible" style="transition-delay:${delay}s">
+              <div class="card-img-wrap"><img src="${imgUrl}" alt="${stay.title}" /></div>
+              <div class="card-body">
+                <span class="card-tag-en">STAY</span>
+                <h3 class="card-title">${stay.title}</h3>
+                <p class="card-desc">${excerpt}</p>
+                <span class="card-arrow">→</span>
+              </div>
+            </a>
+          `;
+          stayContainer.insertAdjacentHTML('beforeend', html);
+        });
+      }
+
+      const recruitmentContainer = document.getElementById('recruitment-container');
+      if (recruitmentContainer) {
+        recruitmentContainer.innerHTML = '';
+        // Use the next set of programs for recruitment section
+        const recruitmentStays = stays.slice(3, 9); 
+        recruitmentStays.forEach((stay, index) => {
+          const delay = (index % 3) * 0.1;
+          const imgUrl = stay.image ? stay.image.url + '?fm=webp&w=800&q=80' : '/images/PB182518.jpg';
+          const excerpt = stay.description ? stay.description.substr(0, 40) + '...' : '';
+          const html = `
+            <a href="stay.html" class="content-card fade-in is-visible" style="transition-delay:${delay}s">
+              <div class="card-img-wrap"><img src="${imgUrl}" alt="${stay.title}" /></div>
+              <div class="card-body">
+                <span class="card-tag-en">RECRUIT</span>
+                <h3 class="card-title">${stay.title}</h3>
+                <p class="card-desc">${excerpt}</p>
+                <span class="card-arrow">→</span>
+              </div>
+            </a>
+          `;
+          recruitmentContainer.insertAdjacentHTML('beforeend', html);
+        });
+      }
     }
   }
 
