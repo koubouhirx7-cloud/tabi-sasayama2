@@ -2,32 +2,41 @@ import { fetchStay } from './cms.js';
 
 (async function initStayList() {
   const container = document.getElementById('stay-grid-container');
+  const recruitmentContainer = document.getElementById('recruitment-grid-container');
   if (!container) return;
 
   const stayData = await fetchStay(100);
 
   function renderStay() {
     container.innerHTML = '';
+    if (recruitmentContainer) recruitmentContainer.innerHTML = '';
     
     if (!stayData || stayData.length === 0) {
       container.innerHTML = '<p style="text-align: center; color: #666; font-size: 1.1rem; padding: 4rem 0;">現在提供中のプログラムはありません。公開をお待ちください。</p>';
       return;
     }
 
-    // カテゴリごとにグループ化 (APIの取得順＝microCMSでの並び順)
-    const categories = [];
+    // カテゴリごとに分けてレンダリング
+    const stayCategories = [];
+    const recruitmentCategories = [];
     const grouped = {};
 
     stayData.forEach(item => {
       const cat = item.category || 'その他プログラム';
       if (!grouped[cat]) {
         grouped[cat] = [];
-        categories.push(cat); // 初めて出たカテゴリを追加
+        // カテゴリ名に「募集」が含まれる場合は募集セクションへ
+        if (cat.includes('募集') || cat.includes('通年')) {
+          recruitmentCategories.push(cat);
+        } else {
+          stayCategories.push(cat);
+        }
       }
       grouped[cat].push(item);
     });
 
-    categories.forEach(cat => {
+    // レンダリング用ヘルパー
+    const renderCategory = (cat, targetContainer) => {
       const sectionEl = document.createElement('div');
       sectionEl.className = 'stay-category-section fade-in is-visible';
       sectionEl.style.marginBottom = '4rem';
@@ -47,7 +56,6 @@ import { fetchStay } from './cms.js';
 
       grouped[cat].forEach((item, index) => {
         const delay = (index % 3) * 0.1;
-        
         const fetchedImg = item.heroImage?.url || item.image?.url;
         const imgUrl = fetchedImg ? fetchedImg + '?fm=webp&w=800&q=80' : '/images/P8217785.jpg';
         
@@ -67,7 +75,7 @@ import { fetchStay } from './cms.js';
         }
 
         const html = `
-          <a href="stay-detail.html?id=${item.id}" class="card program-card" style="animation-delay: ${delay}s">
+          <a href="stay-detail.html?id=${item.id}" class="program-card" style="animation-delay: ${delay}s">
             <div class="program-img">
               <img src="${imgUrl}" alt="${item.title}" />
             </div>
@@ -86,8 +94,20 @@ import { fetchStay } from './cms.js';
       });
 
       sectionEl.appendChild(gridEl);
-      container.appendChild(sectionEl);
-    });
+      targetContainer.appendChild(sectionEl);
+    };
+
+    // 前半 (Stay) を描画
+    stayCategories.forEach(cat => renderCategory(cat, container));
+    
+    // 後半 (Recruitment) を描画
+    if (recruitmentContainer) {
+      recruitmentCategories.forEach(cat => renderCategory(cat, recruitmentContainer));
+      // 募集カテゴリが空の場合のメッセージ
+      if (recruitmentCategories.length === 0) {
+        recruitmentContainer.innerHTML = '<p style="text-align: center; color: #888; padding: 2rem 0;">現在、特定の募集プランはありません。</p>';
+      }
+    }
   }
 
   // 初期描画
