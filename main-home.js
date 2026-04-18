@@ -186,7 +186,7 @@ initTranslate();
 
   const voicesContainer = document.getElementById('voices-list');
   if (voicesContainer) {
-    const voices = await fetchVoices(3);
+    const voices = await fetchVoices(5);
     if (voices && voices.length > 0) {
       voicesContainer.innerHTML = '';
       
@@ -197,16 +197,22 @@ initTranslate();
         const metaText = origin || age || gender ? `【${origin} ${age} ${gender}】` : '';
         const programName = voice.stayProgram || '体験プログラム';
         const rawComment = voice.comment || '';
-        const shortComment = rawComment.length > 60 ? rawComment.substr(0, 60) + '...' : rawComment;
+        const purpose = voice.purpose || '';
+        const shortComment = rawComment.length > 80 ? rawComment.substr(0, 80) + '...' : rawComment;
         
-        const imgStyle = voice.image?.url ? `background-image: url('${voice.image.url}?fm=webp&w=400&h=300&fit=crop'); height: 180px; background-size: cover; background-position: center; border-radius: 4px; margin-bottom: 1rem;` : 'display: none;';
+        const imgHtml = voice.image?.url 
+          ? `<img src="${voice.image.url}?fm=webp&w=400&h=300&fit=crop" loading="lazy" style="width: 100%; height: 180px; object-fit: cover; display: block;">` 
+          : '';
 
         const html = `
-          <div class="voice-card fade-in is-visible" style="background:var(--color-bg); padding:2rem; border-radius:8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align:left;">
-            <div style="${imgStyle}"></div>
-            <div style="font-size: 0.85rem; color: var(--color-primary); margin-bottom: 0.5rem; font-weight: 500;">${metaText}</div>
-            <h4 style="font-size:1.1rem; margin-bottom:0.8rem; font-weight:500;">${programName}</h4>
-            <p style="font-size:0.9rem; color:#444; margin-bottom:1rem; line-height:1.8;">${shortComment}</p>
+          <div class="voice-card fade-in is-visible" style="background:#fff; border: 1px solid #eee; border-radius:4px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); text-align:left; overflow:hidden; display:flex; flex-direction:column; transition: transform 0.3s; cursor: pointer;">
+            ${imgHtml}
+            <div style="padding: 1.5rem; flex: 1; display:flex; flex-direction:column;">
+              <div style="font-size: 0.75rem; color: var(--color-primary); margin-bottom: 0.5rem; letter-spacing: 0.05em; font-weight: 500;">${metaText}</div>
+              <h4 style="font-size:0.95rem; font-weight:700; margin-bottom:0.8rem; line-height:1.5; color:#222;">${programName}</h4>
+              <p style="font-size:0.82rem; color:#555; margin-bottom:1rem; line-height:1.8;">${shortComment}</p>
+              ${purpose ? `<div style="font-size: 0.8rem; color: #777; padding-top: 0.8rem; border-top: 1px solid #f0f0f0; margin-top: auto;"><strong>参加目的:</strong> ${purpose}</div>` : ''}
+            </div>
           </div>
         `;
         voicesContainer.insertAdjacentHTML('beforeend', html);

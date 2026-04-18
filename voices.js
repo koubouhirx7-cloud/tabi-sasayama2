@@ -48,17 +48,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       const purpose = voice.purpose || '';
       
       const imgHtml = voice.image?.url 
-        ? `<img src="${voice.image.url}?fm=webp&w=600&q=80" alt="お客様スナップ" loading="lazy">` 
+        ? `<img src="${voice.image.url}?fm=webp&w=400&h=300&fit=crop" alt="お客様スナップ" loading="lazy">` 
         : '';
 
       const html = `
-        <article class="voice-list-card fade-in" style="transition-delay: ${index * 0.1}s">
+        <article class="voice-list-card fade-in" style="transition-delay: ${index * 0.05}s">
           ${imgHtml}
           <div class="voice-list-content">
-            <div style="font-size: 0.85rem; color: var(--color-primary); margin-bottom: 0.5rem; font-weight: 500;">${metaText}</div>
+            <div class="meta">${metaText}</div>
             <h2 class="program-name">${programName}</h2>
-            ${purpose ? `<p style="font-size: 0.9rem; margin-bottom: 1rem; color: #555;"><strong>参加目的:</strong> ${purpose}</p>` : ''}
             <div class="comment">${comment}</div>
+            ${purpose ? `<div class="purpose"><strong>参加目的:</strong> ${purpose}</div>` : ''}
           </div>
         </article>
       `;
