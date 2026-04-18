@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>旅のアンケート | ウイズささやま</title>
+  <meta name="description" content="丹波篠山での旅体験をお聞かせください。いただいたご感想は今後のプログラム改善に活用させていただきます。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500&family=Klee+One&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg: #F1F0EB;
+      --color-text: #1A1A1A;
+      --color-text-light: #6B6B6B;
+      --color-primary: #8C806A;
+      --color-border: #E8E6E1;
+      --font-base: 'Noto Sans JP', sans-serif;
+      --font-display: 'Noto Serif JP', serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-base);
+      background: var(--color-bg);
+      color: var(--color-text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── ヘッダー ── */
+    .survey-header {
+      background: #fff;
+      border-bottom: 1px solid var(--color-border);
+      padding: 2rem 5%;
+      text-align: center;
+    }
+    .survey-header .logo-ja {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      color: var(--color-text-light);
+      letter-spacing: 0.1em;
+    }
+
+    /* ── ヒーロー ── */
+    .survey-hero {
+      background: linear-gradient(135deg, #3d2c1e 0%, #6b5a45 50%, #8C806A 100%);
+      color: #fff;
+      text-align: center;
+      padding: 5rem 5% 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .survey-hero::before {
+      content: '旅の記憶';
+      font-family: 'Klee One', cursive;
+      font-size: clamp(3rem, 10vw, 8rem);
+      color: rgba(255,255,255,0.06);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+      pointer-events: none;
+      letter-spacing: 0.5em;
+    }
+    .survey-hero-label {
+      font-size: 0.78rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 1.2rem;
+    }
+    .survey-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .survey-hero p {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.9;
+      max-width: 550px;
+      margin: 0 auto;
+    }
+
+    /* ── フォーム本体 ── */
+    .survey-container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 4rem 5% 6rem;
+    }
+
+    .form-card {
+      background: #fff;
+      border: 1px solid var(--color-border);
+      padding: 3rem 3rem 3.5rem;
+    }
+    @media (max-width: 600px) {
+      .form-card { padding: 2rem 1.5rem; }
+    }
+
+    .form-section-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--color-primary);
+      letter-spacing: 0.15em;
+      border-bottom: 1px solid var(--color-border);
+      padding-bottom: 0.8rem;
+      margin-bottom: 2rem;
+      margin-top: 2.5rem;
+    }
+    .form-section-title:first-child { margin-top: 0; }
+
+    .form-group {
+      margin-bottom: 2rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--color-text);
+      margin-bottom: 0.6rem;
+      letter-spacing: 0.05em;
+    }
+    .form-group label .required {
+      display: inline-block;
+      background: var(--color-primary);
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 1px 6px;
+      margin-left: 6px;
+      vertical-align: middle;
+      border-radius: 2px;
+    }
+    .form-group label .optional {
+      display: inline-block;
+      color: var(--color-text-light);
+      font-size: 0.75rem;
+      margin-left: 6px;
+    }
+
+    .form-group select,
+    .form-group input[type="text"],
+    .form-group textarea {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border: 1px solid var(--color-border);
+      border-radius: 0;
+      font-size: 1rem;
+      font-family: var(--font-base);
+      background: #fafaf8;
+      color: var(--color-text);
+      transition: border-color 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .form-group select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238C806A' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+    }
+    .form-group select:focus,
+    .form-group input[type="text"]:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      background: #fff;
+    }
+    .form-group textarea {
+      min-height: 180px;
+      resize: vertical;
+      line-height: 1.8;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 480px) {
+      .form-row { grid-template-columns: 1fr; }
+    }
+
+    /* ── チェックボックス ── */
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+    }
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      accent-color: var(--color-primary);
+      cursor: pointer;
+    }
+    .checkbox-group label {
+      font-size: 0.88rem;
+      color: var(--color-text-light);
+      line-height: 1.6;
+      cursor: pointer;
+    }
+
+    /* ── 送信ボタン ── */
+    .submit-btn {
+      display: block;
+      width: 100%;
+      padding: 1.2rem;
+      background: var(--color-text);
+      color: #fff;
+      border: none;
+      font-family: var(--font-base);
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .submit-btn:hover { background: #333; }
+    .submit-btn:disabled { background: #aaa; cursor: not-allowed; }
+
+    /* ── フッター ── */
+    .survey-footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.8rem;
+      color: var(--color-text-light);
+      border-top: 1px solid var(--color-border);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="survey-header">
+    <div class="logo-ja">一般社団法人 ウイズささやま</div>
+  </header>
+
+  <div class="survey-hero">
+    <p class="survey-hero-label">Guest Survey</p>
+    <h1>旅のアンケート</h1>
+    <p>
+      丹波篠山での旅はいかがでしたか？<br>
+      皆様のご感想をお聞かせいただけると大変うれしいです。<br>
+      いただいたお声は、より良い旅づくりに活用させていただきます。
+    </p>
+  </div>
+
+  <div class="survey-container">
+    <div class="form-card">
+      <form id="surveyForm" action="send_survey.php" method="POST">
+
+        <!-- 基本情報 -->
+        <p class="form-section-title">お客様について</p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="age">年代 <span class="required">必須</span></label>
+            <select id="age" name="age" required>
+              <option value="" disabled selected>-- 選択してください --</option>
+              <option value="10代">10代</option>
+              <option value="20代">20代</option>
+              <option value="30代">30代</option>
+              <option value="40代">40代</option>
+              <option value="50代">50代</option>
+              <option value="60代">60代</option>
+              <option value="70代以上">70代以上</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="gender">性別 <span class="required">必須</span></label>
+            <select id="gender" name="gender" required>
+              <option value="" disabled selected>-- 選択してください --</option>
+              <option value="男性">男性</option>
+              <option value="女性">女性</option>
+              <option value="その他">その他</option>
+              <option value="回答しない">回答しない</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="from_origin">お住まいの地域 <span class="required">必須</span></label>
+          <input type="text" id="from_origin" name="from_origin" placeholder="例: 兵庫県神戸市、東京都など" required>
+        </div>
+
+        <!-- 旅について -->
+        <p class="form-section-title">今回の旅について</p>
+
+        <div class="form-group">
+          <label for="stay_program">参加された旅・プラン名 <span class="required">必須</span></label>
+          <input type="text" id="stay_program" name="stay_program" placeholder="例: 里山農業体験ツアー、丹波篠山一泊プランなど" required>
+        </div>
+
+        <div class="form-group">
+          <label for="purpose">この旅に来られた目的 <span class="required">必須</span></label>
+          <input type="text" id="purpose" name="purpose" placeholder="例: 都会の喧騒から離れてリフレッシュしたかった" required>
+        </div>
+
+        <!-- 感想 -->
+        <p class="form-section-title">旅の感想</p>
+
+        <div class="form-group">
+          <label for="comment">旅を振り返って、ご感想をお聞かせください <span class="required">必須</span></label>
+          <textarea id="comment" name="comment" placeholder="・印象に残ったこと&#10;・ウイズささやまへのご要望など&#10;&#10;どんな小さなことでもお気軽にどうぞ。" required></textarea>
+        </div>
+
+        <!-- スパム対策 -->
+        <div class="checkbox-group">
+          <input type="checkbox" id="not_a_robot" name="not_a_robot" value="yes" required>
+          <label for="not_a_robot">私はロボットではありません（スパム対策のチェックです）</label>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          アンケートを送信する
+        </button>
+
+      </form>
+    </div>
+  </div>
+
+  <footer class="survey-footer">
+    &copy; 2026 一般社団法人ウイズささやま &nbsp;|&nbsp; 〒669-2321 兵庫県丹波篠山市黒岡191
+  </footer>
+
+  <script>
+    const form = document.getElementById('surveyForm');
+    const btn = document.getElementById('submitBtn');
+    form.addEventListener('submit', () => {
+      btn.disabled = true;
+      btn.textContent = '送信中...';
+    });
+  </script>
+</body>
+</html>
