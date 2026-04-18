@@ -182,7 +182,6 @@ initTranslate();
         });
       }
     }
-  }
 
   if (newsContainer) {
     const news = await fetchNews(3);
