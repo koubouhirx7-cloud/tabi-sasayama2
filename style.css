@@ -692,7 +692,7 @@ body, html {
 /* アクティビティ導入 (3カラム Concept) */
 .section-activity-intro {
   background: var(--color-bg);
-  padding: 8rem 5% 10rem;
+  padding: 6rem 5% 8rem;
   text-align: center;
 }
 .intro-lead-gold {
