@@ -130,8 +130,37 @@
         </div>
       </a>
 
+      <!-- Survey Link Card -->
+      <a href="#" class="admin-card" style="border-color: #86efac; background: #f0fdf4;" onclick="copySurveyUrl(event)">
+        <div class="admin-card-icon">🔗</div>
+        <div class="admin-card-title" id="survey-card-title">アンケートURLをコピー</div>
+        <div class="admin-card-desc">
+          お客様にお送りする「アンケートフォーム」のアドレスを取得します。クリックでコピーできます。
+        </div>
+      </a>
+
     </div>
   </main>
 
+  <script>
+    function copySurveyUrl(e) {
+      e.preventDefault();
+      const url = window.location.origin + '/survey.html';
+      const titleEl = document.getElementById('survey-card-title');
+      
+      navigator.clipboard.writeText(url).then(() => {
+        const origText = titleEl.textContent;
+        titleEl.textContent = '✅ コピーしました！';
+        titleEl.style.color = '#15803d';
+        
+        setTimeout(() => {
+          titleEl.textContent = origText;
+          titleEl.style.color = '';
+        }, 2000);
+      }).catch(() => {
+        prompt('以下のURLをコピーして送信してください:', url);
+      });
+    }
+  </script>
 </body>
 </html>
