@@ -38,28 +38,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     container.innerHTML = '';
     
     voices.forEach((voice, index) => {
-      const name = voice.name || 'ゲストさん';
-      const programName = voice.stayProgram?.title || '丹波篠山の体験';
-      const comment = (voice.comment || '').replace(/\n/g, '<br>');
+      const origin = voice.fromOrigin || '';
+      const age = voice.age || '';
+      const gender = voice.gender || '';
+      const metaText = origin || age || gender ? `【${origin} ${age} ${gender}】` : '';
       
-      let starsHtml = '';
-      const score = voice.score || 5;
-      for (let i = 0; i < 5; i++) {
-        starsHtml += i < score ? '<span style="color:#f5c518;">★</span>' : '<span style="color:#ccc;">★</span>';
-      }
-
+      const programName = voice.stayProgram || '体験プログラム';
+      const comment = (voice.comment || '').replace(/\n/g, '<br>');
+      const purpose = voice.purpose || '';
+      
       const imgHtml = voice.image?.url 
-        ? `<img src="${voice.image.url}?fm=webp&w=600&q=80" alt="体験プログラム画像" loading="lazy">` 
+        ? `<img src="${voice.image.url}?fm=webp&w=600&q=80" alt="お客様スナップ" loading="lazy">` 
         : '';
 
       const html = `
         <article class="voice-list-card fade-in" style="transition-delay: ${index * 0.1}s">
           ${imgHtml}
           <div class="voice-list-content">
-            <div class="stars">${starsHtml}</div>
+            <div style="font-size: 0.85rem; color: var(--color-primary); margin-bottom: 0.5rem; font-weight: 500;">${metaText}</div>
             <h2 class="program-name">${programName}</h2>
+            ${purpose ? `<p style="font-size: 0.9rem; margin-bottom: 1rem; color: #555;"><strong>参加目的:</strong> ${purpose}</p>` : ''}
             <div class="comment">${comment}</div>
-            <div class="name-info">— ${name}</div>
           </div>
         </article>
       `;

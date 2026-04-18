@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS管理画面: お客様の声 | ウイズささやま</title>
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    body {
+      background: #f4f5f7;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .admin-header {
+      background: var(--color-primary, #333);
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 10;
+    }
+    .admin-header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-family: var(--font-display, sans-serif);
+    }
+    .btn-save {
+      background: #fff;
+      color: var(--color-primary, #333);
+      border: none;
+      padding: 8px 24px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .btn-save:hover { background: #eee; }
+    .btn-draft { background: #64748b; color: white !important; }
+    .btn-draft:hover { background: #475569; }
+    .btn-unpublish { background: #ef4444; color: white !important; }
+    .btn-unpublish:hover { background: #dc2626; }
+    .admin-layout { display: flex; flex: 1; overflow: hidden; }
+    
+    .admin-pane-left {
+      width: 450px;
+      min-width: 350px;
+      max-width: 60vw;
+      resize: horizontal;
+      background: white;
+      border-right: 1px solid #ddd;
+      padding: 30px;
+      overflow: auto;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+      z-index: 5;
+    }
+    .form-group { margin-bottom: 24px; }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 0.9rem; color: #555; }
+    .form-group input[type="text"],
+    .form-group input[type="date"],
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    .form-group textarea { min-height: 150px; resize: vertical; }
+
+    .image-upload-zone {
+      border: 2px dashed #ccc; border-radius: 6px; padding: 20px;
+      text-align: center; cursor: pointer; transition: 0.2s;
+      background: #fafafa; position: relative;
+    }
+    .image-upload-zone:hover { border-color: var(--color-primary, #333); background: #f0f0f0; }
+    .image-upload-zone input[type="file"] {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0; cursor: pointer;
+    }
+    .image-preview-thumbnail {
+      max-width: 100%; max-height: 150px; margin-top: 10px;
+      display: none; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .btn-remove-image {
+      position: absolute; top: 5px; right: 5px;
+      background: rgba(255,0,0,0.8); color: white; border: none; border-radius: 50%;
+      width: 24px; height: 24px; cursor: pointer; display: none; z-index: 10; font-size: 12px; font-weight: bold;
+    }
+    .btn-remove-image:hover { background: red; }
+    
+    .admin-pane-right {
+      flex: 1; background: #F8F7F3; overflow-y: auto; position: relative;
+    }
+    .preview-header {
+      position: sticky; top: 0; background: rgba(255,255,255,0.9);
+      padding: 10px 20px; border-bottom: 1px solid #ddd; font-size: 0.85rem; color: #888; z-index: 100; backdrop-filter: blur(5px);
+    }
+    
+    /* PREVIEW STYLES */
+    .preview-container { padding: 40px; }
+    .voice-card {
+      background: white; border-radius: 8px; overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08); max-width: 800px; margin: 0 auto;
+      border: 1px solid rgba(0,0,0,0.05); padding: 50px; text-align: center;
+    }
+    .voice-meta { font-size: 0.95rem; color: var(--color-primary, #8C806A); margin-bottom: 10px; letter-spacing: 0.05em; }
+    .voice-headline { font-size: 1.5rem; color: #333; margin-bottom: 30px; font-family: var(--font-display, serif); }
+    .voice-cover { width: 100%; height: auto; max-height: 400px; object-fit: cover; border-radius: 4px; margin-bottom: 30px; }
+    .voice-comment { font-size: 1.05rem; line-height: 1.8; color: #444; text-align: left; background: #fafafa; padding: 30px; border-radius: 8px; margin-bottom: 30px; }
+    .voice-details { text-align: left; border-top: 1px solid #eee; padding-top: 20px; font-size: 0.95rem; color: #666; }
+    .voice-details p { margin-bottom: 8px; }
+    .voice-details strong { color: #333; }
+    
+    header.header { display: none !important; }
+
+    /* Media Modal */
+    .media-modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); z-index: 1000;
+      display: none; justify-content: center; align-items: center; backdrop-filter: blur(4px);
+    }
+    .media-modal-content {
+      background: white; width: 90%; max-width: 800px; height: 80vh;
+      border-radius: 8px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .media-modal-header { padding: 15px 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
+    .media-modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #555; }
+    .media-modal-body { padding: 20px; flex: 1; overflow-y: auto; }
+    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; }
+    .media-grid-item { aspect-ratio: 1; border-radius: 6px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: 0.2s; background: #eee; }
+    .media-grid-item img { width: 100%; height: 100%; object-fit: cover; }
+    .btn-choose-media {
+      display: inline-block; margin-top: 10px; background: #e0e6ed; color: #333;
+      border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.85rem; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="admin-header">
+    <h1>ウイズささやま / お客様の声 入稿画面</h1>
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-save btn-unpublish" id="btn-unpublish" style="display: none;">非表示にする（下書きに戻す）</button>
+      <button class="btn-save btn-draft" id="btn-draft">下書きとして保存する</button>
+      <button class="btn-save" id="btn-submit">お客様の声を公開する</button>
+    </div>
+  </header>
+
+  <div class="admin-layout">
+    <aside class="admin-pane-left">
+      <div class="form-group" style="background: #f0f4ff; padding: 15px; border-radius: 8px; border: 1px dashed #a3bced;">
+        <label style="background: transparent; border: none; padding: 0; margin-bottom: 8px; color: #0056b3;">📝 既存の声を編集する</label>
+        <select id="select-existing" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+          <option value="">-- ✨ 新規作成モード --</option>
+        </select>
+        <small style="display:block; margin-top:5px; color:#555;">※項目を選ぶと自動的に内容がセットされます</small>
+      </div>
+
+      <div class="form-group" style="display: flex; gap: 10px;">
+        <div style="flex:1;">
+            <label for="input-age">年代</label>
+            <select id="input-age">
+            <option value="10代">10代</option>
+            <option value="20代">20代</option>
+            <option value="30代">30代</option>
+            <option value="40代">40代</option>
+            <option value="50代">50代</option>
+            <option value="60代">60代</option>
+            <option value="70代以上">70代以上</option>
+            </select>
+        </div>
+        <div style="flex:1;">
+            <label for="input-gender">性別</label>
+            <select id="input-gender">
+            <option value="男性">男性</option>
+            <option value="女性">女性</option>
+            <option value="その他">その他</option>
+            </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="input-origin">どこから来たか（出身地・居住地）</label>
+        <input type="text" id="input-origin" placeholder="例: 兵庫県神戸市、東京都など">
+      </div>
+
+      <div class="form-group">
+        <label for="input-program">参加した旅はどれ？（プラン名）</label>
+        <input type="text" id="input-program" placeholder="例: 里山体験ツアー" value="里山体験ツアー">
+      </div>
+
+      <div class="form-group">
+        <label for="input-purpose">この度に来た目的</label>
+        <input type="text" id="input-purpose" placeholder="例: 都会の喧騒から離れてリフレッシュしたかったため">
+      </div>
+
+      <div class="form-group">
+        <label>ギャラリー画像 (任意)</label>
+        <div class="image-upload-zone" id="eyecatch-zone">
+          <span id="eyecatch-text" style="color: #666; font-size: 0.9rem;">画像を選択するかドロップ</span>
+          <input type="file" id="input-image" accept="image/png, image/jpeg, image/webp">
+          <img src="" class="image-preview-thumbnail" id="eyecatch-thumbnail">
+          <button class="btn-remove-image" id="btn-remove-image">×</button>
+        </div>
+        <button class="btn-choose-media" id="btn-open-media">📱 過去の画像から選ぶ</button>
+      </div>
+
+      <div class="form-group">
+        <label for="input-comment">旅の感想</label>
+        <textarea id="input-comment" placeholder="ここに感想を入力してください..."></textarea>
+      </div>
+    </aside>
+
+    <main class="admin-pane-right">
+      <div class="preview-header">ライブプレビュー</div>
+      <div class="preview-container">
+        <div class="voice-card">
+          <p class="voice-meta" id="preview-meta">【兵庫県 / 30代 / 女性】</p>
+          <h3 class="voice-headline" id="preview-headline">里山体験ツアー</h3>
+          
+          <img id="preview-cover" src="" class="voice-cover" style="display:none;">
+
+          <div class="voice-comment" id="preview-comment">
+            ここに感想が表示されます。
+          </div>
+
+          <div class="voice-details">
+            <p><strong>目的：</strong> <span id="preview-purpose"></span></p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="media-modal-overlay" id="media-modal">
+    <div class="media-modal-content">
+      <div class="media-modal-header">
+        <h2>過去の画像から選ぶ</h2>
+        <button class="media-modal-close" id="media-modal-close">&times;</button>
+      </div>
+      <div class="media-modal-body" id="media-modal-body">
+        <div class="media-loading">画像を読み込み中...</div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/admin-voices.js"></script>
+</body>
+</html>

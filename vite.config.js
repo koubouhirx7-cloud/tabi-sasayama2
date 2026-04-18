@@ -20,6 +20,7 @@ export default defineConfig({
         adminMenu: resolve(__dirname, 'admin-menu.html'),
         adminNews: resolve(__dirname, 'admin-news.html'),
         adminStay: resolve(__dirname, 'admin-stay.html'),
+        adminVoices: resolve(__dirname, 'admin-voices.html'),
         voices: resolve(__dirname, 'voices.html'),
         customize: resolve(__dirname, 'customize.html'),
       }

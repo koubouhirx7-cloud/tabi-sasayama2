@@ -191,25 +191,22 @@ initTranslate();
       voicesContainer.innerHTML = '';
       
       voices.forEach((voice) => {
-        // Build card for the voice
-        // Suppose schema has: name, stayProgram(object), score(number), comment(text)
-        const name = voice.name || 'ゲストさん';
-        const programName = voice.stayProgram?.title || '丹波篠山の体験';
+        const origin = voice.fromOrigin || '';
+        const age = voice.age || '';
+        const gender = voice.gender || '';
+        const metaText = origin || age || gender ? `【${origin} ${age} ${gender}】` : '';
+        const programName = voice.stayProgram || '体験プログラム';
         const rawComment = voice.comment || '';
         const shortComment = rawComment.length > 60 ? rawComment.substr(0, 60) + '...' : rawComment;
         
-        let starsHtml = '';
-        const score = voice.score || 5;
-        for (let i = 0; i < 5; i++) {
-          starsHtml += i < score ? '<span style="color:#f5c518;">★</span>' : '<span style="color:#ccc;">★</span>';
-        }
+        const imgStyle = voice.image?.url ? `background-image: url('${voice.image.url}?fm=webp&w=400&h=300&fit=crop'); height: 180px; background-size: cover; background-position: center; border-radius: 4px; margin-bottom: 1rem;` : 'display: none;';
 
         const html = `
           <div class="voice-card fade-in is-visible" style="background:var(--color-bg); padding:2rem; border-radius:8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align:left;">
-            <div style="font-size:1.2rem; margin-bottom:0.5rem; letter-spacing:2px;">${starsHtml}</div>
-            <h4 style="font-size:1.1rem; margin-bottom:0.5rem; font-weight:500;">${programName}</h4>
-            <p style="font-size:0.9rem; color:#666; margin-bottom:1.5rem; line-height:1.8;">${shortComment}</p>
-            <div style="font-size:0.85rem; font-weight:500; text-align:right;">— ${name}</div>
+            <div style="${imgStyle}"></div>
+            <div style="font-size: 0.85rem; color: var(--color-primary); margin-bottom: 0.5rem; font-weight: 500;">${metaText}</div>
+            <h4 style="font-size:1.1rem; margin-bottom:0.8rem; font-weight:500;">${programName}</h4>
+            <p style="font-size:0.9rem; color:#444; margin-bottom:1rem; line-height:1.8;">${shortComment}</p>
           </div>
         `;
         voicesContainer.insertAdjacentHTML('beforeend', html);
