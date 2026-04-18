@@ -201,24 +201,24 @@ initTranslate();
         const shortComment = rawComment.length > 80 ? rawComment.substr(0, 80) + '...' : rawComment;
         
         const imgHtml = voice.image?.url 
-          ? `<img src="${voice.image.url}?fm=webp&w=400&h=300&fit=crop" loading="lazy" style="width: 100%; height: 180px; object-fit: cover; display: block;">` 
+          ? `<img src="${voice.image.url}?fm=webp&w=400&h=300&fit=crop" loading="lazy" alt="お客様スナップ">` 
           : '';
 
         const html = `
-          <div class="voice-card fade-in is-visible" style="background:#fff; border: 1px solid #eee; border-radius:4px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); text-align:left; overflow:hidden; display:flex; flex-direction:column; transition: transform 0.3s; cursor: pointer;">
+          <a href="voices.html" class="voice-list-card fade-in is-visible">
             ${imgHtml}
-            <div style="padding: 1.5rem; flex: 1; display:flex; flex-direction:column;">
-              <div style="font-size: 0.75rem; color: var(--color-primary); margin-bottom: 0.5rem; letter-spacing: 0.05em; font-weight: 500;">${metaText}</div>
-              <h4 style="font-size:0.95rem; font-weight:700; margin-bottom:0.8rem; line-height:1.5; color:#222;">${programName}</h4>
-              <p style="font-size:0.82rem; color:#555; margin-bottom:1rem; line-height:1.8;">${shortComment}</p>
-              ${purpose ? `<div style="font-size: 0.8rem; color: #777; padding-top: 0.8rem; border-top: 1px solid #f0f0f0; margin-top: auto;"><strong>参加目的:</strong> ${purpose}</div>` : ''}
+            <div class="voice-list-content">
+              <div class="meta">${metaText}</div>
+              <h2 class="program-name">${programName}</h2>
+              <div class="comment">${shortComment}</div>
+              ${purpose ? `<div class="purpose"><strong>参加目的:</strong> ${purpose}</div>` : ''}
             </div>
-          </div>
+          </a>
         `;
         voicesContainer.insertAdjacentHTML('beforeend', html);
       });
     } else {
-      voicesContainer.innerHTML = '<p style="text-align: center; width: 100%; color: #666;">（ただいまお客様の声を準備中です）</p>';
+      voicesContainer.innerHTML = '<p style="text-align: center; width: 100%; color: #666; grid-column: 1 / -1;">（ただいまお客様の声を準備中です）</p>';
     }
   }
 })();
