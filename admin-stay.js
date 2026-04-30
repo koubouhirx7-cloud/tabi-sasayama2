@@ -382,8 +382,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           unpublishBtn.style.display = detail.publishedAt ? 'block' : 'none';
         }
         
-        if (detail.image && detail.image.url) {
-          currentImageDataUrl = detail.image.url;
+        if (detail.heroImage && detail.heroImage.url) {
+          currentImageDataUrl = detail.heroImage.url;
           p.thumbnail.src = currentImageDataUrl;
           p.thumbnail.style.display = 'inline-block';
           els.removeImgBtn.style.display = 'block';
