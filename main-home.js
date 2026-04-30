@@ -144,7 +144,7 @@ initTranslate();
         const imgUrl = stay.heroImage ? stay.heroImage.url + '?fm=webp&w=800&q=80' : '/images/PB182518.jpg';
         const excerpt = stay.description ? stay.description.substr(0, 40) + '...' : '';
         const html = `
-          <a href="stay.html" class="content-card fade-in is-visible" style="transition-delay:${delay}s">
+          <a href="stay-detail.html?id=${stay.id}" class="content-card fade-in is-visible" style="transition-delay:${delay}s">
             <div class="card-img-wrap"><img src="${imgUrl}" alt="${stay.title}" /></div>
             <div class="card-body">
               <span class="card-tag-en">STAY</span>
