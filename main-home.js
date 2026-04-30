@@ -143,9 +143,25 @@ initTranslate();
         const delay = (index % 3) * 0.1;
         const imgUrl = stay.heroImage ? stay.heroImage.url + '?fm=webp&w=800&q=80' : '/images/PB182518.jpg';
         const excerpt = stay.description ? stay.description.substr(0, 40) + '...' : '';
+        // 通年 or 限定バッジ
+        const datesText = stay.infoDates || '';
+        const isNenchu = datesText.includes('通年') || datesText.trim() === '';
+        const typeBadge = isNenchu
+          ? '<span class="card-badge card-badge--year">通年開催</span>'
+          : '<span class="card-badge card-badge--limited">限定開催</span>';
+        // 日程バッジ（infoDatesが空でなければ表示）
+        const dateBadge = datesText && !isNenchu
+          ? `<span class="card-date-badge">${datesText}</span>`
+          : '';
         const html = `
           <a href="stay-detail.html?id=${stay.id}" class="content-card fade-in is-visible" style="transition-delay:${delay}s">
-            <div class="card-img-wrap"><img src="${imgUrl}" alt="${stay.title}" /></div>
+            <div class="card-img-wrap">
+              <img src="${imgUrl}" alt="${stay.title}" />
+              <div class="card-badges">
+                ${typeBadge}
+                ${dateBadge}
+              </div>
+            </div>
             <div class="card-body">
               <span class="card-tag-en">STAY</span>
               <h3 class="card-title">${stay.title}</h3>

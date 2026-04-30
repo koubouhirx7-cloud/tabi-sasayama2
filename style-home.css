@@ -606,6 +606,47 @@ ul { list-style: none; }
 }
 .content-card:hover .card-arrow { transform: translateX(4px); }
 
+/* カード画像バッジ */
+.card-badges {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  pointer-events: none;
+}
+.card-badge {
+  display: inline-block;
+  font-family: var(--font-label);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  padding: 0.25rem 0.65rem;
+  border-radius: 2px;
+  line-height: 1.4;
+}
+.card-badge--year {
+  background: rgba(107, 130, 90, 0.88);
+  color: #fff;
+}
+.card-badge--limited {
+  background: rgba(160, 90, 60, 0.88);
+  color: #fff;
+}
+.card-date-badge {
+  display: inline-block;
+  font-family: var(--font-label);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  padding: 0.25rem 0.65rem;
+  border-radius: 2px;
+  line-height: 1.4;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
 /* ----------プログラム詳細カード (stay.html と共通) ---------- */
 .program-grid {
   display: grid;
