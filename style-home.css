@@ -287,6 +287,7 @@ ul { list-style: none; }
   font-family: var(--font-label);
   font-size: 0.8rem;
   letter-spacing: 0.35em;
+  margin-right: -0.35em;
   color: rgba(255,255,255,0.8);
 }
 
