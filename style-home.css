@@ -243,6 +243,13 @@ ul { list-style: none; }
   word-break: keep-all;
   overflow-wrap: break-word;
 }
+.hero-logo-img {
+  width: clamp(280px, 55vw, 680px);
+  height: auto;
+  filter: drop-shadow(0 4px 24px rgba(0,0,0,0.5));
+  display: block;
+  margin: 0 auto;
+}
 .hero-sub {
   font-family: var(--font-en);
   font-style: italic;
