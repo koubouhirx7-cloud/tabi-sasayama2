@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Zen+Old+Mincho:wght@400;500;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Barlow+Semi+Condensed:wght@400;500&display=swap');
 
 :root {
-  --color-bg: #F1F0EB;
-  --color-bg-alt: #F8F7F5;
+  --color-bg: #FFFFFF;
+  --color-bg-alt: #FFFFFF;
   --color-text: #222222;
   --color-text-light: #666666;
   --color-primary: #8C806A; /* Elegant earthy beige/gold */
   --color-accent: #6B7A68; /* Subtle sage */
   --color-secondary: #6B7A68; /* alias for accent / sage green */
-  --color-surface: #F8F7F5; /* light warm surface */
+  --color-surface: #FFFFFF; /* light warm surface */
   --color-border: #E8E6E1;
   
   --font-base: 'Shippori Mincho', serif;
