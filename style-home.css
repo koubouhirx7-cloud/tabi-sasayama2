@@ -3,7 +3,7 @@
    chinotabi.jp スタイルの固定背景・スクロール演出
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Barlow+Semi+Condensed:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Zen+Old+Mincho:wght@400;500;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Barlow+Semi+Condensed:wght@300;400;500&display=swap');
 
 /* ── カスタムプロパティ ─────────────────── */
 :root {
@@ -16,8 +16,8 @@
   --color-border:     #E8E6E1;
   --color-white:      #FFFFFF;
 
-  --font-base:    'Noto Sans JP', sans-serif;
-  --font-display: 'Noto Serif JP', serif;
+  --font-base:    'Shippori Mincho', serif;
+  --font-display: 'Zen Old Mincho', serif;
   --font-en:      'Cormorant Garamond', serif;
   --font-label:   'Barlow Semi Condensed', sans-serif;
 
