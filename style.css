@@ -209,11 +209,12 @@ img {
   letter-spacing: 0.1em;
   transition: color 0.5s ease;
   z-index: 1001;
+  white-space: nowrap;
 }
 
 .nav-links {
   display: flex;
-  gap: 3rem;
+  gap: 2rem;
 }
 
 .nav-links a {
@@ -804,4 +805,70 @@ body, html {
   font-size: 1.4rem;
   color: var(--color-primary);
   font-weight: 500;
+}
+
+/* ---------- プログラム詳細カード (stay.html, customize.html 共通) ---------- */
+.program-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+}
+@media (min-width: 768px) {
+  .program-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.program-card {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  padding: 0;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  overflow: hidden;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s;
+}
+.program-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+}
+.program-img {
+  height: 200px;
+  overflow: hidden;
+}
+.program-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+.program-card:hover .program-img img {
+  transform: scale(1.05);
+}
+.program-content {
+  padding: 20px 24px 24px;
+}
+.program-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  font-family: var(--font-display);
+}
+.program-tags {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+.prog-tag {
+  font-size: 0.8rem;
+  color: var(--color-accent);
+  background: rgba(217, 108, 74, 0.1);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+}
+.program-meta {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.2rem;
 }
