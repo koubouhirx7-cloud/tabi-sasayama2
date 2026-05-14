@@ -252,7 +252,7 @@
         <label>メイン画像設定</label>
         <div class="image-upload-zone" id="main-image-zone">
           <span id="eyecatch-text" style="color: #666; font-size: 0.9rem;">クリックまたはドラッグ＆ドロップで画像を選択</span>
-          <input type="file" id="input-image" accept="image/png, image/jpeg, image/webp">
+          <input type="file" id="input-image" accept="image/*">
           <img src="" class="image-preview-thumbnail" id="preview-thumbnail">
           <button class="btn-remove-image" id="btn-remove-image" aria-label="画像を削除" title="画像を削除">×</button>
         </div>
@@ -269,7 +269,7 @@
         <label>写真ギャラリー (複数選択可)</label>
         <div class="image-upload-zone" id="gallery-zone">
           <span style="color: #666; font-size: 0.9rem;">複数枚の画像を選択可能です</span>
-          <input type="file" id="input-gallery" accept="image/png, image/jpeg, image/webp" multiple>
+          <input type="file" id="input-gallery" accept="image/*" multiple>
         </div>
         <div class="gallery-preview-container" id="gallery-thumbnails"></div>
         <button class="btn-choose-media" id="btn-open-media-gallery">📱 過去の画像から追加する</button>
@@ -409,7 +409,7 @@
             <label style="font-weight: bold; font-size: 0.9rem;">写真を選択 (複数可・最大5枚)</label>
             <div class="image-upload-zone" id="pm-upload-zone" style="padding: 15px;">
               <span style="color: #666; font-size: 0.8rem;">クリックして写真を選択</span>
-              <input type="file" id="pm-input-photos" accept="image/jpeg, image/png, image/webp" multiple>
+              <input type="file" id="pm-input-photos" accept="image/*" multiple>
             </div>
             <div class="thumbnail-grid" id="pm-thumbnail-container" style="display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap;"></div>
           </div>
