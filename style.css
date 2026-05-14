@@ -202,14 +202,14 @@ img {
 }
 
 .logo {
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  font-weight: 500;
-  color: var(--color-text);
-  letter-spacing: 0.1em;
-  transition: color 0.5s ease;
+  display: flex;
+  align-items: center;
   z-index: 1001;
-  white-space: nowrap;
+}
+.logo img {
+  height: 90px;
+  width: auto;
+  object-fit: contain;
 }
 
 .nav-links {

@@ -4,7 +4,7 @@ import re
 
 header_html = """    <header class="header">
       <div class="container nav-container">
-        <a href="index.html" class="logo">丹波篠山ローカルトラベル</a>
+        <a href="index.html" class="logo"><img src="/images/logo.png" alt="丹波篠山ローカルトラベル"></a>
         <button class="hamburger" aria-label="メニューを開く">
           <span></span>
           <span></span>
