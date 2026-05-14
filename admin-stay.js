@@ -740,6 +740,36 @@ document.addEventListener('DOMContentLoaded', async () => {
   let pmGeneratedTitle = '';
   let pmGeneratedHtml = '';
 
+  const compressImage = (file, maxWidth = 1000) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = event => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth) {
+            height = Math.round(height * (maxWidth / width));
+            width = maxWidth;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          resolve(canvas.toDataURL('image/jpeg', 0.8));
+        };
+        img.onerror = error => reject(error);
+      };
+      reader.onerror = error => reject(error);
+    });
+  };
+
   const PERSONA_PROMPTS = {
     casual_sns: "あなたは丹波篠山が大好きな現地ライターです。読者に語りかけるような、SNSやブログにぴったりのカジュアルで親しみやすいトーンで記事を書いてください。適度に絵文字😊や感嘆符！を使用してください。",
     poetic_traveler: "あなたは旅情を大切にする旅行作家です。写真から読み取れる情景や空気感、時間の流れをノスタルジックで詩的な表現を用いて文章にしてください。",
@@ -771,12 +801,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     pmThumbnailContainer.innerHTML = '';
 
     for (const file of files) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const base64Data = event.target.result;
+      try {
+        const base64Data = await compressImage(file, 1000);
         pmSelectedImages.push({
           data: base64Data.split(',')[1],
-          mimeType: file.type,
+          mimeType: 'image/jpeg',
           fileName: file.name
         });
         
@@ -794,8 +823,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           pmSelectedImages = pmSelectedImages.filter(img => img.fileName !== file.name);
         });
         pmThumbnailContainer.appendChild(wrapper);
-      };
-      reader.readAsDataURL(file);
+      } catch (err) {
+        console.error('Image compression failed', err);
+      }
     }
   });
 
