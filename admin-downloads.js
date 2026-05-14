@@ -1,6 +1,9 @@
 import { fetchDownloads } from './cms.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
+  const leftPane = document.querySelector('.admin-pane-left');
+  if (leftPane) leftPane.scrollTop = 0;
+
   const titleInput = document.getElementById('input-title');
   const descInput = document.getElementById('input-description');
   
@@ -131,6 +134,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   selectExisting.addEventListener('change', async (e) => {
+    const leftPane = document.querySelector('.admin-pane-left');
+    if (leftPane) leftPane.scrollTop = 0;
+
     const id = e.target.value;
     if (!id) {
       currentEditId = null;

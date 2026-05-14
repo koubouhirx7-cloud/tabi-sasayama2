@@ -1,6 +1,9 @@
 import { fetchAllNews, fetchNewsDetail } from './cms.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
+  const leftPane = document.querySelector('.admin-pane-left');
+  if (leftPane) leftPane.scrollTop = 0;
+
   // Elements: Inputs
   const titleInput = document.getElementById('input-title');
   const dateInput = document.getElementById('input-date');
@@ -234,6 +237,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Handle Edit Selection
   selectExisting.addEventListener('change', async (e) => {
+    const leftPane = document.querySelector('.admin-pane-left');
+    if (leftPane) leftPane.scrollTop = 0;
+
     const id = e.target.value;
     if (!id) {
       // Revert to Create Mode

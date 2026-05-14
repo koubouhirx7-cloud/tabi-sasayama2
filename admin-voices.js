@@ -1,6 +1,9 @@
 import { fetchVoices } from './cms.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
+  const leftPane = document.querySelector('.admin-pane-left');
+  if (leftPane) leftPane.scrollTop = 0;
+
   // Elements: Inputs
   const ageInput = document.getElementById('input-age');
   const genderInput = document.getElementById('input-gender');
@@ -157,6 +160,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Handle Edit Selection
   selectExisting.addEventListener('change', async (e) => {
+    const leftPane = document.querySelector('.admin-pane-left');
+    if (leftPane) leftPane.scrollTop = 0;
+
     const id = e.target.value;
     if (!id) {
       currentEditId = null;
