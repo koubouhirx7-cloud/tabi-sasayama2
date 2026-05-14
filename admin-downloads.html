@@ -141,9 +141,15 @@
       </div>
 
       <div class="form-group">
-        <label for="input-title">ダウンロード資料名 (必須)</label>
-        <input type="text" id="input-title" placeholder="例: 里山探求プログラム">
-        <small style="color: #666;">※ページのボタンと連携するため、指定された名前と一言一句同じにしてください。</small>
+        <label for="input-title">添付する箇所 (必須)</label>
+        <select id="input-title" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; background-color: white;">
+          <option value="">-- PDFを反映させる場所を選択 --</option>
+          <option value="里山探求プログラム">教育プログラム ＞ 里山探求プログラム</option>
+          <option value="里山アカデミー">教育プログラム ＞ 里山アカデミー</option>
+          <option value="海外から丹波篠山へ">カスタムと事例 ＞ 海外から丹波篠山へ</option>
+          <option value="SASAGUIDE">カスタムと事例 ＞ SASAGUIDE</option>
+        </select>
+        <small style="color: #666; display: block; margin-top: 5px;">※実際のサイト上のボタンに連動してPDFが切り替わります。</small>
       </div>
 
       <div class="form-group">
