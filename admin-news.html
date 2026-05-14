@@ -409,13 +409,15 @@
             <label style="font-weight: bold; font-size: 0.9rem;">タイムライン情報（現場メモ）</label>
             <textarea id="pm-input-timeline" placeholder="例:&#10;10:00 出発&#10;11:00 到着" style="width: 100%; height: 100px; padding: 8px; border: 1px solid #ccc;"></textarea>
           </div>
-          <div>
+          <div style="margin-bottom: 15px;">
             <label style="font-weight: bold; font-size: 0.9rem;">ペルソナ</label>
-            <select id="pm-input-persona" style="width: 100%; padding: 8px; border: 1px solid #ccc;">
+            <select id="pm-input-persona" style="width: 100%; padding: 8px; border: 1px solid #ccc; margin-bottom: 10px;">
               <option value="casual_sns">【お知らせ用】カジュアル (ブログ風)</option>
               <option value="formal_report">【お知らせ用】フォーマル (レポート風)</option>
               <option value="poetic_traveler">【お知らせ用】詩的・旅行記 (ノスタルジック)</option>
             </select>
+            <label style="font-weight: bold; font-size: 0.85rem; color: #555;">プロンプト詳細（自由に編集できます）</label>
+            <textarea id="pm-input-system-prompt" style="width: 100%; height: 80px; padding: 8px; border: 1px solid #ccc; font-size: 0.85rem; color: #444; line-height: 1.4;"></textarea>
           </div>
           <button id="pm-btn-generate" style="background: #8b5cf6; color: white; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 4px;">AIに執筆させる</button>
         </div>

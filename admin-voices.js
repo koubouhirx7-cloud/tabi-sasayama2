@@ -347,6 +347,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const pmBtnGenerate = document.getElementById('pm-btn-generate');
   const pmInputTimeline = document.getElementById('pm-input-timeline');
   const pmInputPersona = document.getElementById('pm-input-persona');
+  const pmInputSystemPrompt = document.getElementById('pm-input-system-prompt');
   const pmLoading = document.getElementById('pm-loading');
   const pmOutputContainer = document.getElementById('pm-output-container');
   const pmBtnApply = document.getElementById('pm-btn-apply');
@@ -361,6 +362,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     poetic_traveler: "あなたは旅情を大切にする旅行作家です。写真から読み取れる情景や空気感、時間の流れをノスタルジックで詩的な表現を用いて文章にしてください。",
     customer_voice: "あなたは体験プログラムに参加したお客様（ゲスト）です。提供された写真とメモ（アンケート回答など）をもとに、「お客様の声（体験談）」として、感動したポイントやリアルな感想を、感謝の気持ちを込めた一人称視点の文章で代筆してください。"
   };
+
+  // Initialize and update prompt text area
+  pmInputSystemPrompt.value = PERSONA_PROMPTS[pmInputPersona.value] || PERSONA_PROMPTS.customer_voice;
+  pmInputPersona.addEventListener('change', () => {
+    pmInputSystemPrompt.value = PERSONA_PROMPTS[pmInputPersona.value] || PERSONA_PROMPTS.customer_voice;
+  });
 
   btnOpenPhotoMode.addEventListener('click', (e) => {
     e.preventDefault();
@@ -423,7 +430,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     try {
       const personaId = pmInputPersona.value;
-      const systemPrompt = PERSONA_PROMPTS[personaId] || PERSONA_PROMPTS.customer_voice;
+      const systemPrompt = pmInputSystemPrompt.value.trim() || PERSONA_PROMPTS[personaId] || PERSONA_PROMPTS.customer_voice;
       const personaName = pmInputPersona.options[pmInputPersona.selectedIndex].text;
 
       const response = await fetch('/api/generate-article', {

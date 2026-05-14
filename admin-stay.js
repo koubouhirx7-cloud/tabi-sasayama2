@@ -731,6 +731,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const pmBtnGenerate = document.getElementById('pm-btn-generate');
   const pmInputTimeline = document.getElementById('pm-input-timeline');
   const pmInputPersona = document.getElementById('pm-input-persona');
+  const pmInputSystemPrompt = document.getElementById('pm-input-system-prompt');
   const pmLoading = document.getElementById('pm-loading');
   const pmOutputContainer = document.getElementById('pm-output-container');
   const pmBtnApply = document.getElementById('pm-btn-apply');
@@ -744,6 +745,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     poetic_traveler: "あなたは旅情を大切にする旅行作家です。写真から読み取れる情景や空気感、時間の流れをノスタルジックで詩的な表現を用いて文章にしてください。",
     program_intro: "あなたは丹波篠山の体験・滞在プログラムの企画・案内人です。提供された写真とタイムライン（現場メモ）をもとに、参加者が「ここに行ってみたい！体験してみたい！」と感じるような、魅力的で分かりやすいプログラムの紹介文を生成してください。"
   };
+
+  // Initialize and update prompt text area
+  pmInputSystemPrompt.value = PERSONA_PROMPTS[pmInputPersona.value];
+  pmInputPersona.addEventListener('change', () => {
+    pmInputSystemPrompt.value = PERSONA_PROMPTS[pmInputPersona.value] || PERSONA_PROMPTS.program_intro;
+  });
 
   btnOpenPhotoMode.addEventListener('click', (e) => {
     e.preventDefault();
@@ -806,7 +813,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     try {
       const personaId = pmInputPersona.value;
-      const systemPrompt = PERSONA_PROMPTS[personaId] || PERSONA_PROMPTS.program_intro;
+      const systemPrompt = pmInputSystemPrompt.value.trim() || PERSONA_PROMPTS[personaId] || PERSONA_PROMPTS.program_intro;
       const personaName = pmInputPersona.options[pmInputPersona.selectedIndex].text;
 
       const response = await fetch('/api/generate-article', {

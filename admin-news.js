@@ -437,6 +437,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const pmBtnGenerate = document.getElementById('pm-btn-generate');
   const pmInputTimeline = document.getElementById('pm-input-timeline');
   const pmInputPersona = document.getElementById('pm-input-persona');
+  const pmInputSystemPrompt = document.getElementById('pm-input-system-prompt');
   const pmLoading = document.getElementById('pm-loading');
   const pmOutputContainer = document.getElementById('pm-output-container');
   const pmBtnApply = document.getElementById('pm-btn-apply');
@@ -450,6 +451,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     formal_report: "あなたは公式なイベントのレポーターです。丁寧な言葉遣い（です・ます調）で、参加したプログラムの様子や現地の魅力を客観的かつ魅力的にレポートしてください。",
     poetic_traveler: "あなたは旅情を大切にする旅行作家です。写真から読み取れる情景や空気感、時間の流れをノスタルジックで詩的な表現を用いて文章にしてください。"
   };
+
+  // Initialize and update prompt text area
+  pmInputSystemPrompt.value = PERSONA_PROMPTS[pmInputPersona.value];
+  pmInputPersona.addEventListener('change', () => {
+    pmInputSystemPrompt.value = PERSONA_PROMPTS[pmInputPersona.value] || PERSONA_PROMPTS.casual_sns;
+  });
 
   btnOpenPhotoMode.addEventListener('click', (e) => {
     e.preventDefault();
@@ -512,7 +519,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     try {
       const personaId = pmInputPersona.value;
-      const systemPrompt = PERSONA_PROMPTS[personaId];
+      const systemPrompt = pmInputSystemPrompt.value.trim() || PERSONA_PROMPTS[personaId];
       const personaName = pmInputPersona.options[pmInputPersona.selectedIndex].text;
 
       const response = await fetch('/api/generate-article', {
