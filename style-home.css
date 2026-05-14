@@ -224,6 +224,7 @@ ul { list-style: none; }
   opacity: 0;
   transform: translateY(28px);
   animation: fadeUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+  margin-bottom: 8vh;
 }
 .hero-catch {
   font-family: var(--font-display);
@@ -278,7 +279,7 @@ ul { list-style: none; }
 .scroll-hint-line {
   display: block;
   width: 1px;
-  height: 30px;
+  height: 20px;
   background: rgba(255,255,255,0.8);
   animation: scrollLine 2s 1.8s infinite;
 }
