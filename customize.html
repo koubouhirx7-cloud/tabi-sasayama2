@@ -104,9 +104,9 @@
   </head>
   <body>
     <!-- HEADER -->
-                        <header class="header">
+                                <header class="header">
       <div class="container nav-container">
-        <a href="index.html" class="logo">丹波篠山に滞在する</a>
+        <a href="index.html" class="logo">丹波篠山ローカルトラベル</a>
         <button class="hamburger" aria-label="メニューを開く">
           <span></span>
           <span></span>
@@ -114,11 +114,11 @@
         </button>
         <nav class="nav-links">
           <a href="index.html">ホーム</a>
-          <a href="stay.html">体験・滞在</a>
+          <a href="stay.html">体験と滞在</a>
+          <a href="education.html">教育プログラム</a>
+          <a href="customize.html">カスタムと事例</a>
           <a href="news.html">最新情報</a>
-          <a href="voices.html">お客様の声</a>
-          <a href="about.html">旅づくり</a>
-          <a href="company.html">会社案内</a>
+          <a href="about.html">旅作り</a>
           <a href="contact.html">お問い合わせ</a>
         </nav>
       </div>
@@ -133,75 +133,69 @@
         <div class="container" style="max-width: 800px;">
           
           <div class="info-box fade-in" style="margin-top: -60px; position: relative; z-index: 10;">
-            <h2>カスタマイズ相談</h2>
-            <p class="text-center mb-md" style="color: #666;">
-              ご希望の体験内容、日程・人数に応じたオーダーメイドの農村生活プログラムをご提案します。<br>お気軽にご相談ください。
+            <h2>カスタムメイドと事例</h2>
+            <p class="text-center mb-md" style="color: #666; line-height: 1.8;">
+              主に旅行会社や団体向けの内容です。お気軽にお問い合わせください。
             </p>
+
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 3rem;">
+              <a href="/pdf/inbound.pdf" target="_blank" class="btn-outline pdf-link" data-pdf-title="海外から丹波篠山へ">海外から丹波篠山へ（PDF詳細）</a>
+              <a href="/pdf/sasaguide.pdf" target="_blank" class="btn-outline pdf-link" data-pdf-title="SASAGUIDE">SASAGUIDE（PDF詳細）</a>
+            </div>
+
+            <hr style="border: none; border-top: 1px dashed var(--color-border); margin: 2rem 0;">
             
-            <form action="send_mail.php" method="POST" class="contact-form">
-              <div class="form-group">
-                <label for="name">お名前 <span class="required">必須</span></label>
-                <input type="text" id="name" name="name" required placeholder="例：山田 太郎">
-              </div>
-              
-              <div class="form-group">
-                <label for="kana">ふりがな <span class="required">必須</span></label>
-                <input type="text" id="kana" name="kana" required placeholder="例：やまだ たろう">
-              </div>
+            <h3 style="color: var(--color-primary); margin-bottom: 2rem; font-family: var(--font-display); text-align: center;">今までの旅づくり<br><span style="font-size: 0.8rem; color: #666;">（ここに参加者の声）</span></h3>
 
-              <div class="form-group">
-                <label for="tel">TEL <span class="required">必須</span></label>
-                <input type="tel" id="tel" name="tel" required placeholder="例：090-1234-5678">
-              </div>
+            <div class="program-grid" style="margin-top: 2rem;">
+              <!-- 龍谷大学経営学部 合宿ゼミツアー 2025 -->
+              <a href="voices.html" class="program-card">
+                <div class="program-img">
+                  <img src="/images/P1011277.jpg" alt="龍谷大学" loading="lazy">
+                </div>
+                <div class="program-content">
+                  <h4 class="program-title" style="font-size: 1.1rem; margin-bottom: 1rem;">龍谷大学経営学部 合宿ゼミツアー 2025</h4>
+                  <span class="btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;">≫詳細ページ</span>
+                </div>
+              </a>
 
-              <div class="form-group">
-                <label for="email">メールアドレス <span class="required">必須</span></label>
-                <input type="email" id="email" name="email" required placeholder="例：info@example.com">
-              </div>
+              <!-- 茶緑　女子ツアー 2025 -->
+              <a href="voices.html" class="program-card">
+                <div class="program-img">
+                  <img src="/images/P8207341.jpg" alt="茶緑 女子ツアー" loading="lazy">
+                </div>
+                <div class="program-content">
+                  <h4 class="program-title" style="font-size: 1.1rem; margin-bottom: 1rem;">茶緑 女子ツアー 2025</h4>
+                  <span class="btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;">≫詳細ページ</span>
+                </div>
+              </a>
 
-              <hr style="border: none; border-top: 1px dashed var(--color-border); margin: 2rem 0;">
-              
-              <h3 style="color: var(--color-primary); margin-bottom: 1rem; font-family: var(--font-display);">カスタマイズ相談詳細</h3>
+              <!-- タコマ高校 教育ツアー 2025 -->
+              <a href="voices.html" class="program-card">
+                <div class="program-img">
+                  <img src="/images/P6170310.jpg" alt="タコマ高校" loading="lazy">
+                </div>
+                <div class="program-content">
+                  <h4 class="program-title" style="font-size: 1.1rem; margin-bottom: 1rem;">タコマ高校 教育ツアー 2025</h4>
+                  <span class="btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;">≫詳細ページ</span>
+                </div>
+              </a>
 
-              <div class="form-group">
-                <label for="date1">希望日 <span class="required">必須</span></label>
-                <input type="text" id="date1" name="date1" required placeholder="第1希望日 (例: 2026年10月10日)">
-                <input type="text" id="date2" name="date2" placeholder="第2希望日 (例: 2026年10月11日)" style="margin-top: 0.5rem;">
-              </div>
+              <!-- 阪急さんとSEE 教育ツアー 2025 -->
+              <a href="voices.html" class="program-card">
+                <div class="program-img">
+                  <img src="/images/PB182552.jpg" alt="阪急さんとSEE" loading="lazy">
+                </div>
+                <div class="program-content">
+                  <h4 class="program-title" style="font-size: 1.1rem; margin-bottom: 1rem;">阪急さんとSEE 教育ツアー 2025</h4>
+                  <span class="btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;">≫詳細ページ</span>
+                </div>
+              </a>
+            </div>
 
-              <div class="form-group">
-                <label for="duration">所要時間 <span class="required">必須</span></label>
-                <input type="text" id="duration" name="duration" required placeholder="例: 4時間 / 1泊2日">
-              </div>
-
-              <div class="form-group">
-                <label for="people">想定人数 <span class="required">必須</span></label>
-                <input type="text" id="people" name="people" required placeholder="例: 大人2名、子供2名">
-              </div>
-                
-              <div class="form-group">
-                <label for="budget">ご予算 <span class="required">必須</span></label>
-                <input type="text" id="budget" name="budget" required placeholder="例: 1人あたり 15,000円など">
-              </div>
-
-              <div class="form-group">
-                <label for="message">その他ご要望</label>
-                <textarea id="message" name="message" rows="5" placeholder="アレルギーの有無や、とくに体験したいことなどをご記入ください。"></textarea>
-              </div>
-
-              <!-- スパム対策用 ロボット検証チェックボックス -->
-              <div class="form-group text-center" style="margin: 2rem 0; padding: 1.5rem; background: #f9f9f9; border-radius: 8px; border: 1px solid #eee;">
-                <label style="display: inline-flex; align-items: center; cursor: pointer; font-weight: normal; color: #333; font-size: 1.1rem;">
-                  <input type="checkbox" name="not_a_robot" value="yes" required style="width: 24px; height: 24px; margin-right: 12px; cursor: pointer;">
-                  私はロボットではありません <span class="required">必須</span>
-                </label>
-                <p style="font-size: 0.85rem; color: #888; margin-top: 10px; margin-bottom: 0;">※スパム対策のため、送信前に必ずチェックを入れてください。</p>
-              </div>
-
-              <div class="text-center mt-md">
-                <button type="submit" class="btn btn-primary" style="padding: 1rem 4rem; font-size: 1.2rem;">送信する</button>
-              </div>
-            </form>
+            <div class="text-center" style="margin-top: 3rem;">
+              <a href="contact.html" class="btn btn-primary" style="padding: 1rem 3rem;">お問い合わせはこちら</a>
+            </div>
           </div>
 
         </div>
@@ -209,7 +203,7 @@
     </main>
 
     <!-- FOOTER -->
-                        <footer class="footer">
+                                <footer class="footer">
       <div class="container">
         <div class="footer-top">
           <div class="footer-left">
@@ -224,28 +218,22 @@
           
           <div class="footer-nav">
             <div class="footer-nav-col">
-              <h4>メニュー</h4>
-              <a href="index.html">ホーム</a>
-              <a href="stay.html">体験・滞在</a>
-              <a href="news.html">最新情報</a>
-          <a href="voices.html">お客様の声</a>
-              <a href="about.html">旅づくり</a>
-              <a href="company.html">会社案内</a>
-              <a href="contact.html">お問い合わせ</a>
+              <a href="index.html">＞ホーム</a>
+              <a href="stay.html">＞体験と滞在</a>
+              <a href="education.html">＞教育プログラム</a>
+              <a href="customize.html">＞カスタムと事例</a>
+              <a href="news.html">＞最新情報</a>
+              <a href="about.html">＞旅作り</a>
+              <a href="contact.html">＞お問い合わせ</a>
             </div>
             <div class="footer-nav-col">
-              <h4>プログラム</h4>
-              <a href="download.html">Download</a>
+              <a href="company.html">＞会社案内・旅行業登録</a>
+              <a href="#">＞プライバシーポリシー</a>
             </div>
           </div>
         </div>
         
         <div class="footer-bottom">
-          <div class="footer-legal">
-            <a href="#">旅行業約款</a> &nbsp;|&nbsp; 
-            <a href="#">旅行条件書</a> &nbsp;|&nbsp; 
-            <a href="#">プライバシーポリシー</a>
-          </div>
           <p>&copy; 2026 一般社団法人ウイズささやま All Rights Reserved.</p>
         </div>
       </div>

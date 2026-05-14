@@ -1,4 +1,5 @@
 import { initTranslate } from "./translate.js";
+import { fetchDownloads } from "./cms.js";
 initTranslate();
 // Navigation scroll effect
 const header = document.querySelector('.header');
@@ -93,3 +94,31 @@ window.addEventListener('scroll', () => {
 
 // Trigger once on load
 updateParallax();
+
+// Inject dynamic PDF links from CMS
+async function injectDynamicPDFLinks() {
+  const pdfLinks = document.querySelectorAll('.pdf-link');
+  if (pdfLinks.length === 0) return;
+
+  try {
+    const downloads = await fetchDownloads(100);
+    pdfLinks.forEach(link => {
+      const targetTitle = link.getAttribute('data-pdf-title');
+      if (targetTitle) {
+        // Find the download matching the title
+        const match = downloads.find(dl => dl.title === targetTitle);
+        if (match && match.file) {
+          if (typeof match.file === 'object' && match.file.url) {
+            link.href = match.file.url;
+          } else if (typeof match.file === 'string') {
+            link.href = match.file;
+          }
+        }
+      }
+    });
+  } catch (err) {
+    console.error('Failed to inject dynamic PDF links:', err);
+  }
+}
+
+injectDynamicPDFLinks();
