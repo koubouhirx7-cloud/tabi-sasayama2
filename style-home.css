@@ -160,8 +160,7 @@ ul { list-style: none; }
 
 /* 全画面セクション（背景画像付き） */
 .fullscreen-section {
-  height: 100vh;
-  min-height: 600px;
+  min-height: 100vh;
   position: relative;
   display: flex;
   align-items: center;
@@ -179,7 +178,7 @@ ul { list-style: none; }
 .section-inner {
   position: relative;
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 6%;
