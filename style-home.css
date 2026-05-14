@@ -77,9 +77,7 @@ ul { list-style: none; }
   object-fit: contain;
   transition: filter 0.5s;
 }
-.header:not(.scrolled) .logo img {
-  filter: brightness(0) invert(1);
-}
+
 
 .nav-links {
   display: flex;
