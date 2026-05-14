@@ -264,13 +264,13 @@ ul { list-style: none; }
 /* スクロールヒント */
 .scroll-hint {
   position: absolute;
-  bottom: 2rem;
+  bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.4rem;
   opacity: 0;
   animation: fadeUp 1s 1.5s forwards;
   z-index: 20;
@@ -278,7 +278,7 @@ ul { list-style: none; }
 .scroll-hint-line {
   display: block;
   width: 1px;
-  height: 50px;
+  height: 30px;
   background: rgba(255,255,255,0.8);
   animation: scrollLine 2s 1.8s infinite;
 }
