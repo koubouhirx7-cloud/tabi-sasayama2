@@ -432,10 +432,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       const personaId = pmInputPersona.value;
       const systemPrompt = pmInputSystemPrompt.value.trim() || PERSONA_PROMPTS[personaId] || PERSONA_PROMPTS.customer_voice;
       const personaName = pmInputPersona.options[pmInputPersona.selectedIndex].text;
+      
+      const apiKey = localStorage.getItem('geminiApiKey') || '';
 
       const response = await fetch('/api/generate-article', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-Gemini-API-Key': apiKey
+        },
         body: JSON.stringify({
           images: pmSelectedImages,
           timelineText,
