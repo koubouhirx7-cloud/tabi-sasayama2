@@ -51,21 +51,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Utility: Image Compression
   function compressImage(file, maxSize = 1200, quality = 0.8) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
+      reader.onerror = (err) => { console.error('FileReader error:', err); reject(err); };
       reader.onload = (e) => {
         const img = new Image();
+        img.onerror = (err) => { console.error('Image load error:', err); reject(new Error('画像の読み込みに失敗しました')); };
         img.onload = () => {
-          let { width, height } = img;
-          if (width > maxSize || height > maxSize) {
-            if (width > height) { height = Math.round(height * maxSize / width); width = maxSize; } 
-            else { width = Math.round(width * maxSize / height); height = maxSize; }
+          try {
+            let { width, height } = img;
+            if (width > maxSize || height > maxSize) {
+              if (width > height) { height = Math.round(height * maxSize / width); width = maxSize; } 
+              else { width = Math.round(width * maxSize / height); height = maxSize; }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width; canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          } catch (canvasErr) {
+            console.error('Canvas error:', canvasErr);
+            reject(canvasErr);
           }
-          const canvas = document.createElement('canvas');
-          canvas.width = width; canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL('image/jpeg', quality));
         };
         img.src = e.target.result;
       };
@@ -104,12 +111,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     const file = e.target.files[0];
     if (file) {
       eyecatchText.textContent = '圧縮処理中...';
-      currentEyecatchDataUrl = await compressImage(file);
-      thumbnailPreview.src = currentEyecatchDataUrl;
-      thumbnailPreview.style.display = 'inline-block';
-      removeImgBtn.style.display = 'block';
-      eyecatchText.style.display = 'none';
-      updatePreview();
+      try {
+        currentEyecatchDataUrl = await compressImage(file);
+        thumbnailPreview.src = currentEyecatchDataUrl;
+        thumbnailPreview.style.display = 'inline-block';
+        removeImgBtn.style.display = 'block';
+        eyecatchText.style.display = 'none';
+        updatePreview();
+      } catch (err) {
+        console.error('Image compression failed:', err);
+        eyecatchText.textContent = '画像を選択するかドロップ';
+        alert('画像の圧縮に失敗しました。別の画像をお試しください。\n詳細: ' + err.message);
+      }
     }
   });
 

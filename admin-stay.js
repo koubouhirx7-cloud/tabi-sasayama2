@@ -122,21 +122,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Utility: Image Compression
   function compressImage(file, maxSize = 1200, quality = 0.8) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
+      reader.onerror = (err) => { console.error('FileReader error:', err); reject(err); };
       reader.onload = (e) => {
         const img = new Image();
+        img.onerror = (err) => { console.error('Image load error:', err); reject(new Error('画像の読み込みに失敗しました')); };
         img.onload = () => {
-          let { width, height } = img;
-          if (width > maxSize || height > maxSize) {
-            if (width > height) { height = Math.round(height * maxSize / width); width = maxSize; } 
-            else { width = Math.round(width * maxSize / height); height = maxSize; }
+          try {
+            let { width, height } = img;
+            if (width > maxSize || height > maxSize) {
+              if (width > height) { height = Math.round(height * maxSize / width); width = maxSize; } 
+              else { width = Math.round(width * maxSize / height); height = maxSize; }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width; canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          } catch (canvasErr) {
+            console.error('Canvas error:', canvasErr);
+            reject(canvasErr);
           }
-          const canvas = document.createElement('canvas');
-          canvas.width = width; canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL('image/jpeg', quality));
         };
         img.src = e.target.result;
       };
@@ -262,12 +269,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     const file = e.target.files[0];
     if (file) {
       els.eyecatchText.textContent = '圧縮処理中...';
-      currentImageDataUrl = await compressImage(file);
-      p.thumbnail.src = currentImageDataUrl;
-      p.thumbnail.style.display = 'inline-block';
-      els.removeImgBtn.style.display = 'block';
-      els.eyecatchText.style.display = 'none';
-      updatePreview();
+      try {
+        currentImageDataUrl = await compressImage(file);
+        p.thumbnail.src = currentImageDataUrl;
+        p.thumbnail.style.display = 'inline-block';
+        els.removeImgBtn.style.display = 'block';
+        els.eyecatchText.style.display = 'none';
+        updatePreview();
+      } catch (err) {
+        console.error('Image compression failed:', err);
+        els.eyecatchText.textContent = 'クリックまたはドラッグ＆ドロップで画像を選択';
+        alert('画像の圧縮に失敗しました。別の画像をお試しください。\n詳細: ' + err.message);
+      }
     }
   });
 
@@ -746,35 +759,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let pmGeneratedTitle = '';
   let pmGeneratedHtml = '';
 
-  const pmCompressImage = (file, maxWidth = 1000) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = event => {
-        const img = new Image();
-        img.src = event.target.result;
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          let width = img.width;
-          let height = img.height;
-
-          if (width > maxWidth) {
-            height = Math.round(height * (maxWidth / width));
-            width = maxWidth;
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          
-          resolve(canvas.toDataURL('image/jpeg', 0.8));
-        };
-        img.onerror = error => reject(error);
-      };
-      reader.onerror = error => reject(error);
-    });
-  };
+  // Reuse compressImage for photo mode (no separate function needed)
 
   const PERSONA_PROMPTS = {
     casual_sns: "あなたは丹波篠山が大好きな現地ライターです。読者に語りかけるような、SNSやブログにぴったりのカジュアルで親しみやすいトーンで記事を書いてください。適度に絵文字😊や感嘆符！を使用してください。",
@@ -808,7 +793,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     for (const file of files) {
       try {
-        const base64Data = await pmCompressImage(file, 1000);
+        const base64Data = await compressImage(file, 1000, 0.8);
         pmSelectedImages.push({
           data: base64Data.split(',')[1],
           mimeType: 'image/jpeg',
