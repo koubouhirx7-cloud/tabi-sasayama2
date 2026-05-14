@@ -337,4 +337,148 @@ document.addEventListener('DOMContentLoaded', async () => {
   mediaModal.addEventListener('click', (e) => {
     if (e.target === mediaModal) mediaModal.style.display = 'none';
   });
+  // --- Photo Mode Logic ---
+  const btnOpenPhotoMode = document.getElementById('btn-open-photo-mode');
+  const photoModeModal = document.getElementById('photo-mode-modal');
+  const photoModeClose = document.getElementById('photo-mode-modal-close');
+  const pmUploadZone = document.getElementById('pm-upload-zone');
+  const pmInputPhotos = document.getElementById('pm-input-photos');
+  const pmThumbnailContainer = document.getElementById('pm-thumbnail-container');
+  const pmBtnGenerate = document.getElementById('pm-btn-generate');
+  const pmInputTimeline = document.getElementById('pm-input-timeline');
+  const pmInputPersona = document.getElementById('pm-input-persona');
+  const pmLoading = document.getElementById('pm-loading');
+  const pmOutputContainer = document.getElementById('pm-output-container');
+  const pmBtnApply = document.getElementById('pm-btn-apply');
+
+  let pmSelectedImages = [];
+  let pmGeneratedTitle = '';
+  let pmGeneratedHtml = '';
+
+  const PERSONA_PROMPTS = {
+    casual_sns: "あなたは丹波篠山が大好きな現地ライターです。読者に語りかけるような、SNSやブログにぴったりのカジュアルで親しみやすいトーンで記事を書いてください。適度に絵文字😊や感嘆符！を使用してください。",
+    formal_report: "あなたは公式なイベントのレポーターです。丁寧な言葉遣い（です・ます調）で、参加したプログラムの様子や現地の魅力を客観的かつ魅力的にレポートしてください。",
+    poetic_traveler: "あなたは旅情を大切にする旅行作家です。写真から読み取れる情景や空気感、時間の流れをノスタルジックで詩的な表現を用いて文章にしてください。",
+    customer_voice: "あなたは体験プログラムに参加したお客様（ゲスト）です。提供された写真とメモ（アンケート回答など）をもとに、「お客様の声（体験談）」として、感動したポイントやリアルな感想を、感謝の気持ちを込めた一人称視点の文章で代筆してください。"
+  };
+
+  btnOpenPhotoMode.addEventListener('click', (e) => {
+    e.preventDefault();
+    photoModeModal.style.display = 'flex';
+  });
+  
+  photoModeClose.addEventListener('click', () => photoModeModal.style.display = 'none');
+  
+  pmUploadZone.addEventListener('click', () => pmInputPhotos.click());
+
+  pmInputPhotos.addEventListener('change', async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length > 5) {
+      alert('推奨枚数の上限(5枚)を超えています。最初の5枚のみ処理します。');
+      files.splice(5);
+    }
+    pmSelectedImages = [];
+    pmThumbnailContainer.innerHTML = '';
+
+    for (const file of files) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64Data = event.target.result;
+        pmSelectedImages.push({
+          data: base64Data.split(',')[1],
+          mimeType: file.type,
+          fileName: file.name
+        });
+        
+        const wrapper = document.createElement('div');
+        wrapper.style.position = 'relative';
+        wrapper.style.width = '60px';
+        wrapper.style.height = '60px';
+        wrapper.innerHTML = `
+          <img src="${base64Data}" style="width:100%; height:100%; object-fit:cover; border-radius:4px;">
+          <button style="position:absolute; top:-5px; right:-5px; background:red; color:white; border:none; border-radius:50%; cursor:pointer;">×</button>
+        `;
+        wrapper.querySelector('button').addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          wrapper.remove();
+          pmSelectedImages = pmSelectedImages.filter(img => img.fileName !== file.name);
+        });
+        pmThumbnailContainer.appendChild(wrapper);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  pmBtnGenerate.addEventListener('click', async () => {
+    if (pmSelectedImages.length === 0) {
+      alert('写真を最低1枚選択してください。'); return;
+    }
+    const timelineText = pmInputTimeline.value.trim();
+    if (!timelineText) {
+      alert('メモを入力してください。'); return;
+    }
+
+    pmLoading.style.display = 'flex';
+    pmBtnApply.style.display = 'none';
+    
+    try {
+      const personaId = pmInputPersona.value;
+      const systemPrompt = PERSONA_PROMPTS[personaId] || PERSONA_PROMPTS.customer_voice;
+      const personaName = pmInputPersona.options[pmInputPersona.selectedIndex].text;
+
+      const response = await fetch('/api/generate-article', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          images: pmSelectedImages,
+          timelineText,
+          personaName,
+          systemPrompt
+        })
+      });
+
+      if (!response.ok) throw new Error('API Error');
+      const data = await response.json();
+      
+      pmGeneratedTitle = data.title;
+      // Extract main text without title or tags for customer voice
+      let htmlBody = data.story;
+      // Strip HTML if necessary for textarea, but let's just use plain text conversion
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = htmlBody.replace(/<br>/g, '\n').replace(/<\/p><p>/g, '\n\n');
+      pmGeneratedHtml = tempDiv.textContent || tempDiv.innerText || "";
+      
+      pmOutputContainer.innerHTML = `
+        <div style="font-size:0.95rem; line-height:1.6; white-space:pre-wrap;">${pmGeneratedHtml}</div>
+      `;
+      pmBtnApply.style.display = 'block';
+
+    } catch (err) {
+      alert('生成に失敗しました: ' + err.message);
+    } finally {
+      pmLoading.style.display = 'none';
+    }
+  });
+
+  pmBtnApply.addEventListener('click', () => {
+    if (pmGeneratedHtml) {
+      commentInput.value = pmGeneratedHtml + (commentInput.value ? '\n\n' + commentInput.value : '');
+    }
+    
+    // Set eyecatch image to the first uploaded photo
+    if (pmSelectedImages.length > 0) {
+        const firstImage = pmSelectedImages[0];
+        const dataUrl = `data:${firstImage.mimeType};base64,${firstImage.data}`;
+        currentEyecatchDataUrl = dataUrl;
+        thumbnailPreview.src = dataUrl;
+        thumbnailPreview.style.display = 'inline-block';
+        removeImgBtn.style.display = 'block';
+        eyecatchText.style.display = 'none';
+    }
+
+    updatePreview();
+    photoModeModal.style.display = 'none';
+    alert('入力フォームに反映しました！');
+  });
+
 });

@@ -721,4 +721,145 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (e.target === mediaModal) mediaModal.style.display = 'none';
   });
 
+  // --- Photo Mode Logic ---
+  const btnOpenPhotoMode = document.getElementById('btn-open-photo-mode');
+  const photoModeModal = document.getElementById('photo-mode-modal');
+  const photoModeClose = document.getElementById('photo-mode-modal-close');
+  const pmUploadZone = document.getElementById('pm-upload-zone');
+  const pmInputPhotos = document.getElementById('pm-input-photos');
+  const pmThumbnailContainer = document.getElementById('pm-thumbnail-container');
+  const pmBtnGenerate = document.getElementById('pm-btn-generate');
+  const pmInputTimeline = document.getElementById('pm-input-timeline');
+  const pmInputPersona = document.getElementById('pm-input-persona');
+  const pmLoading = document.getElementById('pm-loading');
+  const pmOutputContainer = document.getElementById('pm-output-container');
+  const pmBtnApply = document.getElementById('pm-btn-apply');
+
+  let pmSelectedImages = [];
+  let pmGeneratedTitle = '';
+  let pmGeneratedHtml = '';
+
+  const PERSONA_PROMPTS = {
+    casual_sns: "あなたは丹波篠山が大好きな現地ライターです。読者に語りかけるような、SNSやブログにぴったりのカジュアルで親しみやすいトーンで記事を書いてください。適度に絵文字😊や感嘆符！を使用してください。",
+    poetic_traveler: "あなたは旅情を大切にする旅行作家です。写真から読み取れる情景や空気感、時間の流れをノスタルジックで詩的な表現を用いて文章にしてください。",
+    program_intro: "あなたは丹波篠山の体験・滞在プログラムの企画・案内人です。提供された写真とタイムライン（現場メモ）をもとに、参加者が「ここに行ってみたい！体験してみたい！」と感じるような、魅力的で分かりやすいプログラムの紹介文を生成してください。"
+  };
+
+  btnOpenPhotoMode.addEventListener('click', (e) => {
+    e.preventDefault();
+    photoModeModal.style.display = 'flex';
+  });
+  
+  photoModeClose.addEventListener('click', () => photoModeModal.style.display = 'none');
+  
+  pmUploadZone.addEventListener('click', () => pmInputPhotos.click());
+
+  pmInputPhotos.addEventListener('change', async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length > 5) {
+      alert('推奨枚数の上限(5枚)を超えています。最初の5枚のみ処理します。');
+      files.splice(5);
+    }
+    pmSelectedImages = [];
+    pmThumbnailContainer.innerHTML = '';
+
+    for (const file of files) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64Data = event.target.result;
+        pmSelectedImages.push({
+          data: base64Data.split(',')[1],
+          mimeType: file.type,
+          fileName: file.name
+        });
+        
+        const wrapper = document.createElement('div');
+        wrapper.style.position = 'relative';
+        wrapper.style.width = '60px';
+        wrapper.style.height = '60px';
+        wrapper.innerHTML = `
+          <img src="${base64Data}" style="width:100%; height:100%; object-fit:cover; border-radius:4px;">
+          <button style="position:absolute; top:-5px; right:-5px; background:red; color:white; border:none; border-radius:50%; cursor:pointer;">×</button>
+        `;
+        wrapper.querySelector('button').addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          wrapper.remove();
+          pmSelectedImages = pmSelectedImages.filter(img => img.fileName !== file.name);
+        });
+        pmThumbnailContainer.appendChild(wrapper);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  pmBtnGenerate.addEventListener('click', async () => {
+    if (pmSelectedImages.length === 0) {
+      alert('写真を最低1枚選択してください。'); return;
+    }
+    const timelineText = pmInputTimeline.value.trim();
+    if (!timelineText) {
+      alert('メモを入力してください。'); return;
+    }
+
+    pmLoading.style.display = 'flex';
+    pmBtnApply.style.display = 'none';
+    
+    try {
+      const personaId = pmInputPersona.value;
+      const systemPrompt = PERSONA_PROMPTS[personaId] || PERSONA_PROMPTS.program_intro;
+      const personaName = pmInputPersona.options[pmInputPersona.selectedIndex].text;
+
+      const response = await fetch('/api/generate-article', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          images: pmSelectedImages,
+          timelineText,
+          personaName,
+          systemPrompt
+        })
+      });
+
+      if (!response.ok) throw new Error('API Error');
+      const data = await response.json();
+      
+      pmGeneratedTitle = data.title;
+      pmGeneratedHtml = `<h2>${data.title}</h2>\n${data.story}`;
+      
+      pmOutputContainer.innerHTML = `
+        <h3 style="font-size:1.1rem; margin-top:0; color:#4c1d95;">${data.title}</h3>
+        <div style="font-size:0.95rem; line-height:1.6;">${data.story}</div>
+      `;
+      pmBtnApply.style.display = 'block';
+
+    } catch (err) {
+      alert('生成に失敗しました: ' + err.message);
+    } finally {
+      pmLoading.style.display = 'none';
+    }
+  });
+
+  pmBtnApply.addEventListener('click', () => {
+    if (pmGeneratedHtml) {
+      // Append to "About" section in Quill editor
+      const currentAbout = editors.about.root.innerHTML;
+      editors.about.clipboard.dangerouslyPasteHTML(currentAbout + pmGeneratedHtml);
+    }
+    
+    // Set first image as main eyecatch image
+    if (pmSelectedImages.length > 0) {
+      const firstImage = pmSelectedImages[0];
+      const dataUrl = `data:${firstImage.mimeType};base64,${firstImage.data}`;
+      currentImageDataUrl = dataUrl;
+      p.thumbnail.src = dataUrl;
+      p.thumbnail.style.display = 'inline-block';
+      els.removeImgBtn.style.display = 'block';
+      els.eyecatchText.style.display = 'none';
+    }
+
+    updatePreview();
+    photoModeModal.style.display = 'none';
+    alert('入力フォームの「プログラムについて」に反映しました！');
+  });
+
 });
