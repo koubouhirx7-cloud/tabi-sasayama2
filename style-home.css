@@ -273,7 +273,7 @@ ul { list-style: none; }
   align-items: center;
   gap: 0.3rem;
   opacity: 0;
-  animation: fadeUp 1s 1.5s forwards;
+  animation: fadeUpCenter 1s 1.5s forwards;
   z-index: 20;
 }
 .scroll-hint-line {
@@ -842,6 +842,10 @@ ul { list-style: none; }
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(28px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeUpCenter {
+  from { opacity: 0; transform: translate(-50%, 28px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
 }
 @keyframes scrollLine {
   0%   { transform: scaleY(0); transform-origin: top; opacity: 1; }
