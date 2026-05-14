@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>アクセス解析・アナリティクス | ウイズささやま</title>
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    body {
+      background: #f4f5f7;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .admin-header {
+      background: var(--color-secondary, #333);
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .admin-header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-family: var(--font-display, sans-serif);
+    }
+    .admin-header a {
+      color: white;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .analytics-container {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .info-card {
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .info-card h2 {
+      margin-top: 0;
+      color: var(--color-primary);
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    .iframe-wrapper {
+      position: relative;
+      width: 100%;
+      height: 700px;
+      background: #eee;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      color: #666;
+    }
+    .iframe-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .setup-guide {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .setup-guide h3 {
+      margin-top: 0;
+      font-size: 1.1rem;
+      color: #334155;
+    }
+    .setup-guide ol {
+      padding-left: 20px;
+      margin-bottom: 0;
+    }
+    .setup-guide li {
+      margin-bottom: 10px;
+    }
+    .btn-vercel {
+      display: inline-block;
+      background: #000;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+    .btn-vercel:hover {
+      background: #333;
+    }
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .input-group input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .input-group button {
+      background: var(--color-primary, #2E8B57);
+      color: white;
+      border: none;
+      padding: 0 20px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="admin-header">
+    <h1>アクセス解析・アナリティクス</h1>
+    <a href="/admin-menu.html">◀ メニューに戻る</a>
+  </header>
+
+  <div class="analytics-container">
+    <div class="info-card">
+      <h2>アクセス解析ダッシュボード</h2>
+      <p>ここにアクセス解析のグラフを埋め込むことができます。現在は「設定待ち」の状態です。</p>
+      
+      <div class="iframe-wrapper" id="dashboard-wrapper">
+        <div id="placeholder-text">
+          <span style="font-size: 3rem; margin-bottom: 15px;">📊</span><br>
+          <b>ダッシュボードが未設定です</b><br>
+          <span style="font-size: 0.9rem; margin-top: 10px; display: inline-block;">
+            Google Looker Studio等の「埋め込みURL」を設定すると<br>ここにアクセス状況のグラフが表示されます。
+          </span>
+        </div>
+        <iframe id="analytics-iframe" style="display: none;"></iframe>
+      </div>
+
+      <div class="input-group">
+        <input type="text" id="iframe-url-input" placeholder="例: https://lookerstudio.google.com/embed/reporting/xxxx-xxxx/page/xxxx">
+        <button onclick="saveDashboardUrl()">URLを保存</button>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <h2>おすすめのアクセス解析サービス</h2>
+      <p>管理画面内でアクセス数を確認するために、以下のサービスの導入をおすすめします。</p>
+
+      <div class="setup-guide">
+        <h3>1. 【おすすめ】Google Analytics (GA4) ＋ Looker Studio</h3>
+        <p>最も定番で無料の構成です。GA4でデータを計測し、Looker Studio（旧データポータル）を使って見やすいグラフを作成し、上の枠に埋め込みます。</p>
+        <ol>
+          <li>Google Analyticsでプロパティを作成し、測定ID（G-XXXXXXX）を取得します。</li>
+          <li>Looker StudioでGA4と連携し、レポートを作成します。</li>
+          <li>「ファイル」＞「レポートを埋め込む」からURLを取得し、上の入力欄に貼り付けます。</li>
+        </ol>
+        <p><small>※GA4のタグは、今後 `index.html` や `main.js` に追加する作業が必要です。</small></p>
+      </div>
+
+      <div class="setup-guide" style="margin-top: 20px;">
+        <h3>2. Vercel Web Analytics</h3>
+        <p>現在のサーバー（Vercel）に標準で備わっている解析機能です。設定が最も簡単で、Cookieを使わないためプライバシーにも配慮されています。</p>
+        <ol>
+          <li>Vercelのダッシュボードで対象プロジェクトの「Analytics」タブを開き、「Enable」をクリックします。</li>
+          <li>以下のボタンからVercelにログインして直接確認します。（※管理画面への埋め込みはできませんが、一番手軽です）</li>
+        </ol>
+        <a href="https://vercel.com/" target="_blank" class="btn-vercel">Vercelの管理画面を開く</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // URLの保存と読み込み処理
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedUrl = localStorage.getItem('pm_analytics_iframe_url');
+      if (savedUrl) {
+        document.getElementById('iframe-url-input').value = savedUrl;
+        showIframe(savedUrl);
+      }
+    });
+
+    function saveDashboardUrl() {
+      const url = document.getElementById('iframe-url-input').value.trim();
+      if (url) {
+        localStorage.setItem('pm_analytics_iframe_url', url);
+        showIframe(url);
+        alert('ダッシュボードのURLを保存しました。');
+      } else {
+        localStorage.removeItem('pm_analytics_iframe_url');
+        hideIframe();
+      }
+    }
+
+    function showIframe(url) {
+      document.getElementById('placeholder-text').style.display = 'none';
+      const iframe = document.getElementById('analytics-iframe');
+      iframe.src = url;
+      iframe.style.display = 'block';
+    }
+
+    function hideIframe() {
+      document.getElementById('placeholder-text').style.display = 'block';
+      const iframe = document.getElementById('analytics-iframe');
+      iframe.src = '';
+      iframe.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

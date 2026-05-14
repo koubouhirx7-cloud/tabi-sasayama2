@@ -23,6 +23,7 @@ export default defineConfig({
         adminVoices: resolve(__dirname, 'admin-voices.html'),
         adminDownloads: resolve(__dirname, 'admin-downloads.html'),
         adminSettings: resolve(__dirname, 'admin-settings.html'),
+        adminAnalytics: resolve(__dirname, 'admin-analytics.html'),
         survey: resolve(__dirname, 'survey.html'),
         customize: resolve(__dirname, 'customize.html'),
       }
