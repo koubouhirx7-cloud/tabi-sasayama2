@@ -225,7 +225,7 @@ initTranslate();
           : '';
 
         const html = `
-          <a href="voices.html" class="voice-list-card fade-in is-visible">
+          <a href="customize.html" class="voice-list-card fade-in is-visible">
             ${imgHtml}
             <div class="voice-list-content">
               <div class="meta">${metaText}</div>

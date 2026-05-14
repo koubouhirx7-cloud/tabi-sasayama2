@@ -210,6 +210,10 @@ img {
   height: 90px;
   width: auto;
   object-fit: contain;
+  transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.header.scrolled .logo img {
+  height: 65px;
 }
 
 .nav-links {

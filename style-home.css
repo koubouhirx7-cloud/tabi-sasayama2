@@ -75,7 +75,10 @@ ul { list-style: none; }
   height: 90px;
   width: auto;
   object-fit: contain;
-  transition: filter 0.5s;
+  transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s;
+}
+.header.scrolled .logo img {
+  height: 65px;
 }
 
 

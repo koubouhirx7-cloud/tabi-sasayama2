@@ -95,6 +95,82 @@
         font-size: 0.8rem;
         margin-left: 0.5rem;
       }
+
+      /* --- Voices Integration Styles --- */
+      .voices-detail-list {
+        max-width: 1000px;
+        margin: 0 auto 5rem;
+        padding: 0 5%;
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+      }
+      .voice-row {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        padding-top: 3rem;
+        border-top: 1px solid #ddd;
+      }
+      .voice-row:first-child {
+        border-top: none;
+        padding-top: 0;
+      }
+      @media (min-width: 768px) {
+        .voice-row {
+          flex-direction: row;
+          justify-content: space-between;
+        }
+      }
+      .voice-text {
+        flex: 1;
+      }
+      @media (min-width: 768px) {
+        .voice-text { padding-right: 3rem; }
+      }
+      .voice-image {
+        width: 100%;
+        max-width: 400px;
+        flex-shrink: 0;
+      }
+      .voice-image img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+      }
+      .voice-headline {
+        font-family: var(--font-display, "Noto Serif JP", serif);
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.8rem;
+        line-height: 1.5;
+        color: #222;
+      }
+      .voice-headline::before {
+        content: "";
+        display: block;
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        border: 1.5px solid #444;
+        margin-top: 0.3rem;
+      }
+      .voice-meta-group {
+        font-size: 0.9rem;
+        color: #666;
+        line-height: 1.8;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+      }
+      .voice-full-comment {
+        font-size: 0.95rem;
+        line-height: 2;
+        color: #111;
+      }
     </style>
       <meta name="keywords" content="丹波篠山,農業,体験,移住,田舎,暮らし,兵庫県,里山,古民家,Tamba Sasayama,Farm stay,Agriculture,Rural life,Kominka,Hyogo" />
     <meta property="og:type" content="website" />
@@ -147,50 +223,9 @@
             
             <h3 style="color: var(--color-primary); margin-bottom: 2rem; font-family: var(--font-display); text-align: center;">今までの旅づくり<br><span style="font-size: 0.8rem; color: #666;">（ここに参加者の声）</span></h3>
 
-            <div class="program-grid" style="margin-top: 2rem;">
-              <!-- 龍谷大学経営学部 合宿ゼミツアー 2025 -->
-              <a href="voices.html" class="program-card">
-                <div class="program-img">
-                  <img src="/images/P1011277.jpg" alt="龍谷大学" loading="lazy">
-                </div>
-                <div class="program-content">
-                  <h4 class="program-title" style="font-size: 1.1rem; margin-bottom: 1rem;">龍谷大学経営学部 合宿ゼミツアー 2025</h4>
-                  <span class="btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;">≫詳細ページ</span>
-                </div>
-              </a>
-
-              <!-- 茶緑　女子ツアー 2025 -->
-              <a href="voices.html" class="program-card">
-                <div class="program-img">
-                  <img src="/images/P8207341.jpg" alt="茶緑 女子ツアー" loading="lazy">
-                </div>
-                <div class="program-content">
-                  <h4 class="program-title" style="font-size: 1.1rem; margin-bottom: 1rem;">茶緑 女子ツアー 2025</h4>
-                  <span class="btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;">≫詳細ページ</span>
-                </div>
-              </a>
-
-              <!-- タコマ高校 教育ツアー 2025 -->
-              <a href="voices.html" class="program-card">
-                <div class="program-img">
-                  <img src="/images/P6170310.jpg" alt="タコマ高校" loading="lazy">
-                </div>
-                <div class="program-content">
-                  <h4 class="program-title" style="font-size: 1.1rem; margin-bottom: 1rem;">タコマ高校 教育ツアー 2025</h4>
-                  <span class="btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;">≫詳細ページ</span>
-                </div>
-              </a>
-
-              <!-- 阪急さんとSEE 教育ツアー 2025 -->
-              <a href="voices.html" class="program-card">
-                <div class="program-img">
-                  <img src="/images/PB182552.jpg" alt="阪急さんとSEE" loading="lazy">
-                </div>
-                <div class="program-content">
-                  <h4 class="program-title" style="font-size: 1.1rem; margin-bottom: 1rem;">阪急さんとSEE 教育ツアー 2025</h4>
-                  <span class="btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;">≫詳細ページ</span>
-                </div>
-              </a>
+            <div id="voices-container" class="voices-detail-list" style="margin-top: 2rem;">
+              <!-- 読み込み中 -->
+              <p style="text-align:center; color:#888; width:100%;">読み込み中...</p>
             </div>
 
             <div class="text-center" style="margin-top: 3rem;">
@@ -239,5 +274,6 @@
       </div>
     </footer>
     <script type="module" src="/main.js"></script>
+    <script type="module" src="/voices.js"></script>
   </body>
 </html>
