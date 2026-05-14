@@ -154,8 +154,14 @@
         <label for="gemini-api-key">Gemini API Key</label>
         <input type="password" id="gemini-api-key" placeholder="AIzaSy...">
         <div class="settings-help">
-          Google AI Studio (<a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--color-primary);">https://aistudio.google.com/app/apikey</a>) から取得したキーを入力してください。<br>
-          空欄の場合はサーバーのデフォルトキー（Vercel環境変数など）が使用されます。
+          <strong>【APIキーの取得手順】</strong>
+          <ol style="margin-top: 5px; padding-left: 20px; color: #555;">
+            <li><a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--color-primary); font-weight:bold;">Google AI Studio</a> にアクセスし、Googleアカウントでログインします。</li>
+            <li>画面左側の「Get API key」または「Create API key」ボタンをクリックします。</li>
+            <li>「Create API key in new project」を選択すると、<code>AIzaSy...</code>から始まるキーが生成されます。</li>
+            <li>生成されたキーをコピーし、上の入力欄に貼り付けて保存してください。</li>
+          </ol>
+          ※空欄にして保存した場合は、サーバーに設定されているデフォルトのキー（Vercel環境変数など）が使用されます。
         </div>
       </div>
 
