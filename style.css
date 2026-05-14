@@ -540,10 +540,13 @@ img {
 
 .card-title {
   font-family: var(--font-display);
-  font-size: 1.3rem;
-  line-height: 1.5;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
+  font-size: 1.35rem;
+  line-height: 1.45;
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  font-weight: 700;
+  letter-spacing: 0.05em;
 }
 
 .card-meta {
