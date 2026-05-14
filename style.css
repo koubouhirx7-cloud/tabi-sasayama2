@@ -952,3 +952,15 @@ body, html {
   color: #666;
   margin-bottom: 0.2rem;
 }
+
+/* ユーティリティ（スマホ改行調整） */
+@media (max-width: 768px) {
+  .pc-br {
+    display: none;
+  }
+}
+@media (min-width: 769px) {
+  .sp-br {
+    display: none;
+  }
+}
