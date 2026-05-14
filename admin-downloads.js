@@ -36,17 +36,34 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Utility: Media Upload Proxy
-  async function uploadMediaIfBase64(dataUrl, filename) {
-    if (!dataUrl || !dataUrl.startsWith('data:')) return dataUrl;
-    // For PDFs, we need to send base64 to /api/upload-media (assuming it supports any file)
-    // Actually, upload-media.js might only support images. We should check. 
-    // Assuming upload-media.js takes base64 and filename and uploads to a bucket or returns url.
+  async function uploadMediaIfBase64(base64Str, filename) {
+    if (!base64Str || !base64Str.startsWith('data:')) return base64Str;
+    
+    // 1. まずXServer向けのPHPアップロードAPIを試行する
+    try {
+      const res = await fetch('/api/upload_pdf.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageBase64: base64Str, filename })
+      });
+      // PHP側から正常なJSONが返ってきた場合のみ成功とみなす (Vercel等では404やHTMLが返るため)
+      const contentType = res.headers.get("content-type");
+      if (res.ok && contentType && contentType.includes("application/json")) {
+        const json = await res.json();
+        return json.data.url;
+      }
+    } catch(err) {
+      console.warn("PHP API is not available, falling back to Vercel/MicroCMS API.");
+    }
+    
+    // 2. PHPが使えない環境(Vercelやローカル開発環境)の場合は従来のMicroCMS APIにフォールバック
     const res = await fetch('/api/upload-media', {
-      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imageBase64: dataUrl, filename })
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageBase64: base64Str, filename })
     });
     const json = await res.json();
-    if (!res.ok) throw new Error(json.message || 'ファイルアップロードに失敗しました');
+    if (!res.ok) throw new Error(json.message || 'アップロード失敗');
     return json.data.url; 
   }
 
