@@ -49,11 +49,15 @@ initTranslate();
      ──────────────────────────────────────────── */
   const header = document.getElementById('site-header');
 
+  const headerLogo = document.getElementById('header-logo');
+
   function updateHeader() {
     if (window.scrollY > 60) {
       header.classList.add('scrolled');
+      if (headerLogo) headerLogo.src = '/images/logo.png';
     } else {
       header.classList.remove('scrolled');
+      if (headerLogo) headerLogo.src = '/images/logo-white.png';
     }
   }
 
