@@ -22,6 +22,7 @@ export default defineConfig({
         adminStay: resolve(__dirname, 'admin-stay.html'),
         adminVoices: resolve(__dirname, 'admin-voices.html'),
         adminDownloads: resolve(__dirname, 'admin-downloads.html'),
+        adminSettings: resolve(__dirname, 'admin-settings.html'),
         survey: resolve(__dirname, 'survey.html'),
         customize: resolve(__dirname, 'customize.html'),
       }
