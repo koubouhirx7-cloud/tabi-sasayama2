@@ -54,10 +54,10 @@ initTranslate();
   function updateHeader() {
     if (window.scrollY > 60) {
       header.classList.add('scrolled');
-      if (headerLogo) headerLogo.src = '/images/logo.png';
+      if (headerLogo) headerLogo.src = '/images/logo.png?v=2';
     } else {
       header.classList.remove('scrolled');
-      if (headerLogo) headerLogo.src = '/images/logo-white.png';
+      if (headerLogo) headerLogo.src = '/images/logo-white.png?v=2';
     }
   }
 
