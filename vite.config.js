@@ -21,6 +21,7 @@ export default defineConfig({
         adminNews: resolve(__dirname, 'admin-news.html'),
         adminStay: resolve(__dirname, 'admin-stay.html'),
         adminVoices: resolve(__dirname, 'admin-voices.html'),
+        adminDownloads: resolve(__dirname, 'admin-downloads.html'),
         voices: resolve(__dirname, 'voices.html'),
         survey: resolve(__dirname, 'survey.html'),
         customize: resolve(__dirname, 'customize.html'),
