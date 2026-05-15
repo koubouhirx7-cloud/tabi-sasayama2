@@ -1,8 +1,6 @@
 import { fetchAllNews, fetchNewsDetail } from './cms.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const leftPane = document.querySelector('.admin-pane-left');
-  if (leftPane) leftPane.scrollTop = 0;
 
   // Elements: Inputs
   const titleInput = document.getElementById('input-title');
@@ -110,6 +108,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   } catch (err) {
     console.warn('Failed to load existing news for edit selector', err);
   }
+
+  // Reset scroll after all init (Quill + article list) has been rendered
+  requestAnimationFrame(() => {
+    const leftPane = document.querySelector('.admin-pane-left');
+    if (leftPane) leftPane.scrollTop = 0;
+  });
 
   // Load today's date if empty
   if (!dateInput.value) {
@@ -250,8 +254,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Handle Edit Selection
   selectExisting.addEventListener('change', async (e) => {
-    const leftPane = document.querySelector('.admin-pane-left');
-    if (leftPane) leftPane.scrollTop = 0;
+    requestAnimationFrame(() => {
+      const leftPane = document.querySelector('.admin-pane-left');
+      if (leftPane) leftPane.scrollTop = 0;
+    });
 
     const id = e.target.value;
     if (!id) {

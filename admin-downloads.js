@@ -1,8 +1,6 @@
 import { fetchDownloads } from './cms.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const leftPane = document.querySelector('.admin-pane-left');
-  if (leftPane) leftPane.scrollTop = 0;
 
   const titleInput = document.getElementById('input-title');
   const descInput = document.getElementById('input-description');
@@ -37,6 +35,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   } catch (err) {
     console.warn('Failed to load existing downloads', err);
   }
+
+  // Reset scroll after async init completes
+  requestAnimationFrame(() => {
+    const leftPane = document.querySelector('.admin-pane-left');
+    if (leftPane) leftPane.scrollTop = 0;
+  });
 
   // Utility: Media Upload Proxy
   async function uploadMediaIfBase64(base64Str, filename) {
@@ -134,8 +138,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   selectExisting.addEventListener('change', async (e) => {
-    const leftPane = document.querySelector('.admin-pane-left');
-    if (leftPane) leftPane.scrollTop = 0;
+    requestAnimationFrame(() => {
+      const leftPane = document.querySelector('.admin-pane-left');
+      if (leftPane) leftPane.scrollTop = 0;
+    });
 
     const id = e.target.value;
     if (!id) {

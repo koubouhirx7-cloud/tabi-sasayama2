@@ -1,8 +1,6 @@
 import { fetchStay, fetchStayDetail } from './cms.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const leftPane = document.querySelector('.admin-pane-left');
-  if (leftPane) leftPane.scrollTop = 0;
 
   // Elements: Simple Inputs
   const els = {
@@ -361,9 +359,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.warn('Failed to load existing stays for selector', err);
   }
 
-  selectExisting.addEventListener('change', async (e) => {
+  // Reset scroll after async init and Quill render completes
+  requestAnimationFrame(() => {
     const leftPane = document.querySelector('.admin-pane-left');
     if (leftPane) leftPane.scrollTop = 0;
+  });
+
+  selectExisting.addEventListener('change', async (e) => {
+    requestAnimationFrame(() => {
+      const leftPane = document.querySelector('.admin-pane-left');
+      if (leftPane) leftPane.scrollTop = 0;
+    });
 
     const id = e.target.value;
     if (!id) {
