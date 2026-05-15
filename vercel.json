@@ -6,7 +6,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://www.sasayama-travel.jp"
+          "value": "https://satoyamatour.withsasayama.jp"
         },
         {
           "key": "Access-Control-Allow-Credentials",
