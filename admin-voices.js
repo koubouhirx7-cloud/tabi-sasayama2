@@ -401,20 +401,24 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   pmInputPhotos.addEventListener('change', async (e) => {
     const files = Array.from(e.target.files);
-    if (files.length > 5) {
-      alert('推奨枚数の上限(5枚)を超えています。最初の5枚のみ処理します。');
-      files.splice(5);
+    const remaining = 5 - pmSelectedImages.length;
+    if (remaining <= 0) {
+      alert('写真は最大5枚までです。不要な写真を削除してから追加してください。');
+      pmInputPhotos.value = '';
+      return;
     }
-    pmSelectedImages = [];
-    pmThumbnailContainer.innerHTML = '';
+    if (files.length > remaining) {
+      alert(`あと${remaining}枚まで追加できます。最初の${remaining}枚のみ処理します。`);
+    }
 
-    for (const file of files) {
+    for (const file of files.slice(0, remaining)) {
       try {
-        const base64Data = await compressImage(file, 1000);
+        const base64Data = await compressImage(file, 1000, 0.8);
+        const uniqueName = file.name + '_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
         pmSelectedImages.push({
           data: base64Data.split(',')[1],
           mimeType: 'image/jpeg',
-          fileName: file.name
+          fileName: uniqueName
         });
         
         const wrapper = document.createElement('div');
@@ -423,18 +427,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         wrapper.style.height = '60px';
         wrapper.innerHTML = `
           <img src="${base64Data}" style="width:100%; height:100%; object-fit:cover; border-radius:4px;">
-          <button style="position:absolute; top:-5px; right:-5px; background:red; color:white; border:none; border-radius:50%; cursor:pointer;">×</button>
+          <button style="position:absolute; top:-5px; right:-5px; background:red; color:white; border:none; border-radius:50%; cursor:pointer; width:18px; height:18px; font-size:11px; line-height:1; padding:0;">×</button>
         `;
+        const capturedName = uniqueName;
         wrapper.querySelector('button').addEventListener('click', (ev) => {
           ev.stopPropagation();
           wrapper.remove();
-          pmSelectedImages = pmSelectedImages.filter(img => img.fileName !== file.name);
+          pmSelectedImages = pmSelectedImages.filter(img => img.fileName !== capturedName);
         });
         pmThumbnailContainer.appendChild(wrapper);
       } catch (err) {
         console.error('Image compression failed', err);
       }
     }
+    pmInputPhotos.value = '';
   });
 
   pmBtnGenerate.addEventListener('click', async () => {
