@@ -1,0 +1,33 @@
+<?php
+require_once __DIR__ . '/_common.php';
+require_basic_auth();
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    json_response(['message' => 'Method Not Allowed'], 405);
+}
+
+[$domain, $api_key, $mgmt_key] = get_microcms_config();
+if (!$domain || !$mgmt_key) {
+    json_response(['message' => 'サーバーに環境変数(MICROCMS_MANAGEMENT_KEY)が設定されていません'], 500);
+}
+
+$body = get_request_body();
+$endpoint = $body['endpoint'] ?? null;
+$id = $body['id'] ?? null;
+
+if (!$endpoint || !$id) {
+    json_response(['message' => 'endpoint と id が必要です'], 400);
+}
+
+$url = "https://{$domain}.microcms-management.io/api/v1/contents/{$endpoint}/{$id}/status";
+
+[$ok, $status, $res] = curl_request($url, 'PATCH', [
+    'Content-Type: application/json',
+    'X-MICROCMS-API-KEY: ' . $mgmt_key
+], json_encode(['status' => ['DRAFT']], JSON_UNESCAPED_UNICODE));
+
+if (!$ok || $status >= 400) {
+    json_response(['message' => '非公開化に失敗しました', 'error' => $res], $status ?: 500);
+}
+
+json_response(['success' => true]);

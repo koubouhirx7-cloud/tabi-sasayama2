@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // 1. まずXServer向けのPHPアップロードAPIを試行する
     try {
-      const res = await fetch('/api/upload_pdf.php', {
+      const res = await fetch('https://tabi-sasayama2.vercel.app/api/upload_pdf.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ imageBase64: base64Str, filename })
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     // 2. PHPが使えない環境(Vercelやローカル開発環境)の場合は従来のMicroCMS APIにフォールバック
-    const res = await fetch('/api/upload-media', {
+    const res = await fetch('https://tabi-sasayama2.vercel.app/api/upload-media', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ imageBase64: base64Str, filename })
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       unpublishBtn.textContent = '処理中...';
       unpublishBtn.disabled = true;
       try {
-        const res = await fetch('/api/unpublish', {
+        const res = await fetch('https://tabi-sasayama2.vercel.app/api/unpublish', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ endpoint: 'downloads', id: currentEditId })
@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const res = await fetch(endpoint, {
         method: method,
-        credentials: 'same-origin',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });

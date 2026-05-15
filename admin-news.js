@@ -154,8 +154,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Utility: Media Upload Proxy
   async function uploadMediaIfBase64(dataUrl, filename) {
     if (!dataUrl || !dataUrl.startsWith('data:image')) return dataUrl; // return as is if empty or absolute URL
-    const res = await fetch('/api/upload-media', {
-      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+    const res = await fetch('https://tabi-sasayama2.vercel.app/api/upload-media', {
+      method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ imageBase64: dataUrl, filename })
     });
     const json = await res.json();
@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       unpublishBtn.disabled = true;
 
       try {
-        const res = await fetch('/api/unpublish', {
+        const res = await fetch('https://tabi-sasayama2.vercel.app/api/unpublish', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ endpoint: 'news', id: currentEditId })
@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const res = await fetch(endpoint, {
         method: method,
-        credentials: 'same-origin',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     mediaModalBody.innerHTML = '<div class="media-loading">画像一覧を取得中...</div>';
     
     try {
-      const res = await fetch('/api/get-media', { credentials: 'same-origin' });
+      const res = await fetch('https://tabi-sasayama2.vercel.app/api/get-media', { credentials: 'include' });
       const json = await res.json();
       if (!res.ok) throw new Error(json.message || '取得エラー');
       
@@ -559,7 +559,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       const apiKey = localStorage.getItem('geminiApiKey') || '';
 
-      const response = await fetch('/api/generate-article', {
+      const response = await fetch('https://tabi-sasayama2.vercel.app/api/generate-article', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

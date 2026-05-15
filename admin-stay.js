@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!dataUrl || !dataUrl.startsWith('data:image')) return dataUrl; // return as is if empty or absolute URL
     
     const base64Data = dataUrl.split(',')[1];
-    return fetch('/api/upload-media', {
+    return fetch('https://tabi-sasayama2.vercel.app/api/upload-media', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ base64: base64Data, name: filename })
@@ -326,7 +326,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       unpublishBtn.disabled = true;
 
       try {
-        const res = await fetch('/api/unpublish', {
+        const res = await fetch('https://tabi-sasayama2.vercel.app/api/unpublish', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ endpoint: 'stay', id: currentEditId })
@@ -496,7 +496,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       // credentials:'same-origin' ensures browser forwards any stored auth context
       const res = await fetch(endpoint, {
         method: method,
-        credentials: 'same-origin',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
@@ -532,7 +532,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   async function getTemplates() {
     try {
-      const res = await fetch('/api/get-content?endpoint=stay-templates&limit=100', { credentials: 'same-origin' });
+      const res = await fetch('https://tabi-sasayama2.vercel.app/api/get-content?endpoint=stay-templates&limit=100', { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to load templates');
       const json = await res.json();
       return json.contents || [];
@@ -543,7 +543,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   async function saveTemplate(template) {
-    const res = await fetch('/api/manage-templates', {
+    const res = await fetch('https://tabi-sasayama2.vercel.app/api/manage-templates', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(template)
@@ -685,7 +685,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     
     try {
-      const res = await fetch('/api/get-media', { credentials: 'same-origin' });
+      const res = await fetch('https://tabi-sasayama2.vercel.app/api/get-media', { credentials: 'include' });
       const json = await res.json();
       if (!res.ok) throw new Error(json.message || '取得エラー');
       
@@ -851,7 +851,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       const apiKey = localStorage.getItem('geminiApiKey') || '';
 
-      const response = await fetch('/api/generate-article', {
+      const response = await fetch('https://tabi-sasayama2.vercel.app/api/generate-article', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

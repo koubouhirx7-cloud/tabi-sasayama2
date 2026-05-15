@@ -1,0 +1,11 @@
+# api-php ディレクトリへの直接アクセスを禁止
+# _common.php と .env.php.example への直接ブラウザアクセスを防ぐ
+<Files "_common.php">
+    Require all denied
+</Files>
+<Files ".env.php*">
+    Require all denied
+</Files>
+<Files "*.example">
+    Require all denied
+</Files>
