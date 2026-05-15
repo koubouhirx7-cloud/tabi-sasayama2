@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 
 // POST /api/generate-article
 export default async function handler(req, res) {
@@ -18,13 +18,9 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'No images provided.' });
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey);
+    const ai = new GoogleGenAI({ apiKey });
 
-    // system_instruction is supported in newer SDK versions for Gemini 1.5 Pro / Flash.
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
-      systemInstruction: systemPrompt + '\n\n必ず指定されたJSON形式（{ "title": "...", "story": "...", "highlights": ["..."] }）のみで返してください。それ以外のテキストやマークダウン表記(```json等)は一切含めないでください。'
-    });
+    const systemText = systemPrompt + '\n\n必ず指定されたJSON形式（{ "title": "...", "story": "...", "highlights": ["..."] }）のみで返してください。それ以外のテキストやマークダウン表記(```json等)は一切含めないでください。';
 
     const promptText = `以下の写真とタイムライン情報をもとに、ブログ記事を執筆してください。\n\n【タイムライン】\n${timelineText}\n\n【ペルソナ】\n${personaName}`;
 
@@ -39,8 +35,15 @@ export default async function handler(req, res) {
       }))
     ];
 
-    const result = await model.generateContent(parts);
-    const responseText = result.response.text();
+    const result = await ai.models.generateContent({
+      model: 'gemini-3.1-flash-lite',
+      contents: [{ role: 'user', parts }],
+      config: {
+        systemInstruction: systemText,
+      }
+    });
+
+    const responseText = result.text;
 
     // Try to parse JSON output
     let parsedJson;
@@ -60,6 +63,6 @@ export default async function handler(req, res) {
     return res.status(200).json(parsedJson);
   } catch (error) {
     console.error('Generate Article Error:', error);
-    return res.status(500).json({ error: error.message || 'An error occurred during article generation.' });
+    return res.status(500).json({ error: error.message || 'An error occurred during article generation.', details: error.toString() });
   }
 }

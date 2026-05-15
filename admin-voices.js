@@ -482,7 +482,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         })
       });
 
-      if (!response.ok) throw new Error('API Error');
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || `API Error (${response.status})`);
+      }
       const data = await response.json();
       
       pmGeneratedTitle = data.title;
