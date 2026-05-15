@@ -492,7 +492,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   photoModeClose.addEventListener('click', () => photoModeModal.style.display = 'none');
   
-  pmUploadZone.addEventListener('click', () => pmInputPhotos.click());
+  // File input already covers the upload zone via CSS (position:absolute, opacity:0)
+  // No extra JS click handler needed — it would conflict and cancel the first native click
 
   pmInputPhotos.addEventListener('change', async (e) => {
     const files = Array.from(e.target.files);
