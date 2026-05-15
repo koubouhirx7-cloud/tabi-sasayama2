@@ -1,4 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
+const { GoogleGenAI } = require('@google/genai');
 
 // POST /api/generate-article
 export default async function handler(req, res) {
