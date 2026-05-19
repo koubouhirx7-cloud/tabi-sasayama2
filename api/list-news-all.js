@@ -7,6 +7,54 @@ export default async function handler(req, res) {
   const domain = process.env.VITE_MICROCMS_SERVICE_DOMAIN || process.env.MICROCMS_SERVICE_DOMAIN;
   const managementKey = process.env.MICROCMS_MANAGEMENT_KEY || process.env.MICROCMS_API_KEY;
 
+  if (req.query.debug === 'true') {
+    const id = req.query.id || '9q_m8nf__jj';
+    
+    // 1. draftKey なしで叩いてみる
+    const urlWithoutDraftKey = `https://${domain}.microcms.io/api/v1/news/${id}`;
+    
+    // 2. 一覧APIから draftKey を探す
+    const urlList = `https://${domain}.microcms-management.io/api/v1/contents/news?limit=100`;
+
+    try {
+      const resWithout = await fetch(urlWithoutDraftKey, {
+        headers: { 'X-MICROCMS-API-KEY': managementKey }
+      });
+      const dataWithout = resWithout.ok ? await resWithout.json() : null;
+
+      const resList = await fetch(urlList, {
+        headers: { 'X-MICROCMS-API-KEY': managementKey }
+      });
+      const listData = await resList.json();
+      const targetItem = listData.contents ? listData.contents.find(item => item.id === id) : null;
+
+      // 3. draftKey ありで叩いてみる
+      let resWith = null;
+      let dataWith = null;
+      if (targetItem && targetItem.draftKey) {
+        const urlWithDraftKey = `https://${domain}.microcms.io/api/v1/news/${id}?draftKey=${targetItem.draftKey}`;
+        resWith = await fetch(urlWithDraftKey, {
+          headers: { 'X-MICROCMS-API-KEY': managementKey }
+        });
+        dataWith = resWith.ok ? await resWith.json() : null;
+      }
+
+      return res.status(200).json({
+        id,
+        statusWithoutDraftKey: resWithout.status,
+        statusWithoutDraftKeyText: resWithout.statusText,
+        dataWithoutSampleFields: dataWithout ? Object.keys(dataWithout) : null,
+        foundInList: !!targetItem,
+        draftKeyFromList: targetItem ? targetItem.draftKey : null,
+        statusWithDraftKey: resWith ? resWith.status : null,
+        dataWithSampleFields: dataWith ? Object.keys(dataWith) : null,
+        dataWithBodyPresent: dataWith ? !!dataWith.body : false
+      });
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  }
+
   if (!domain || !managementKey) {
     return res.status(500).json({ message: 'サーバー環境変数が設定されていません。' });
   }
