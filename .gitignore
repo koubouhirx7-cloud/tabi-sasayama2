@@ -1,4 +1,6 @@
 .env
+.env.php
+logs/debug.json
 
 # macOS metadata
 ._*
