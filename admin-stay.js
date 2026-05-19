@@ -346,18 +346,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  try {
-    const existingList = await fetchStay(50); // Get up to 50 existing stays
-    existingList.forEach(item => {
-      const option = document.createElement('option');
-      option.value = item.id;
-      const statusText = item.publishedAt ? `[体験・滞在] ` : `[体験・滞在 / 下書き] `;
-      option.textContent = `${statusText}${item.title}`;
-      selectExisting.appendChild(option);
-    });
-  } catch(err) {
-    console.warn('Failed to load existing stays for selector', err);
+  async function loadArticleList() {
+    try {
+      const selectObj = document.getElementById('select-existing');
+      selectObj.innerHTML = '<option value="">-- ✨ 新規作成モード (選ぶと編集になります) --</option>';
+      const existingList = await fetchStay(50); // Get up to 50 existing stays
+      existingList.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.id;
+        const statusText = item.publishedAt ? `[体験・滞在] ` : `[体験・滞在 / 下書き] `;
+        option.textContent = `${statusText}${item.title}`;
+        selectObj.appendChild(option);
+      });
+      if (currentEditId) {
+        selectObj.value = currentEditId;
+      }
+    } catch(err) {
+      console.warn('Failed to load existing stays for selector', err);
+    }
   }
+
+  // 初回ロード
+  loadArticleList();
 
   // Reset scroll after async init and Quill render completes
   requestAnimationFrame(() => {
