@@ -861,7 +861,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           images: pmSelectedImages,
           timelineText,
           personaName,
-          systemPrompt
+          systemPrompt,
+          articleLength: document.querySelector('input[name="pm-length"]:checked')?.value || 'medium'
         })
       });
 
@@ -919,9 +920,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const remainingImages = imageUrls.slice(1);
         const titleHtml = pmGeneratedTitle ? `<h2><strong>${pmGeneratedTitle}</strong></h2>` : '';
 
-        // </p> で分割して段落配列を作成（入れ子タグに強い方式）
-        const parts = pmGeneratedHtml.split('</p>').filter(s => s.trim());
-        const paragraphs = parts.map(s => (s.trim().startsWith('<') ? s : '<p>' + s) + '</p>');
+        // <br> と </p> の両方で分割して山次な分割点を確保
+        const rawChunks = pmGeneratedHtml
+          .split(/<br\s*\/?>/gi)
+          .flatMap(chunk => chunk.split('</p>'))
+          .map(s => s.trim().replace(/^<p>/i, '').replace(/^\s*/, ''))
+          .filter(s => s.trim());
+        const paragraphs = rawChunks.map(s => '<p>' + s + '</p>');
 
         const result = titleHtml ? [titleHtml] : [];
 

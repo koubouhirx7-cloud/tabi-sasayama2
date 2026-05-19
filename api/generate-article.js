@@ -12,17 +12,24 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { images, timelineText, personaName, systemPrompt } = req.body;
+    const { images, timelineText, personaName, systemPrompt, articleLength } = req.body;
 
     if (!images || images.length === 0) {
       return res.status(400).json({ error: 'No images provided.' });
     }
 
+    const lengthInstructions = {
+      short: '文章の分量は短くコンパクトに、300〜500文字程度でまとめてください。',
+      medium: '文章の分量は600〜900文字程度でまとめてください。',
+      long: '文章は詳しく充実した内容で、1000〜1500文字程度で書いてください。',
+    };
+    const lengthNote = lengthInstructions[articleLength] || lengthInstructions.medium;
+
     const ai = new GoogleGenAI({ apiKey });
 
     const systemText = systemPrompt + '\n\n必ず指定されたJSON形式（{ "title": "...", "story": "...", "highlights": ["..."] }）のみで返してください。それ以外のテキストやマークダウン表記(```json等)は一切含めないでください。';
 
-    const promptText = `以下の写真とタイムライン情報をもとに、ブログ記事を執筆してください。\n\n【タイムライン】\n${timelineText}\n\n【ペルソナ】\n${personaName}`;
+    const promptText = `以下の写真とタイムライン情報をもとに、ブログ記事を執筆してください。\n\n【文字量の指定】\n${lengthNote}\n\n【タイムライン】\n${timelineText}\n\n【ペルソナ】\n${personaName}`;
 
     // Prepare parts array
     const parts = [
