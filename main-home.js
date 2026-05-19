@@ -140,7 +140,10 @@ initTranslate();
   const newsContainer = document.getElementById('news-container');
 
   if (stayContainer) {
-    const stays = await fetchStay(6);
+    const rawStays = await fetchStay(6);
+    // フロントエンドの絶対防壁: 下書き(publishedAtなし)を強制除外
+    const stays = rawStays ? rawStays.filter(s => s.publishedAt) : [];
+    
     if (stays && stays.length > 0) {
       stayContainer.innerHTML = '';
       stays.forEach((stay, index) => {
@@ -180,7 +183,9 @@ initTranslate();
   }
 
   if (newsContainer) {
-    const news = await fetchNews(3);
+    const rawNews = await fetchNews(3);
+    const news = rawNews ? rawNews.filter(n => n.publishedAt) : [];
+    
     if (news && news.length > 0) {
       newsContainer.innerHTML = '';
       
@@ -206,7 +211,9 @@ initTranslate();
 
   const voicesContainer = document.getElementById('voices-list');
   if (voicesContainer) {
-    const voices = await fetchVoices(5);
+    const rawVoices = await fetchVoices(5);
+    const voices = rawVoices ? rawVoices.filter(v => v.publishedAt) : [];
+    
     if (voices && voices.length > 0) {
       voicesContainer.innerHTML = '';
       
