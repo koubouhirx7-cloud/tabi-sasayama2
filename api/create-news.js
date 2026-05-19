@@ -18,14 +18,16 @@ export default async function handler(req, res) {
     return res.status(500).json({ message: 'サーバーに環境変数(MICROCMS_API_KEY)が設定されていません。' });
   }
 
-  // microCMSに送信するペイロード
+  // microCMSに送信するペイロード（publishedAtは公開時のみ）
   const payload = {
     title,
-    publishedAt,
     category,
     eyecatch,
     body
   };
+  if (!isDraft && publishedAt) {
+    payload.publishedAt = publishedAt;
+  }
 
   try {
     const endpoint = `https://${domain}.microcms.io/api/v1/news${isDraft ? '?status=draft' : ''}`;
@@ -48,7 +50,7 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-    return res.status(200).json({ success: true, data });
+    return res.status(200).json({ success: true, id: data.id, data });
   } catch (error) {
     console.error('API Handler Error:', error);
     return res.status(500).json({ message: 'Internal Server Error', error: error.toString() });
