@@ -11,7 +11,13 @@ import { fetchStay } from './cms.js';
     container.innerHTML = '';
     if (recruitmentContainer) recruitmentContainer.innerHTML = '';
     
-    if (!stayData || stayData.length === 0) {
+    // Sort by order field, and apply a strict failsafe: completely ignore any draft items (no publishedAt)
+    // This serves as an absolute defense on the frontend against API configuration leaks.
+    stayData.sort((a,b) => (a.order || Number.MAX_SAFE_INTEGER) - (b.order || Number.MAX_SAFE_INTEGER));
+
+    const publicStayData = stayData.filter(item => item.publishedAt);
+
+    if (!publicStayData || publicStayData.length === 0) {
       container.innerHTML = '<p style="text-align: center; color: #666; font-size: 1.1rem; padding: 4rem 0;">現在提供中のプログラムはありません。公開をお待ちください。</p>';
       return;
     }
@@ -21,7 +27,7 @@ import { fetchStay } from './cms.js';
     const recruitmentCategories = [];
     const grouped = {};
 
-    stayData.forEach(item => {
+    publicStayData.forEach(item => {
       const cat = item.category || 'その他プログラム';
       if (!grouped[cat]) {
         grouped[cat] = [];
