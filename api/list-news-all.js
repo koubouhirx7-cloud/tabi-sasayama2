@@ -5,18 +5,18 @@ export default async function handler(req, res) {
   }
 
   const domain = process.env.VITE_MICROCMS_SERVICE_DOMAIN || process.env.MICROCMS_SERVICE_DOMAIN;
-  const managementKey = process.env.MICROCMS_MANAGEMENT_KEY;
+  const apiKey = process.env.MICROCMS_API_KEY || process.env.MICROCMS_MANAGEMENT_KEY;
 
-  if (!domain || !managementKey) {
+  if (!domain || !apiKey) {
     return res.status(500).json({ message: 'サーバー環境変数が設定されていません。' });
   }
 
   try {
-    // microCMS Management API: 管理APIで下書き含む全コンテンツを取得
-    const url = `https://${domain}.microcms-management.io/api/v1/contents/news?limit=100&orders=-createdAt`;
+    // 公式Content API を使用（APIキー側で「下書きの全取得」がオンになっていれば下書きも取得される）
+    const url = `https://${domain}.microcms.io/api/v1/news?limit=100&orders=-createdAt`;
     const apiRes = await fetch(url, {
       headers: {
-        'X-MICROCMS-API-KEY': managementKey,
+        'X-MICROCMS-API-KEY': apiKey,
       }
     });
 

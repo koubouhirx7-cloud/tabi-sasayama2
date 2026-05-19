@@ -19,7 +19,13 @@ export default async function handler(req, res) {
   
   const params = new URLSearchParams();
   if (limit) params.append('limit', limit);
-  if (draftKey) params.append('draftKey', draftKey);
+  if (draftKey) {
+    params.append('draftKey', draftKey);
+  } else {
+    // ホームページ（公開側）のアクセスの場合、強制的に「公開済み」のみに絞るフィルターを追加
+    // これにより、APIキーに「下書きの全取得」権限があっても下書きがホームページに漏れるのを防ぐ
+    params.append('filters', 'publishedAt[exists]');
+  }
   
   const queryString = params.toString();
   if (queryString) {
