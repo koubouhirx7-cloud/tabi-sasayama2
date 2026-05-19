@@ -346,31 +346,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  let globalArticleList = [];
-
   async function loadArticleList() {
     try {
       const selectObj = document.getElementById('select-existing');
       selectObj.innerHTML = '<option value="">-- ✨ 新規作成モード (選ぶと編集になります) --</option>';
-      const existingList = await fetchStay(50); // Get up to 50 existing stays
-      globalArticleList = existingList;
-      existingList.forEach(item => {
+      
+      const res = await fetch('/api/list-stay-all', { credentials: 'include' });
+      if (!res.ok) throw new Error('list fetch failed');
+      const data = await res.json();
+      const items = data.contents || data || [];
+      
+      items.forEach(item => {
         const option = document.createElement('option');
         option.value = item.id;
-        
-        // 状態表示ロジック
-        let statusText = `[体験・滞在] `;
-        if (item.isPublic === false) {
-          statusText = `[非公開] `;
-        } else if (item.isPublic === undefined || item.isPublic === null) {
-          // isPublicがまだ一度も設定されていない過去の記事
-          statusText = item.publishedAt ? `[旧:公開済] ` : `[旧:下書き] `;
-        }
-
-        if (item.draftKey) {
-          option.dataset.draftkey = item.draftKey;
-        }
-
+        const dateStr = item.publishedAt ? item.publishedAt.substring(0, 10).replace(/-/g, '.') : (item.createdAt ? item.createdAt.substring(0, 10).replace(/-/g, '.') : '');
+        const statusText = item.publishedAt ? `[公開 ${dateStr}] ` : `[下書き ${dateStr}] `;
         option.textContent = `${statusText}${item.title}`;
         selectObj.appendChild(option);
       });
@@ -378,7 +368,30 @@ document.addEventListener('DOMContentLoaded', async () => {
         selectObj.value = currentEditId;
       }
     } catch(err) {
-      console.warn('Failed to load existing stays for selector', err);
+      // フォールバック：公開プログラムのみ
+      try {
+        const selectObj = document.getElementById('select-existing');
+        const existingList = await fetchStay(50);
+        existingList.forEach(item => {
+          const option = document.createElement('option');
+          option.value = item.id;
+          
+          let statusText = `[体験・滞在] `;
+          if (item.isPublic === false) {
+            statusText = `[非公開] `;
+          } else if (item.isPublic === undefined || item.isPublic === null) {
+            statusText = item.publishedAt ? `[旧:公開済] ` : `[旧:下書き] `;
+          }
+
+          option.textContent = `${statusText}${item.title}`;
+          selectObj.appendChild(option);
+        });
+        if (currentEditId) {
+          selectObj.value = currentEditId;
+        }
+      } catch (e) {
+        console.warn('Failed to load existing stays for selector', e);
+      }
     }
   }
 
@@ -425,7 +438,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     selectExisting.disabled = true;
     try {
-      const detail = globalArticleList.find(item => item.id === id);
+      const detail = await fetchStayDetail(id);
       if (detail) {
         currentEditId = detail.id;
         submitBtn.textContent = '編集内容を上書き保存する';
@@ -460,7 +473,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         currentGalleryDataUrls = [];
         els.galleryThumbnails.innerHTML = '';
-        if (detail.gallery && detail.gallery.length > 0) {
+        if (Array.isArray(detail.gallery) && detail.gallery.length > 0) {
           detail.gallery.forEach(g => {
             if (g && g.url) {
               addGalleryImageToUI(g.url);
@@ -477,6 +490,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         updatePreview();
       }
     } catch(err) {
+      console.error('Error fetching stay detail:', err);
       alert('プログラムデータの取得に失敗しました');
     } finally {
       selectExisting.disabled = false;

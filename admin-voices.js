@@ -1,4 +1,4 @@
-import { fetchVoices } from './cms.js';
+import { fetchVoices, fetchVoicesDetail } from './cms.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
 
@@ -31,13 +31,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const draftBtn = document.getElementById('btn-draft');
   const unpublishBtn = document.getElementById('btn-unpublish');
 
-  let globalArticleList = [];
-
   // Load Existing Voices for Edit Dropdown
   async function loadArticleList() {
     try {
       const existingList = await fetchVoices(100);
-      globalArticleList = existingList;
       existingList.forEach(item => {
         const option = document.createElement('option');
         option.value = item.id;
@@ -210,7 +207,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     selectExisting.disabled = true;
     try {
-      const detail = globalArticleList.find(item => item.id === id);
+      const detail = await fetchVoicesDetail(id);
       if (detail) {
         currentEditId = detail.id;
         submitBtn.textContent = '編集内容を上書き保存する';

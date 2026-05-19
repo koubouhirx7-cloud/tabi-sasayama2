@@ -107,3 +107,24 @@ export async function fetchVoices(limit = 100) {
     return [];
   }
 }
+
+export async function fetchVoicesDetail(id, draftKey = null) {
+  try {
+    const params = draftKey ? { draftKey } : {};
+    return await fetchFromMicroCMS('voices', id, params);
+  } catch (error) {
+    console.error(`お客様の声詳細(${id})取得エラー:`, error);
+    return null;
+  }
+}
+
+export async function fetchDownloadsDetail(id, draftKey = null) {
+  try {
+    const params = draftKey ? { draftKey } : {};
+    return await fetchFromMicroCMS('downloads', id, params);
+  } catch (error) {
+    console.error(`資料ダウンロード詳細(${id})取得エラー:`, error);
+    return null;
+  }
+}
+

@@ -1,4 +1,4 @@
-import { fetchDownloads } from './cms.js';
+import { fetchDownloads, fetchDownloadsDetail } from './cms.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
 
@@ -22,13 +22,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const draftBtn = document.getElementById('btn-draft');
   const unpublishBtn = document.getElementById('btn-unpublish');
 
-  let globalArticleList = [];
-
   // Load Existing Downloads for Edit Dropdown
   async function loadArticleList() {
     try {
       const existingList = await fetchDownloads(100);
-      globalArticleList = existingList;
       existingList.forEach(item => {
         const option = document.createElement('option');
         option.value = item.id;
@@ -167,7 +164,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     selectExisting.disabled = true;
     try {
-      const detail = globalArticleList.find(item => item.id === id);
+      const detail = await fetchDownloadsDetail(id);
       if (detail) {
         currentEditId = detail.id;
         submitBtn.textContent = '編集内容を上書き保存する';
@@ -197,6 +194,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         updatePreview();
       }
     } catch(err) {
+      console.error('Error fetching download detail:', err);
       alert('データの取得に失敗しました');
     } finally {
       selectExisting.disabled = false;

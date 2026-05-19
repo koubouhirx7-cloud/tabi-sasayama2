@@ -93,7 +93,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Elements: Edit Mode
   const selectExisting = document.getElementById('select-existing');
   let currentEditId = null;
-  let globalArticleList = [];
 
   // Load Existing Articles for Edit Dropdown（下書き含む・管理APIで取得）
   async function loadArticleList() {
@@ -102,7 +101,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!res.ok) throw new Error('list fetch failed');
       const data = await res.json();
       const items = data.contents || data || [];
-      globalArticleList = items;
       // 既存のオプションを削除してリセット
       while (selectExisting.options.length > 1) selectExisting.remove(1);
       items.forEach(item => {
@@ -117,7 +115,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       // フォールバック：公開記事のみ
       try {
         const existingList = await fetchAllNews(50);
-        globalArticleList = existingList;
         existingList.forEach(item => {
           const option = document.createElement('option');
           option.value = item.id;
@@ -128,10 +125,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             statusText = `[非公開] `;
           } else if (item.isPublic === undefined || item.isPublic === null) {
             statusText = item.publishedAt ? `[旧:公開済] ` : `[旧:下書き] `;
-          }
-          
-          if (item.draftKey) {
-            option.dataset.draftkey = item.draftKey;
           }
           
           option.textContent = `${statusText}${dateStr} ${item.title}`;
@@ -320,14 +313,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Set to Edit Mode
     selectExisting.disabled = true;
     try {
-      const detail = globalArticleList.find(item => item.id === id);
+      const detail = await fetchNewsDetail(id);
       if (detail) {
         currentEditId = detail.id;
         submitBtn.textContent = '編集内容を上書き保存する';
         
         titleInput.value = detail.title || '';
-        if (detail.publishedAt) dateInput.value = detail.publishedAt.split('T')[0];
-        if (detail.category && detail.category.length > 0) categoryInput.value = detail.category[0];
+        
+        // publishedAtが存在しない（下書き）場合への安全なガード
+        if (detail.publishedAt && typeof detail.publishedAt === 'string') {
+          dateInput.value = detail.publishedAt.split('T')[0];
+        } else {
+          // 下書きの場合は作成日または今日の日付をデフォルト値に
+          const fallbackDate = detail.createdAt ? detail.createdAt.split('T')[0] : new Date().toISOString().split('T')[0];
+          dateInput.value = fallbackDate;
+        }
+
+        // categoryが配列でない場合や想定外の構造でも落ちないように安全に取得
+        if (Array.isArray(detail.category) && detail.category.length > 0) {
+          categoryInput.value = detail.category[0];
+        } else if (detail.category && typeof detail.category === 'object') {
+          categoryInput.value = detail.category.id || detail.category.title || '';
+        } else if (typeof detail.category === 'string') {
+          categoryInput.value = detail.category;
+        }
         
         if (isPublicCheckbox) {
           isPublicCheckbox.checked = detail.isPublic !== false;
@@ -354,6 +363,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         updatePreview();
       }
     } catch(err) {
+      console.error('Error fetching detail:', err);
       alert('記事データの取得に失敗しました');
     } finally {
       selectExisting.disabled = false;
