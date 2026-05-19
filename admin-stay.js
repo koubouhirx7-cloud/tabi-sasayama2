@@ -887,27 +887,73 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  pmBtnApply.addEventListener('click', () => {
-    if (pmGeneratedHtml) {
-      // Append to "About" section in Quill editor
-      const currentAbout = editors.about.root.innerHTML;
-      editors.about.clipboard.dangerouslyPasteHTML(currentAbout + pmGeneratedHtml);
-    }
-    
-    // Set first image as main eyecatch image
-    if (pmSelectedImages.length > 0) {
-      const firstImage = pmSelectedImages[0];
-      const dataUrl = `data:${firstImage.mimeType};base64,${firstImage.data}`;
-      currentImageDataUrl = dataUrl;
-      p.thumbnail.src = dataUrl;
-      p.thumbnail.style.display = 'inline-block';
-      els.removeImgBtn.style.display = 'block';
-      els.eyecatchText.style.display = 'none';
-    }
+  pmBtnApply.addEventListener('click', async () => {
+    pmBtnApply.disabled = true;
+    pmBtnApply.textContent = '画像をアップロード中...';
 
-    updatePreview();
-    photoModeModal.style.display = 'none';
-    alert('入力フォームの「プログラムについて」に反映しました！');
+    try {
+      // 1. 全画像をmicroCMSにアップロードしてURLを取得
+      const imageUrls = [];
+      for (let i = 0; i < pmSelectedImages.length; i++) {
+        const img = pmSelectedImages[i];
+        const dataUrl = `data:${img.mimeType};base64,${img.data}`;
+        const realUrl = await uploadMediaIfBase64(dataUrl, img.fileName || `photo-${i}.jpg`);
+        imageUrls.push(realUrl);
+      }
+
+      // 2. 1枚目をメイン画像（アイキャッチ）に設定
+      if (imageUrls.length > 0) {
+        currentImageDataUrl = imageUrls[0];
+        p.thumbnail.src = imageUrls[0];
+        p.thumbnail.style.display = 'inline-block';
+        els.removeImgBtn.style.display = 'block';
+        els.eyecatchText.style.display = 'none';
+      }
+
+      // 3. 2枚目以降を記事の段落間に均等配置
+      if (pmGeneratedHtml) {
+        const remainingImages = imageUrls.slice(1);
+
+        let finalHtml = pmGeneratedHtml;
+        if (remainingImages.length > 0) {
+          // <p>...</p> 単位で分割
+          const paragraphs = pmGeneratedHtml.match(/<[^>]+>[\s\S]*?<\/[^>]+>|<[^/][^>]*\/>/g) || [pmGeneratedHtml];
+          const insertInterval = Math.max(1, Math.floor(paragraphs.length / (remainingImages.length + 1)));
+
+          let imgIdx = 0;
+          const result = [];
+          paragraphs.forEach((para, i) => {
+            result.push(para);
+            // 一定段落ごとに画像を挿入（最後の段落の後は挿入しない）
+            if (imgIdx < remainingImages.length && (i + 1) % insertInterval === 0 && i < paragraphs.length - 1) {
+              result.push(`<p><img src="${remainingImages[imgIdx]}" alt="体験写真" style="max-width:100%; height:auto; border-radius:8px; margin:12px 0;"></p>`);
+              imgIdx++;
+            }
+          });
+          // 挿入しきれなかった画像は末尾に追加
+          while (imgIdx < remainingImages.length) {
+            result.push(`<p><img src="${remainingImages[imgIdx]}" alt="体験写真" style="max-width:100%; height:auto; border-radius:8px; margin:12px 0;"></p>`);
+            imgIdx++;
+          }
+          finalHtml = result.join('\n');
+        }
+
+        const currentAbout = editors.about.root.innerHTML;
+        const cleanAbout = currentAbout === '<p><br></p>' ? '' : currentAbout;
+        editors.about.clipboard.dangerouslyPasteHTML(cleanAbout + finalHtml);
+      }
+
+      updatePreview();
+      photoModeModal.style.display = 'none';
+      alert(`入力フォームの「プログラムについて」に反映しました！\n（写真${imageUrls.length}枚を記事内に配置しました）`);
+
+    } catch (err) {
+      alert('画像のアップロードに失敗しました: ' + err.message);
+      console.error(err);
+    } finally {
+      pmBtnApply.disabled = false;
+      pmBtnApply.textContent = '記事と画像をエディタに反映する';
+    }
   });
 
 });

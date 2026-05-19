@@ -604,29 +604,74 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  pmBtnApply.addEventListener('click', () => {
-    if (pmGeneratedTitle) titleInput.value = pmGeneratedTitle;
-    if (pmGeneratedHtml) {
-      // Append to Quill editor
-      const currentHtml = quill.root.innerHTML;
-      const cleanHtml = currentHtml === '<p><br></p>' || currentHtml === '<p>ここに本文を入力します。</p>' ? '' : currentHtml;
-      quill.clipboard.dangerouslyPasteHTML(cleanHtml + pmGeneratedHtml);
-    }
-    
-    // Set eyecatch image to the first uploaded photo
-    if (pmSelectedImages.length > 0) {
-        const firstImage = pmSelectedImages[0];
-        const dataUrl = `data:${firstImage.mimeType};base64,${firstImage.data}`;
-        currentEyecatchDataUrl = dataUrl;
-        thumbnailPreview.src = dataUrl;
+  pmBtnApply.addEventListener('click', async () => {
+    pmBtnApply.disabled = true;
+    pmBtnApply.textContent = '画像をアップロード中...';
+
+    try {
+      // 1. 全画像をmicroCMSにアップロードしてURLを取得
+      const imageUrls = [];
+      for (let i = 0; i < pmSelectedImages.length; i++) {
+        const img = pmSelectedImages[i];
+        const dataUrl = `data:${img.mimeType};base64,${img.data}`;
+        const realUrl = await uploadMediaIfBase64(dataUrl, img.fileName || `photo-${i}.jpg`);
+        imageUrls.push(realUrl);
+      }
+
+      // 2. タイトルを反映
+      if (pmGeneratedTitle) titleInput.value = pmGeneratedTitle;
+
+      // 3. 1枚目をアイキャッチに設定
+      if (imageUrls.length > 0) {
+        currentEyecatchDataUrl = imageUrls[0];
+        thumbnailPreview.src = imageUrls[0];
         thumbnailPreview.style.display = 'inline-block';
         removeImgBtn.style.display = 'block';
         eyecatchText.style.display = 'none';
-    }
+      }
 
-    updatePreview();
-    photoModeModal.style.display = 'none';
-    alert('入力フォームに反映しました！');
+      // 4. 2枚目以降を記事の段落間に均等配置
+      if (pmGeneratedHtml) {
+        const remainingImages = imageUrls.slice(1);
+
+        let finalHtml = pmGeneratedHtml;
+        if (remainingImages.length > 0) {
+          // タグ単位で分割
+          const paragraphs = pmGeneratedHtml.match(/<[^>]+>[\s\S]*?<\/[^>]+>|<[^/][^>]*\/>/g) || [pmGeneratedHtml];
+          const insertInterval = Math.max(1, Math.floor(paragraphs.length / (remainingImages.length + 1)));
+
+          let imgIdx = 0;
+          const result = [];
+          paragraphs.forEach((para, i) => {
+            result.push(para);
+            if (imgIdx < remainingImages.length && (i + 1) % insertInterval === 0 && i < paragraphs.length - 1) {
+              result.push(`<p><img src="${remainingImages[imgIdx]}" alt="写真" style="max-width:100%; height:auto; border-radius:8px; margin:12px 0;"></p>`);
+              imgIdx++;
+            }
+          });
+          while (imgIdx < remainingImages.length) {
+            result.push(`<p><img src="${remainingImages[imgIdx]}" alt="写真" style="max-width:100%; height:auto; border-radius:8px; margin:12px 0;"></p>`);
+            imgIdx++;
+          }
+          finalHtml = result.join('\n');
+        }
+
+        const currentHtml = quill.root.innerHTML;
+        const cleanHtml = currentHtml === '<p><br></p>' || currentHtml === '<p>ここに本文を入力します。</p>' ? '' : currentHtml;
+        quill.clipboard.dangerouslyPasteHTML(cleanHtml + finalHtml);
+      }
+
+      updatePreview();
+      photoModeModal.style.display = 'none';
+      alert(`入力フォームに反映しました！\n（写真${imageUrls.length}枚を記事内に配置しました）`);
+
+    } catch (err) {
+      alert('画像のアップロードに失敗しました: ' + err.message);
+      console.error(err);
+    } finally {
+      pmBtnApply.disabled = false;
+      pmBtnApply.textContent = '記事と画像をエディタに反映する';
+    }
   });
 
 });
