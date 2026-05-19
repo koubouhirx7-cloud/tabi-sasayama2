@@ -44,7 +44,15 @@ export default async function handler(req, res) {
         throw new Error(`microCMS Error: ${response.status}`);
     }
     
-    const data = await response.json();
+    let data = await response.json();
+    
+    // 強力なフェイルセーフ: 万が一APIキーの下書き全取得設定によって
+    // filters=publishedAt[exists] が無視された場合に備え、
+    // 管理画面以外からのアクセス時はプログラム側で確実に下書きを削ぎ落とす
+    if (!isAdminRequest && !draftKey && data.contents && Array.isArray(data.contents)) {
+      data.contents = data.contents.filter(item => item.publishedAt);
+      data.totalCount = data.contents.length;
+    }
     
     // プロキシの負荷と通信量を減らすためのEdgeキャッシュを付与 (60秒間有効)
     res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
