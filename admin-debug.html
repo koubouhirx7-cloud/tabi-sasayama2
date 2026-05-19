@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>デバッグ管理 | ウイズささやま</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0f172a;color:#e2e8f0;font-family:'Inter',system-ui,sans-serif;min-height:100vh}
+.admin-header{background:linear-gradient(135deg,#1e293b,#0f172a);border-bottom:1px solid #334155;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.admin-header h1{font-size:1.1rem;font-weight:700;color:#f1f5f9;display:flex;align-items:center;gap:8px}
+.header-nav a{color:#94a3b8;text-decoration:none;font-size:.85rem;padding:6px 12px;border-radius:6px;transition:.2s}
+.header-nav a:hover{background:#1e293b;color:#f1f5f9}
+.main{max-width:1400px;margin:0 auto;padding:24px;display:grid;gap:24px}
+.section-title{font-size:1.1rem;font-weight:700;color:#f1f5f9;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid #334155;display:flex;align-items:center;gap:8px}
+.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px}
+.status-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.status-item{background:#0f172a;border-radius:8px;padding:14px;border-left:3px solid #334155}
+.status-item.ok{border-left-color:#22c55e}
+.status-item.warn{border-left-color:#eab308}
+.status-item.error{border-left-color:#ef4444}
+.status-item.skip{border-left-color:#64748b}
+.status-label{font-size:.75rem;color:#94a3b8;margin-bottom:4px}
+.status-value{font-size:.9rem;font-weight:600;color:#f1f5f9}
+.status-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.7rem;font-weight:700;margin-top:4px}
+.badge-ok{background:#14532d;color:#86efac}
+.badge-warn{background:#713f12;color:#fde047}
+.badge-error{background:#7f1d1d;color:#fca5a5}
+.badge-skip{background:#1e293b;color:#94a3b8}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-size:.85rem;font-weight:600;transition:.2s}
+.btn-primary{background:#3b82f6;color:#fff}
+.btn-primary:hover{background:#2563eb}
+.btn-danger{background:#ef4444;color:#fff}
+.btn-danger:hover{background:#dc2626}
+.btn-success{background:#22c55e;color:#fff}
+.btn-success:hover{background:#16a34a}
+.btn-secondary{background:#334155;color:#e2e8f0}
+.btn-secondary:hover{background:#475569}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.input-search{background:#0f172a;border:1px solid #334155;color:#e2e8f0;border-radius:8px;padding:8px 12px;font-size:.85rem;width:250px}
+.input-search::placeholder{color:#64748b}
+select.filter-select{background:#0f172a;border:1px solid #334155;color:#e2e8f0;border-radius:8px;padding:8px 12px;font-size:.85rem}
+.log-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.log-table th{background:#0f172a;color:#64748b;padding:10px 12px;text-align:left;font-weight:600;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;border-bottom:1px solid #334155}
+.log-table td{padding:10px 12px;border-bottom:1px solid #1e293b;vertical-align:top}
+.log-table tr:hover td{background:#0f172a40}
+.level-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.7rem;font-weight:700}
+.level-error{background:#7f1d1d;color:#fca5a5}
+.level-warn{background:#713f12;color:#fde047}
+.level-info{background:#1e3a5f;color:#93c5fd}
+.level-success{background:#14532d;color:#86efac}
+.log-message{max-width:400px;word-break:break-all}
+.log-context{font-family:monospace;font-size:.75rem;color:#94a3b8;white-space:pre-wrap;max-width:300px;max-height:80px;overflow-y:auto}
+.discord-form{display:grid;gap:14px}
+.form-row{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center}
+.form-label{font-size:.85rem;color:#94a3b8;font-weight:500}
+.form-input,.form-textarea{background:#0f172a;border:1px solid #334155;color:#e2e8f0;border-radius:8px;padding:10px 12px;font-size:.85rem;width:100%;transition:.2s}
+.form-input:focus,.form-textarea:focus{outline:none;border-color:#3b82f6}
+.form-textarea{resize:vertical;min-height:80px;font-family:inherit}
+.form-select{background:#0f172a;border:1px solid #334155;color:#e2e8f0;border-radius:8px;padding:10px 12px;font-size:.85rem;width:100%}
+.alert{padding:12px 16px;border-radius:8px;font-size:.85rem;margin-top:12px}
+.alert-success{background:#14532d40;border:1px solid #22c55e;color:#86efac}
+.alert-error{background:#7f1d1d40;border:1px solid #ef4444;color:#fca5a5}
+.stat-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.stat-card{background:#0f172a;border-radius:8px;padding:16px;text-align:center}
+.stat-number{font-size:2rem;font-weight:800;line-height:1}
+.stat-label{font-size:.75rem;color:#64748b;margin-top:6px}
+.stat-error{color:#ef4444}
+.stat-warn{color:#eab308}
+.stat-info{color:#3b82f6}
+.stat-total{color:#e2e8f0}
+.empty-state{text-align:center;padding:60px;color:#64748b}
+.empty-state .icon{font-size:3rem;margin-bottom:12px}
+.toast{position:fixed;bottom:24px;right:24px;background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px 20px;font-size:.85rem;color:#f1f5f9;z-index:9999;transform:translateY(100px);opacity:0;transition:.3s}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.toast-success{border-color:#22c55e}
+.toast.toast-error{border-color:#ef4444}
+.overall-ok{color:#22c55e}
+.overall-warn{color:#eab308}
+.overall-error{color:#ef4444}
+@media(max-width:768px){.form-row{grid-template-columns:1fr}.main{padding:16px}.toolbar{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+<header class="admin-header">
+  <h1>🛠️ ウイズささやま / デバッグ・システム管理</h1>
+  <nav class="header-nav">
+    <a href="/admin-menu.html">← 管理メニュー</a>
+  </nav>
+</header>
+<main class="main">
+
+  <!-- ヘルスチェック -->
+  <div class="card">
+    <div class="section-title">🩺 システムヘルスチェック <span id="overall-badge" style="font-size:.85rem;margin-left:8px"></span></div>
+    <div id="health-status-grid" class="status-grid">
+      <div class="empty-state"><div class="icon">⏳</div>チェック中...</div>
+    </div>
+    <div style="margin-top:16px">
+      <button class="btn btn-primary" onclick="runHealthCheck()">🔄 再チェック</button>
+      <span id="health-checked-at" style="font-size:.8rem;color:#64748b;margin-left:12px"></span>
+    </div>
+  </div>
+
+  <!-- Discord通知 -->
+  <div class="card">
+    <div class="section-title">📣 Discord Webhook テスト送信</div>
+    <div class="discord-form">
+      <div class="form-row">
+        <label class="form-label">レベル</label>
+        <select id="discord-level" class="form-select">
+          <option value="info">ℹ️ Info（情報）</option>
+          <option value="success">✅ Success（成功）</option>
+          <option value="warn">⚠️ Warn（警告）</option>
+          <option value="error" selected>🔴 Error（エラー）</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="form-label">タイトル</label>
+        <input type="text" id="discord-title" class="form-input" placeholder="例: アップロードエラー発生" value="テスト通知">
+      </div>
+      <div class="form-row">
+        <label class="form-label">メッセージ</label>
+        <textarea id="discord-message" class="form-textarea" placeholder="通知の本文を入力...">管理ページからのテスト通知です。Webhook設定が正常に動作しています。</textarea>
+      </div>
+      <div class="form-row">
+        <label class="form-label">コンテキスト (JSON)</label>
+        <textarea id="discord-context" class="form-textarea" placeholder='{"page": "/admin-stay.html", "action": "upload"}' style="min-height:60px;font-family:monospace;font-size:.8rem">{"source": "管理画面テスト", "timestamp": ""}</textarea>
+      </div>
+      <div>
+        <button class="btn btn-primary" onclick="sendDiscordTest()">📤 Discord に送信</button>
+        <div id="discord-result" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- エラーログ -->
+  <div class="card">
+    <div class="section-title">📋 エラーログ</div>
+    <div class="stat-cards" id="log-stats">
+      <div class="stat-card"><div class="stat-number stat-total" id="stat-total">—</div><div class="stat-label">総ログ数</div></div>
+      <div class="stat-card"><div class="stat-number stat-error" id="stat-error">—</div><div class="stat-label">エラー</div></div>
+      <div class="stat-card"><div class="stat-number stat-warn" id="stat-warn">—</div><div class="stat-label">警告</div></div>
+      <div class="stat-card"><div class="stat-number stat-info" id="stat-info">—</div><div class="stat-label">情報</div></div>
+    </div>
+    <div class="toolbar">
+      <input type="text" id="log-search" class="input-search" placeholder="🔍 キーワード検索...">
+      <select id="log-level-filter" class="filter-select">
+        <option value="">すべてのレベル</option>
+        <option value="error">🔴 エラー</option>
+        <option value="warn">🟡 警告</option>
+        <option value="info">🔵 情報</option>
+        <option value="success">🟢 成功</option>
+      </select>
+      <button class="btn btn-secondary" onclick="loadLogs()">🔄 更新</button>
+      <button class="btn btn-secondary" onclick="exportLogs()">📥 JSON出力</button>
+      <button class="btn btn-danger" onclick="clearLogs()" style="margin-left:auto">🗑️ ログ全削除</button>
+    </div>
+    <div id="log-container" style="overflow-x:auto">
+      <div class="empty-state"><div class="icon">⏳</div>ログを読み込み中...</div>
+    </div>
+  </div>
+
+  <!-- 手動ログ記録 -->
+  <div class="card">
+    <div class="section-title">✍️ 手動ログ記録</div>
+    <div class="discord-form">
+      <div class="form-row">
+        <label class="form-label">レベル</label>
+        <select id="manual-level" class="form-select">
+          <option value="info">ℹ️ Info</option>
+          <option value="success">✅ Success</option>
+          <option value="warn">⚠️ Warn</option>
+          <option value="error">🔴 Error</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="form-label">ソース</label>
+        <input type="text" id="manual-source" class="form-input" placeholder="例: admin-panel" value="admin-panel">
+      </div>
+      <div class="form-row">
+        <label class="form-label">メッセージ</label>
+        <input type="text" id="manual-message" class="form-input" placeholder="記録するメッセージを入力...">
+      </div>
+      <div class="form-row">
+        <label class="form-label">コンテキスト</label>
+        <textarea id="manual-context" class="form-textarea" placeholder='{"key":"value"}' style="min-height:60px;font-family:monospace;font-size:.8rem"></textarea>
+      </div>
+      <div>
+        <button class="btn btn-success" onclick="submitManualLog()">📝 ログを記録</button>
+        <div id="manual-result" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const API_BASE = './api-php';
+let allLogs = [];
+
+// ---- Toast ----
+function showToast(msg, type='info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast toast-' + (type==='success'?'success':type==='error'?'error':'');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3500);
+}
+
+// ---- Health Check ----
+async function runHealthCheck() {
+  const grid = document.getElementById('health-status-grid');
+  grid.innerHTML = '<div class="empty-state"><div class="icon">⏳</div>チェック中...</div>';
+  try {
+    const res = await fetch(API_BASE + '/health-check.php', {credentials:'include'});
+    const json = await res.json();
+    const overall = json.overall || 'warn';
+    const badge = document.getElementById('overall-badge');
+    const labels = {ok:'🟢 正常',warn:'🟡 要確認',error:'🔴 エラーあり'};
+    badge.textContent = labels[overall] || overall;
+    badge.className = 'overall-' + overall;
+    document.getElementById('health-checked-at').textContent = '最終確認: ' + (json.checked_at || '—');
+
+    const results = json.results || {};
+    grid.innerHTML = '';
+    Object.values(results).forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'status-item ' + (item.status || 'skip');
+      div.innerHTML = `<div class="status-label">${item.label||''}</div>
+        <div class="status-value">${item.value||''}</div>
+        <span class="status-badge badge-${item.status||'skip'}">${item.status?.toUpperCase()||'SKIP'}</span>`;
+      grid.appendChild(div);
+    });
+  } catch(e) {
+    grid.innerHTML = '<div class="empty-state"><div class="icon">❌</div>ヘルスチェックに失敗しました。Basic認証情報を確認してください。</div>';
+  }
+}
+
+// ---- Discord ----
+async function sendDiscordTest() {
+  const btn = event.currentTarget;
+  const resultEl = document.getElementById('discord-result');
+  let ctx = {};
+  try { ctx = JSON.parse(document.getElementById('discord-context').value || '{}'); } catch(e) {}
+  ctx.timestamp = new Date().toLocaleString('ja-JP');
+
+  resultEl.innerHTML = '<div class="alert">送信中...</div>';
+  try {
+    const res = await fetch(API_BASE + '/discord-notify.php', {
+      method:'POST', credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        title:   document.getElementById('discord-title').value || 'テスト通知',
+        message: document.getElementById('discord-message').value,
+        level:   document.getElementById('discord-level').value,
+        context: ctx,
+      })
+    });
+    const json = await res.json();
+    if (json.success) {
+      resultEl.innerHTML = '<div class="alert alert-success">✅ Discordへの送信が完了しました！</div>';
+      showToast('Discord通知を送信しました', 'success');
+    } else {
+      resultEl.innerHTML = `<div class="alert alert-error">❌ ${json.message}</div>`;
+    }
+  } catch(e) {
+    resultEl.innerHTML = `<div class="alert alert-error">❌ 通信エラー: ${e.message}</div>`;
+  }
+}
+
+// ---- Logs ----
+async function loadLogs() {
+  const search = document.getElementById('log-search').value;
+  const level  = document.getElementById('log-level-filter').value;
+  let url = API_BASE + '/debug-log.php?';
+  if (level)  url += 'level=' + encodeURIComponent(level) + '&';
+  if (search) url += 'search=' + encodeURIComponent(search) + '&';
+
+  try {
+    const res = await fetch(url, {credentials:'include'});
+    const json = await res.json();
+    allLogs = json.logs || [];
+
+    // Stats
+    const total = json.total || 0;
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-error').textContent = (json.logs||[]).filter(l=>l.level==='error').length + (level==='error'?'':'+');
+    document.getElementById('stat-warn').textContent  = (json.logs||[]).filter(l=>l.level==='warn').length;
+    document.getElementById('stat-info').textContent  = (json.logs||[]).filter(l=>l.level==='info').length;
+
+    // Reload all to compute proper counts
+    if (!level && !search) {
+      const errCount = allLogs.filter(l=>l.level==='error').length;
+      const warnCount = allLogs.filter(l=>l.level==='warn').length;
+      const infoCount = allLogs.filter(l=>l.level==='info').length;
+      document.getElementById('stat-error').textContent = errCount;
+      document.getElementById('stat-warn').textContent  = warnCount;
+      document.getElementById('stat-info').textContent  = infoCount;
+    }
+    document.getElementById('stat-total').textContent = total;
+
+    renderLogs(allLogs);
+  } catch(e) {
+    document.getElementById('log-container').innerHTML =
+      '<div class="empty-state"><div class="icon">❌</div>ログの取得に失敗しました</div>';
+  }
+}
+
+function renderLogs(logs) {
+  const container = document.getElementById('log-container');
+  if (!logs.length) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">📭</div>ログが見つかりません</div>';
+    return;
+  }
+  let html = `<table class="log-table"><thead><tr>
+    <th>日時</th><th>レベル</th><th>ソース</th><th>メッセージ</th><th>コンテキスト</th><th>IP</th>
+  </tr></thead><tbody>`;
+  logs.forEach(l => {
+    const lvlClass = 'level-' + (l.level||'info');
+    const ctxStr = l.context && Object.keys(l.context).length ? JSON.stringify(l.context, null, 2) : '—';
+    html += `<tr>
+      <td style="white-space:nowrap;color:#64748b">${l.timestamp||''}</td>
+      <td><span class="level-badge ${lvlClass}">${(l.level||'info').toUpperCase()}</span></td>
+      <td style="color:#94a3b8;white-space:nowrap">${l.source||''}</td>
+      <td class="log-message">${escHtml(l.message||'')}</td>
+      <td><pre class="log-context">${escHtml(ctxStr)}</pre></td>
+      <td style="color:#64748b;font-size:.75rem">${l.ip||''}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function exportLogs() {
+  const blob = new Blob([JSON.stringify(allLogs, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'debug-logs-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+}
+
+async function clearLogs() {
+  if (!confirm('全ログを削除しますか？この操作は取り消せません。')) return;
+  try {
+    const res = await fetch(API_BASE + '/debug-log.php', {method:'DELETE', credentials:'include'});
+    const json = await res.json();
+    if (json.success) {
+      showToast('ログを全削除しました', 'success');
+      loadLogs();
+    }
+  } catch(e) { showToast('削除に失敗しました', 'error'); }
+}
+
+async function submitManualLog() {
+  const msg = document.getElementById('manual-message').value.trim();
+  if (!msg) { showToast('メッセージを入力してください', 'error'); return; }
+  let ctx = {};
+  try { ctx = JSON.parse(document.getElementById('manual-context').value || '{}'); } catch(e) {}
+  const resultEl = document.getElementById('manual-result');
+  resultEl.innerHTML = '';
+  try {
+    const res = await fetch(API_BASE + '/debug-log.php', {
+      method:'POST', credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        level:   document.getElementById('manual-level').value,
+        source:  document.getElementById('manual-source').value || 'admin-panel',
+        message: msg,
+        context: ctx,
+      })
+    });
+    const json = await res.json();
+    if (json.success) {
+      resultEl.innerHTML = '<div class="alert alert-success">✅ ログを記録しました</div>';
+      document.getElementById('manual-message').value = '';
+      setTimeout(() => loadLogs(), 500);
+    } else {
+      resultEl.innerHTML = `<div class="alert alert-error">❌ ${json.message}</div>`;
+    }
+  } catch(e) {
+    resultEl.innerHTML = `<div class="alert alert-error">❌ ${e.message}</div>`;
+  }
+}
+
+// Search / filter live
+document.getElementById('log-search').addEventListener('input', () => {
+  clearTimeout(window._searchTimer);
+  window._searchTimer = setTimeout(loadLogs, 400);
+});
+document.getElementById('log-level-filter').addEventListener('change', loadLogs);
+
+// Init
+runHealthCheck();
+loadLogs();
+</script>
+</body>
+</html>
