@@ -79,6 +79,9 @@ select.filter-select{background:#0f172a;border:1px solid #334155;color:#e2e8f0;b
 .overall-ok{color:#22c55e}
 .overall-warn{color:#eab308}
 .overall-error{color:#ef4444}
+.env-banner{padding:14px 20px;border-radius:10px;font-size:.85rem;display:flex;align-items:center;gap:12px;line-height:1.5}
+.env-banner-vercel{background:#1e1b4b;border:1px solid #6366f1;color:#c7d2fe}
+.env-banner-xserver{background:#14532d40;border:1px solid #22c55e;color:#86efac}
 @media(max-width:768px){.form-row{grid-template-columns:1fr}.main{padding:16px}.toolbar{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
@@ -90,6 +93,9 @@ select.filter-select{background:#0f172a;border:1px solid #334155;color:#e2e8f0;b
   </nav>
 </header>
 <main class="main">
+
+  <!-- 環境バナー -->
+  <div id="env-banner"></div>
 
   <!-- ヘルスチェック -->
   <div class="card">
@@ -202,6 +208,17 @@ select.filter-select{background:#0f172a;border:1px solid #334155;color:#e2e8f0;b
 const API_BASE = './api-php';
 let allLogs = [];
 
+// ---- 環境検知 ----
+const IS_VERCEL = location.hostname.includes('vercel.app');
+(function showEnvBanner() {
+  const el = document.getElementById('env-banner');
+  if (IS_VERCEL) {
+    el.innerHTML = '<div class="env-banner env-banner-vercel">⚠️ <div><strong>Vercel環境で動作中</strong><br>PHPが動作しないため、ヘルスチェック・エラーログ・Discord通知などのバックエンド機能は使用できません。<br>これらの機能はXServerにアップロード後に使用できます。</div></div>';
+  } else {
+    el.innerHTML = '<div class="env-banner env-banner-xserver">✅ <div><strong>XServer環境で動作中</strong> — 全機能が利用可能です</div></div>';
+  }
+})();
+
 // ---- Toast ----
 function showToast(msg, type='info') {
   const t = document.getElementById('toast');
@@ -236,7 +253,11 @@ async function runHealthCheck() {
       grid.appendChild(div);
     });
   } catch(e) {
-    grid.innerHTML = '<div class="empty-state"><div class="icon">❌</div>ヘルスチェックに失敗しました。Basic認証情報を確認してください。</div>';
+    if (IS_VERCEL) {
+      grid.innerHTML = '<div class="empty-state"><div class="icon">🚫</div>Vercel環境ではPHPが動作しないため、ヘルスチェックを実行できません。<br><small style="color:#94a3b8">XServerへアップロード後に使用してください。</small></div>';
+    } else {
+      grid.innerHTML = '<div class="empty-state"><div class="icon">❌</div>ヘルスチェックに失敗しました。<br><small style="color:#94a3b8">エラー: ' + e.message + '</small></div>';
+    }
   }
 }
 
@@ -280,33 +301,30 @@ async function loadLogs() {
   if (level)  url += 'level=' + encodeURIComponent(level) + '&';
   if (search) url += 'search=' + encodeURIComponent(search) + '&';
 
+  if (IS_VERCEL) {
+    document.getElementById('log-container').innerHTML =
+      '<div class="empty-state"><div class="icon">🚫</div>Vercel環境ではログ機能は使用できません。<br><small style="color:#94a3b8">XServerへアップロード後に使用してください。</small></div>';
+    ['stat-total','stat-error','stat-warn','stat-info'].forEach(id => document.getElementById(id).textContent = '—');
+    return;
+  }
   try {
     const res = await fetch(url, {credentials:'include'});
+    if (res.status === 401) throw new Error('Basic認証が必要です（401）');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const json = await res.json();
     allLogs = json.logs || [];
-
-    // Stats
     const total = json.total || 0;
+    const errCount  = allLogs.filter(l=>l.level==='error').length;
+    const warnCount = allLogs.filter(l=>l.level==='warn').length;
+    const infoCount = allLogs.filter(l=>l.level==='info').length;
     document.getElementById('stat-total').textContent = total;
-    document.getElementById('stat-error').textContent = (json.logs||[]).filter(l=>l.level==='error').length + (level==='error'?'':'+');
-    document.getElementById('stat-warn').textContent  = (json.logs||[]).filter(l=>l.level==='warn').length;
-    document.getElementById('stat-info').textContent  = (json.logs||[]).filter(l=>l.level==='info').length;
-
-    // Reload all to compute proper counts
-    if (!level && !search) {
-      const errCount = allLogs.filter(l=>l.level==='error').length;
-      const warnCount = allLogs.filter(l=>l.level==='warn').length;
-      const infoCount = allLogs.filter(l=>l.level==='info').length;
-      document.getElementById('stat-error').textContent = errCount;
-      document.getElementById('stat-warn').textContent  = warnCount;
-      document.getElementById('stat-info').textContent  = infoCount;
-    }
-    document.getElementById('stat-total').textContent = total;
-
+    document.getElementById('stat-error').textContent = errCount;
+    document.getElementById('stat-warn').textContent  = warnCount;
+    document.getElementById('stat-info').textContent  = infoCount;
     renderLogs(allLogs);
   } catch(e) {
     document.getElementById('log-container').innerHTML =
-      '<div class="empty-state"><div class="icon">❌</div>ログの取得に失敗しました</div>';
+      '<div class="empty-state"><div class="icon">❌</div>ログの取得に失敗しました<br><small style="color:#94a3b8">' + e.message + '</small></div>';
   }
 }
 
