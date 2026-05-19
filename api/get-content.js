@@ -25,6 +25,9 @@ export default async function handler(req, res) {
   if (limit) params.append('limit', limit);
   if (draftKey) {
     params.append('draftKey', draftKey);
+  } else if (!isAdminRequest) {
+    // お客様の画面（公開側）からのアクセスの場合は、絶対に「現在公開中のもののみ」をmicroCMSに要求する
+    params.append('filters', 'publishedAt[exists]');
   }
   
   const queryString = params.toString();
