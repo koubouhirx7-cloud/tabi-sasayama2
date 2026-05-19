@@ -354,7 +354,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       existingList.forEach(item => {
         const option = document.createElement('option');
         option.value = item.id;
-        const statusText = item.isPublic === false ? `[体験・滞在 / 非公開] ` : `[体験・滞在] `;
+        
+        // 状態表示ロジック
+        let statusText = `[体験・滞在] `;
+        if (item.isPublic === false) {
+          statusText = `[非公開] `;
+        } else if (item.isPublic === undefined || item.isPublic === null) {
+          // isPublicがまだ一度も設定されていない過去の記事
+          statusText = item.publishedAt ? `[旧:公開済] ` : `[旧:下書き] `;
+        }
+
         option.textContent = `${statusText}${item.title}`;
         selectObj.appendChild(option);
       });

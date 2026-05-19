@@ -119,7 +119,14 @@ document.addEventListener('DOMContentLoaded', async () => {
           const option = document.createElement('option');
           option.value = item.id;
           const dateStr = item.publishedAt ? item.publishedAt.substring(0, 10).replace(/-/g, '.') : '';
-          const statusText = item.isPublic === false ? `[下書き / 非公開] ` : ``;
+          
+          let statusText = ``;
+          if (item.isPublic === false) {
+            statusText = `[非公開] `;
+          } else if (item.isPublic === undefined || item.isPublic === null) {
+            statusText = item.publishedAt ? `[旧:公開済] ` : `[旧:下書き] `;
+          }
+          
           option.textContent = `${statusText}${dateStr} ${item.title}`;
           selectExisting.appendChild(option);
         });
