@@ -872,7 +872,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       const data = await response.json();
       
       pmGeneratedTitle = data.title;
-      pmGeneratedHtml = `<h2>${data.title}</h2>\n${data.story}`;
+      // storyをHTML段落に変換（段落間配置のため）
+      let storyHtml = data.story || '';
+      storyHtml = storyHtml.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
+      if (!storyHtml.startsWith('<p>')) storyHtml = '<p>' + storyHtml + '</p>';
+      pmGeneratedHtml = storyHtml;
       
       pmOutputContainer.innerHTML = `
         <h3 style="font-size:1.1rem; margin-top:0; color:#4c1d95;">${data.title}</h3>
@@ -910,34 +914,40 @@ document.addEventListener('DOMContentLoaded', async () => {
         els.eyecatchText.style.display = 'none';
       }
 
-      // 3. 2枚目以降を記事の段落間に均等配置
+      // 3. タイトル＋写真を段落間に均等配置して記事を構築
       if (pmGeneratedHtml) {
         const remainingImages = imageUrls.slice(1);
+        const titleHtml = pmGeneratedTitle ? `<h2><strong>${pmGeneratedTitle}</strong></h2>` : '';
 
-        let finalHtml = pmGeneratedTitle ? `<h2><strong>${pmGeneratedTitle}</strong></h2>\n${pmGeneratedHtml}` : pmGeneratedHtml;
-        if (remainingImages.length > 0) {
-          // <p>...</p> 単位で分割
-          const paragraphs = pmGeneratedHtml.match(/<[^>]+>[\s\S]*?<\/[^>]+>|<[^/][^>]*\/>/g) || [pmGeneratedHtml];
+        // </p> で分割して段落配列を作成（入れ子タグに強い方式）
+        const parts = pmGeneratedHtml.split('</p>').filter(s => s.trim());
+        const paragraphs = parts.map(s => (s.trim().startsWith('<') ? s : '<p>' + s) + '</p>');
+
+        const result = titleHtml ? [titleHtml] : [];
+
+        if (remainingImages.length > 0 && paragraphs.length > 1) {
           const insertInterval = Math.max(1, Math.floor(paragraphs.length / (remainingImages.length + 1)));
-
           let imgIdx = 0;
-          const result = [];
           paragraphs.forEach((para, i) => {
             result.push(para);
-            // 一定段落ごとに画像を挿入（最後の段落の後は挿入しない）
             if (imgIdx < remainingImages.length && (i + 1) % insertInterval === 0 && i < paragraphs.length - 1) {
-              result.push(`<p><img src="${remainingImages[imgIdx]}" alt="体験写真" style="max-width:100%; height:auto; border-radius:8px; margin:12px 0;"></p>`);
+              result.push(`<p><img src="${remainingImages[imgIdx]}" alt="体験写真" style="max-width:100%; height:auto; border-radius:8px; margin:16px 0;"></p>`);
               imgIdx++;
             }
           });
-          // 挿入しきれなかった画像は末尾に追加
           while (imgIdx < remainingImages.length) {
-            result.push(`<p><img src="${remainingImages[imgIdx]}" alt="体験写真" style="max-width:100%; height:auto; border-radius:8px; margin:12px 0;"></p>`);
+            result.push(`<p><img src="${remainingImages[imgIdx]}" alt="体験写真" style="max-width:100%; height:auto; border-radius:8px; margin:16px 0;"></p>`);
             imgIdx++;
           }
-          finalHtml = result.join('\n');
+        } else {
+          // 段落が少ない場合は末尾にまとめて追加
+          paragraphs.forEach(p => result.push(p));
+          remainingImages.forEach(url => {
+            result.push(`<p><img src="${url}" alt="体験写真" style="max-width:100%; height:auto; border-radius:8px; margin:16px 0;"></p>`);
+          });
         }
 
+        const finalHtml = result.join('\n');
         const currentAbout = editors.about.root.innerHTML;
         const cleanAbout = currentAbout === '<p><br></p>' ? '' : currentAbout;
         editors.about.clipboard.dangerouslyPasteHTML(cleanAbout + finalHtml);
