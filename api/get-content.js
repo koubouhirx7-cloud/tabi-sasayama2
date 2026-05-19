@@ -6,8 +6,13 @@ export default async function handler(req, res) {
   const { endpoint, id, limit, draftKey } = req.query;
   const domain = process.env.VITE_MICROCMS_SERVICE_DOMAIN || process.env.MICROCMS_SERVICE_DOMAIN;
   
-  // 無料プラン対応: 1つで全権限を持つ統合キーを使用します
-  const apiKey = process.env.MICROCMS_API_KEY;
+  const referer = req.headers.referer || '';
+  const isAdminRequest = referer.includes('/admin-');
+
+  // 本来の正しい設計: 管理画面からのアクセス時は下書き取得権限のあるManagement Keyを、公開サイトからはPublic Keyを使用する
+  const apiKey = isAdminRequest 
+    ? (process.env.MICROCMS_MANAGEMENT_KEY || process.env.MICROCMS_API_KEY)
+    : process.env.MICROCMS_API_KEY;
 
   if (!domain || !apiKey || !endpoint) {
     return res.status(500).json({ message: 'Server Configuration or Params Missing' });
@@ -24,10 +29,6 @@ export default async function handler(req, res) {
   if (limit) params.append('limit', limit);
   if (draftKey) {
     params.append('draftKey', draftKey);
-  } else if (!isAdminRequest) {
-    // 管理画面からのアクセスではない（ホームページ公開側の）場合のみ、強制的に「公開済み」に絞る
-    // これによりAPIキーの「下書きの全取得」がオンでも、お客様には下書きが漏れない
-    params.append('filters', 'publishedAt[exists]');
   }
   
   const queryString = params.toString();
