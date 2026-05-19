@@ -22,19 +22,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   const draftBtn = document.getElementById('btn-draft');
   const unpublishBtn = document.getElementById('btn-unpublish');
 
+  let globalArticleList = [];
+
   // Load Existing Downloads for Edit Dropdown
-  try {
-    const existingList = await fetchDownloads(50);
-    existingList.forEach(item => {
-      const option = document.createElement('option');
-      option.value = item.id;
-      const statusText = item.publishedAt ? '' : '[下書き] ';
-      option.textContent = `${statusText}${item.title || '無題'}`;
-      selectExisting.appendChild(option);
-    });
-  } catch (err) {
-    console.warn('Failed to load existing downloads', err);
+  async function loadArticleList() {
+    try {
+      const existingList = await fetchDownloads(100);
+      globalArticleList = existingList;
+      existingList.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.id;
+        const statusText = item.publishedAt ? '' : '[下書き] ';
+        option.textContent = `${statusText}${item.title || '無題'}`;
+        selectExisting.appendChild(option);
+      });
+    } catch (err) {
+      console.warn('Failed to load existing downloads', err);
+    }
   }
+  loadArticleList();
 
   // Reset scroll after async init completes
   requestAnimationFrame(() => {
@@ -161,10 +167,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     selectExisting.disabled = true;
     try {
-      const res = await fetch(`/api/get-content?endpoint=downloads/${id}`);
-      const json = await res.json();
-      const detail = json.data;
-
+      const detail = globalArticleList.find(item => item.id === id);
       if (detail) {
         currentEditId = detail.id;
         submitBtn.textContent = '編集内容を上書き保存する';

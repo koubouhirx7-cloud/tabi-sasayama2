@@ -346,11 +346,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  let globalArticleList = [];
+
   async function loadArticleList() {
     try {
       const selectObj = document.getElementById('select-existing');
       selectObj.innerHTML = '<option value="">-- ✨ 新規作成モード (選ぶと編集になります) --</option>';
       const existingList = await fetchStay(50); // Get up to 50 existing stays
+      globalArticleList = existingList;
       existingList.forEach(item => {
         const option = document.createElement('option');
         option.value = item.id;
@@ -422,9 +425,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     selectExisting.disabled = true;
     try {
-      const selectedOption = e.target.options[e.target.selectedIndex];
-      const draftKey = selectedOption.dataset.draftkey || null;
-      const detail = await fetchStayDetail(id, draftKey);
+      const detail = globalArticleList.find(item => item.id === id);
       if (detail) {
         currentEditId = detail.id;
         submitBtn.textContent = '編集内容を上書き保存する';

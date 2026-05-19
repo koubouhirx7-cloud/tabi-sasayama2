@@ -31,21 +31,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   const draftBtn = document.getElementById('btn-draft');
   const unpublishBtn = document.getElementById('btn-unpublish');
 
+  let globalArticleList = [];
+
   // Load Existing Voices for Edit Dropdown
-  try {
-    const existingList = await fetchVoices(50);
-    existingList.forEach(item => {
-      const option = document.createElement('option');
-      option.value = item.id;
-      const statusText = item.publishedAt ? '' : '[下書き] ';
-      const prog = item.stayProgram || '不明プラン';
-      const name = `${item.fromOrigin || ''} ${item.age || ''} ${item.gender || ''}`;
-      option.textContent = `${statusText}${name}様 (${prog})`;
-      selectExisting.appendChild(option);
-    });
-  } catch (err) {
-    console.warn('Failed to load existing voices for edit selector', err);
+  async function loadArticleList() {
+    try {
+      const existingList = await fetchVoices(100);
+      globalArticleList = existingList;
+      existingList.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.id;
+        const statusText = item.publishedAt ? '' : '[下書き] ';
+        const prog = item.stayProgram || '不明プラン';
+        const name = `${item.fromOrigin || ''} ${item.age || ''} ${item.gender || ''}`;
+        option.textContent = `${statusText}${name}様 (${prog})`;
+        selectExisting.appendChild(option);
+      });
+    } catch (err) {
+      console.warn('Failed to load existing voices for edit selector', err);
+    }
   }
+
+  loadArticleList();
 
   // Reset scroll after async init completes
   requestAnimationFrame(() => {
@@ -203,11 +210,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     selectExisting.disabled = true;
     try {
-      // NOTE: For detail, we can do a generic fetch using /api/get-content
-      const res = await fetch(`/api/get-content?endpoint=voices/${id}`);
-      const json = await res.json();
-      const detail = json.data;
-
+      const detail = globalArticleList.find(item => item.id === id);
       if (detail) {
         currentEditId = detail.id;
         submitBtn.textContent = '編集内容を上書き保存する';

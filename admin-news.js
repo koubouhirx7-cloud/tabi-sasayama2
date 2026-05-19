@@ -93,6 +93,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Elements: Edit Mode
   const selectExisting = document.getElementById('select-existing');
   let currentEditId = null;
+  let globalArticleList = [];
 
   // Load Existing Articles for Edit Dropdown（下書き含む・管理APIで取得）
   async function loadArticleList() {
@@ -101,6 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!res.ok) throw new Error('list fetch failed');
       const data = await res.json();
       const items = data.contents || data || [];
+      globalArticleList = items;
       // 既存のオプションを削除してリセット
       while (selectExisting.options.length > 1) selectExisting.remove(1);
       items.forEach(item => {
@@ -115,6 +117,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       // フォールバック：公開記事のみ
       try {
         const existingList = await fetchAllNews(50);
+        globalArticleList = existingList;
         existingList.forEach(item => {
           const option = document.createElement('option');
           option.value = item.id;
@@ -317,9 +320,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Set to Edit Mode
     selectExisting.disabled = true;
     try {
-      const selectedOption = e.target.options[e.target.selectedIndex];
-      const draftKey = selectedOption.dataset.draftkey || null;
-      const detail = await fetchNewsDetail(id, draftKey);
+      const detail = globalArticleList.find(item => item.id === id);
       if (detail) {
         currentEditId = detail.id;
         submitBtn.textContent = '編集内容を上書き保存する';
