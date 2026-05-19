@@ -23,6 +23,9 @@ async function fetchFromMicroCMS(endpoint, id = null, params = {}) {
   
   // 本番用 (Vercel Serverless Proxy経由で安全に取得)
   let url = `/api/get-content?endpoint=${endpoint}`;
+  if (typeof window !== 'undefined' && window.location.pathname.includes('/admin-')) {
+    url += '&isAdmin=true';
+  }
   if (id) url += `&id=${id}`;
   for (const [k, v] of Object.entries(params)) {
     if (v !== undefined && v !== null) url += `&${k}=${v}`;

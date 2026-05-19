@@ -3,11 +3,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { endpoint, id, limit, draftKey } = req.query;
+  const { endpoint, id, limit, draftKey, isAdmin } = req.query;
   const domain = process.env.VITE_MICROCMS_SERVICE_DOMAIN || process.env.MICROCMS_SERVICE_DOMAIN;
   
-  const referer = req.headers.referer || '';
-  const isAdminRequest = referer.includes('/admin-');
+  // ブラウザのReferer制限に影響されない、確実なクエリパラメータでの判定
+  const isAdminRequest = (isAdmin === 'true');
 
   // 本来の正しい設計: 管理画面からのアクセス時は下書き取得権限のあるManagement Keyを、公開サイトからはPublic Keyを使用する
   const apiKey = isAdminRequest 
