@@ -127,6 +127,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             statusText = item.publishedAt ? `[旧:公開済] ` : `[旧:下書き] `;
           }
           
+          if (item.draftKey) {
+            option.dataset.draftkey = item.draftKey;
+          }
+          
           option.textContent = `${statusText}${dateStr} ${item.title}`;
           selectExisting.appendChild(option);
         });
@@ -309,7 +313,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Set to Edit Mode
     selectExisting.disabled = true;
     try {
-      const detail = await fetchNewsDetail(id);
+      const selectedOption = e.target.options[e.target.selectedIndex];
+      const draftKey = selectedOption.dataset.draftkey || null;
+      const detail = await fetchNewsDetail(id, draftKey);
       if (detail) {
         currentEditId = detail.id;
         submitBtn.textContent = '編集内容を上書き保存する';
