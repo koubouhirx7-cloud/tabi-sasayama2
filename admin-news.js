@@ -94,20 +94,40 @@ document.addEventListener('DOMContentLoaded', async () => {
   const selectExisting = document.getElementById('select-existing');
   let currentEditId = null;
 
-  // Load Existing Articles for Edit Dropdown
-  try {
-    const existingList = await fetchAllNews(50); // Get recent 50
-    existingList.forEach(item => {
-      const option = document.createElement('option');
-      option.value = item.id;
-      const dateStr = item.publishedAt ? item.publishedAt.substring(0, 10).replace(/-/g, '.') : (item.createdAt ? item.createdAt.substring(0, 10).replace(/-/g, '.') : '');
-      const statusText = item.publishedAt ? `[${dateStr}] ` : `[下書き: ${dateStr}] `;
-      option.textContent = `${statusText}${item.title}`;
-      selectExisting.appendChild(option);
-    });
-  } catch (err) {
-    console.warn('Failed to load existing news for edit selector', err);
+  // Load Existing Articles for Edit Dropdown（下書き含む・管理APIで取得）
+  async function loadArticleList() {
+    try {
+      const res = await fetch('/api/list-news-all', { credentials: 'include' });
+      if (!res.ok) throw new Error('list fetch failed');
+      const data = await res.json();
+      const items = data.contents || data || [];
+      // 既存のオプションを削除してリセット
+      while (selectExisting.options.length > 1) selectExisting.remove(1);
+      items.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.id;
+        const dateStr = item.publishedAt ? item.publishedAt.substring(0, 10).replace(/-/g, '.') : (item.createdAt ? item.createdAt.substring(0, 10).replace(/-/g, '.') : '');
+        const statusText = item.publishedAt ? `[公開 ${dateStr}] ` : `[下書き ${dateStr}] `;
+        option.textContent = `${statusText}${item.title}`;
+        selectExisting.appendChild(option);
+      });
+    } catch (err) {
+      // フォールバック：公開記事のみ
+      try {
+        const existingList = await fetchAllNews(50);
+        existingList.forEach(item => {
+          const option = document.createElement('option');
+          option.value = item.id;
+          const dateStr = item.publishedAt ? item.publishedAt.substring(0, 10).replace(/-/g, '.') : '';
+          option.textContent = `[公開 ${dateStr}] ${item.title}`;
+          selectExisting.appendChild(option);
+        });
+      } catch(e) {
+        console.warn('Failed to load article list', e);
+      }
+    }
   }
+  loadArticleList();
 
   // Reset scroll after all init (Quill + article list) has been rendered
   requestAnimationFrame(() => {
@@ -370,12 +390,23 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       alert(isDraft ? `下書きを保存しました！` : `記事が正常にmicroCMSへ${currentEditId ? '上書き保存' : '公開保存'}されました！`);
       console.log('Success:', resJson);
-      
-      // Reset form on success
-      if (!currentEditId) {
-        titleInput.value = '';
-        quill.clipboard.dangerouslyPasteHTML('');
-        updatePreview();
+
+      if (isDraft) {
+        // 下書き保存：フォームをリセットせずIDを設定（次回保存でPATCHに切り替わる）
+        if (!currentEditId && resJson.id) {
+          currentEditId = resJson.id;
+          submitBtn.textContent = '編集内容を上書き保存する';
+        }
+        // ドロップダウンを更新
+        loadArticleList();
+      } else {
+        // 公開保存：新規の場合のみフォームをリセット
+        if (!currentEditId) {
+          titleInput.value = '';
+          quill.clipboard.dangerouslyPasteHTML('');
+          updatePreview();
+        }
+        loadArticleList();
       }
       
     } catch(err) {
