@@ -509,6 +509,38 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       alert(isDraft ? `下書きを保存しました！` : `プログラムが正常にmicroCMSへ${currentEditId ? '上書き保存' : '公開保存'}されました！`);
       console.log('Success:', resJson);
+
+      if (isDraft) {
+        // 下書き保存：フォームをリセットせずIDを設定（次回保存でPATCHに切り替わる）
+        if (!currentEditId && resJson.id) {
+          currentEditId = resJson.id;
+          submitBtn.textContent = '編集内容を上書き保存する';
+        }
+        // ドロップダウンを更新
+        loadArticleList();
+      } else {
+        // 公開保存：新規の場合のみフォームをリセット
+        if (!currentEditId) {
+          els.title.value = '';
+          els.subtitle.value = '';
+          els.infoDates.value = '';
+          els.infoCapacity.value = '';
+          els.infoDecision.value = '';
+          currentImageDataUrl = '';
+          p.thumbnail.style.display = 'none';
+          els.removeImgBtn.style.display = 'none';
+          els.eyecatchText.style.display = 'block';
+          currentGalleryDataUrls = [];
+          els.galleryThumbnails.innerHTML = '';
+          editors.about.clipboard.dangerouslyPasteHTML('');
+          editors.schedule.clipboard.dangerouslyPasteHTML('');
+          editors.includes.clipboard.dangerouslyPasteHTML('');
+          editors.price.clipboard.dangerouslyPasteHTML('');
+          editors.cancel.clipboard.dangerouslyPasteHTML('');
+          updatePreview();
+        }
+        loadArticleList();
+      }
     } catch(err) {
       alert('エラーが発生しました: ' + err.message);
       console.error(err);
