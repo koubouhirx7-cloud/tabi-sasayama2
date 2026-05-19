@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const thumbnailPreview = document.getElementById('eyecatch-thumbnail');
   const removeImgBtn = document.getElementById('btn-remove-image');
   const eyecatchText = document.getElementById('eyecatch-text');
+  const isPublicCheckbox = document.getElementById('input-isPublic');
 
   // Initialize Quill Editor
   const quill = new Quill('#editor-container', {
