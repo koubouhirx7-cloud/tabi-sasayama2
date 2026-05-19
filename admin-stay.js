@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     .then(r => r.json())
     .then(d => {
       if (!d.success) throw new Error(d.message || 'アップロード失敗');
-      return d.url;
+      return d.data.url;
     });
   }
 
