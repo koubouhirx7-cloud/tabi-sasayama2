@@ -315,6 +315,17 @@
         <small style="display:block; margin-top:8px; color:#555;">写真の撮影時間・位置情報から、ブログ記事を自動執筆します</small>
       </div>
 
+      <!-- 公開ステータス (独自フラグ) -->
+      <div class="form-group" style="background: #eef2ff; padding: 15px; border-radius: 8px; border-left: 4px solid #4f46e5; margin-bottom: 20px;">
+        <label style="display: flex; align-items: center; cursor: pointer; font-weight: bold; font-size: 1.1rem; color: #1e1b4b; background: transparent; border: none; padding: 0;">
+          <input type="checkbox" id="input-isPublic" checked style="width: 22px; height: 22px; margin-right: 12px; cursor: pointer; accent-color: #4f46e5;">
+          この記事をホームページに公開する
+        </label>
+        <small style="display:block; margin-top:8px; color:#4338ca; line-height: 1.4;">
+          ※チェックを外して保存すると「非公開（下書き扱い）」となり、ホームページから完全に表示が消えます。
+        </small>
+      </div>
+
       <div class="form-group">
         <label for="input-title">タイトル</label>
         <input type="text" id="input-title" placeholder="例: 春の丹波篠山を巡るツアー開催" value="新しいお知らせ">

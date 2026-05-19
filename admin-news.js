@@ -119,7 +119,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           const option = document.createElement('option');
           option.value = item.id;
           const dateStr = item.publishedAt ? item.publishedAt.substring(0, 10).replace(/-/g, '.') : '';
-          option.textContent = `[公開 ${dateStr}] ${item.title}`;
+          const statusText = item.isPublic === false ? `[下書き / 非公開] ` : ``;
+          option.textContent = `${statusText}${dateStr} ${item.title}`;
           selectExisting.appendChild(option);
         });
       } catch(e) {
@@ -288,9 +289,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       dateInput.value = new Date().toISOString().split('T')[0];
       currentEyecatchDataUrl = '';
       thumbnailPreview.style.display = 'none';
-      thumbnailPreview.style.display = 'none';
       removeImgBtn.style.display = 'none';
       eyecatchText.style.display = 'block';
+      if (isPublicCheckbox) isPublicCheckbox.checked = true;
       if (unpublishBtn) unpublishBtn.style.display = 'none';
 
       quill.clipboard.dangerouslyPasteHTML('<p>ここに本文を入力します。</p>');
@@ -310,6 +311,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (detail.publishedAt) dateInput.value = detail.publishedAt.split('T')[0];
         if (detail.category && detail.category.length > 0) categoryInput.value = detail.category[0];
         
+        if (isPublicCheckbox) {
+          isPublicCheckbox.checked = detail.isPublic !== false;
+        }
+
         if (unpublishBtn) {
           unpublishBtn.style.display = detail.publishedAt ? 'block' : 'none';
         }
@@ -356,6 +361,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         category: [categoryInput.value],
         eyecatch: realEyecatchUrl,
         body: quill.root.innerHTML,
+        isPublic: isPublicCheckbox ? isPublicCheckbox.checked : true,
         isDraft
       };
 
