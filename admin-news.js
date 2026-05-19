@@ -333,12 +333,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       // 2. Prepare payload
       const data = {
         title: titleInput.value,
-        publishedAt: new Date(dateInput.value).toISOString(),
         category: [categoryInput.value],
         eyecatch: realEyecatchUrl,
         body: quill.root.innerHTML,
         isDraft
       };
+
+      // 下書きの場合は publishedAt を送らない（microCMSが拒否するため）
+      if (!isDraft && dateInput.value) {
+        data.publishedAt = new Date(dateInput.value).toISOString();
+      }
 
       if (currentEditId) {
         data.id = currentEditId;
