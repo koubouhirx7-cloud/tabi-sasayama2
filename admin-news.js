@@ -634,7 +634,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (pmGeneratedHtml) {
         const remainingImages = imageUrls.slice(1);
 
-        let finalHtml = pmGeneratedHtml;
+        let finalHtml = pmGeneratedTitle ? `<h2><strong>${pmGeneratedTitle}</strong></h2>\n${pmGeneratedHtml}` : pmGeneratedHtml;
         if (remainingImages.length > 0) {
           // タグ単位で分割
           const paragraphs = pmGeneratedHtml.match(/<[^>]+>[\s\S]*?<\/[^>]+>|<[^/][^>]*\/>/g) || [pmGeneratedHtml];
