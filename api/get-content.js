@@ -17,13 +17,16 @@ export default async function handler(req, res) {
   let url = `https://${domain}.microcms.io/api/v1/${endpoint}`;
   if (id) url += `/${id}`;
   
+  const referer = req.headers.referer || '';
+  const isAdminRequest = referer.includes('/admin-');
+
   const params = new URLSearchParams();
   if (limit) params.append('limit', limit);
   if (draftKey) {
     params.append('draftKey', draftKey);
-  } else {
-    // ホームページ（公開側）のアクセスの場合、強制的に「公開済み」のみに絞るフィルターを追加
-    // これにより、APIキーに「下書きの全取得」権限があっても下書きがホームページに漏れるのを防ぐ
+  } else if (!isAdminRequest) {
+    // 管理画面からのアクセスではない（ホームページ公開側の）場合のみ、強制的に「公開済み」に絞る
+    // これによりAPIキーの「下書きの全取得」がオンでも、お客様には下書きが漏れない
     params.append('filters', 'publishedAt[exists]');
   }
   
