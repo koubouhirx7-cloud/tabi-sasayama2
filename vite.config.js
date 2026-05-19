@@ -24,6 +24,7 @@ export default defineConfig({
         adminDownloads: resolve(__dirname, 'admin-downloads.html'),
         adminSettings: resolve(__dirname, 'admin-settings.html'),
         adminAnalytics: resolve(__dirname, 'admin-analytics.html'),
+        adminDebug: resolve(__dirname, 'admin-debug.html'),
         survey: resolve(__dirname, 'survey.html'),
         customize: resolve(__dirname, 'customize.html'),
       }
