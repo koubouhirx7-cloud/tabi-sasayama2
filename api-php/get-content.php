@@ -50,7 +50,7 @@ $data = json_decode($res, true);
 // 管理画面以外からのアクセス時はプログラム側で確実に下書きを削ぎ落とす
 if (!$is_admin && !$draft_key && isset($data['contents']) && is_array($data['contents'])) {
     $data['contents'] = array_values(array_filter($data['contents'], function($item) {
-        return isset($item['publishedAt']) && $item['publishedAt'] !== null;
+        return !isset($item['isPublic']) || $item['isPublic'] !== false;
     }));
     $data['totalCount'] = count($data['contents']);
 }

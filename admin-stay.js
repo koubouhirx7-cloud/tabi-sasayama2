@@ -354,7 +354,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       existingList.forEach(item => {
         const option = document.createElement('option');
         option.value = item.id;
-        const statusText = item.publishedAt ? `[体験・滞在] ` : `[体験・滞在 / 下書き] `;
+        const statusText = item.isPublic === false ? `[体験・滞在 / 非公開] ` : `[体験・滞在] `;
         option.textContent = `${statusText}${item.title}`;
         selectObj.appendChild(option);
       });
@@ -392,6 +392,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       p.thumbnail.style.display = 'none';
       els.removeImgBtn.style.display = 'none';
       els.eyecatchText.style.display = 'block';
+      const isPublicCheckbox = document.getElementById('input-isPublic');
+      if (isPublicCheckbox) isPublicCheckbox.checked = true;
       if (unpublishBtn) unpublishBtn.style.display = 'none';
       currentGalleryDataUrls = [];
       els.galleryThumbnails.innerHTML = '';
@@ -412,6 +414,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         els.infoDates.value = detail.infoDates || '';
         els.infoCapacity.value = detail.infoCapacity || '';
         els.infoDecision.value = detail.infoDecision || '';
+        
+        const isPublicCheckbox = document.getElementById('input-isPublic');
+        if (isPublicCheckbox) {
+          isPublicCheckbox.checked = detail.isPublic !== false;
+        }
         
         if (unpublishBtn) {
           unpublishBtn.style.display = detail.publishedAt ? 'block' : 'none';
@@ -492,6 +499,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         includesBody: editors.includes.root.innerHTML,
         infoPrice: editors.price.root.innerHTML,
         infoCancel: editors.cancel.root.innerHTML,
+        isPublic: document.getElementById('input-isPublic') ? document.getElementById('input-isPublic').checked : true,
         isDraft
       };
 

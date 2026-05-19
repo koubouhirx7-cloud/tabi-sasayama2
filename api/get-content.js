@@ -50,7 +50,7 @@ export default async function handler(req, res) {
     // filters=publishedAt[exists] が無視された場合に備え、
     // 管理画面以外からのアクセス時はプログラム側で確実に下書きを削ぎ落とす
     if (!isAdminRequest && !draftKey && data.contents && Array.isArray(data.contents)) {
-      data.contents = data.contents.filter(item => item.publishedAt);
+      data.contents = data.contents.filter(item => item.isPublic !== false);
       data.totalCount = data.contents.length;
     }
     
