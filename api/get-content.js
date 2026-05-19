@@ -21,10 +21,6 @@ export default async function handler(req, res) {
   // Construct microCMS URL
   let url = `https://${domain}.microcms.io/api/v1/${endpoint}`;
   if (id) url += `/${id}`;
-  
-  const referer = req.headers.referer || '';
-  const isAdminRequest = referer.includes('/admin-');
-
   const params = new URLSearchParams();
   if (limit) params.append('limit', limit);
   if (draftKey) {
