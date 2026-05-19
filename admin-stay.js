@@ -382,11 +382,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 初回ロード
   loadArticleList();
 
-  // Reset scroll after async init and Quill render completes
-  requestAnimationFrame(() => {
+  // Reset scroll robustly after async init and Quill render completes
+  setTimeout(() => {
     const leftPane = document.querySelector('.admin-pane-left');
     if (leftPane) leftPane.scrollTop = 0;
-  });
+    window.scrollTo(0, 0);
+  }, 100);
+  setTimeout(() => {
+    const leftPane = document.querySelector('.admin-pane-left');
+    if (leftPane) leftPane.scrollTop = 0;
+  }, 500);
 
   selectExisting.addEventListener('change', async (e) => {
     requestAnimationFrame(() => {
@@ -474,6 +479,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       alert('プログラムデータの取得に失敗しました');
     } finally {
       selectExisting.disabled = false;
+      // データのセットが終わってDOMの高さが変わった直後にスクロール位置を確実に一番上に戻す
+      setTimeout(() => {
+        const leftPane = document.querySelector('.admin-pane-left');
+        if (leftPane) leftPane.scrollTop = 0;
+      }, 50);
     }
   });
 

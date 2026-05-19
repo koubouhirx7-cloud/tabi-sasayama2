@@ -141,11 +141,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   loadArticleList();
 
-  // Reset scroll after all init (Quill + article list) has been rendered
-  requestAnimationFrame(() => {
+  setTimeout(() => {
     const leftPane = document.querySelector('.admin-pane-left');
     if (leftPane) leftPane.scrollTop = 0;
-  });
+    window.scrollTo(0, 0);
+  }, 100);
+  setTimeout(() => {
+    const leftPane = document.querySelector('.admin-pane-left');
+    if (leftPane) leftPane.scrollTop = 0;
+  }, 500);
 
   // Load today's date if empty
   if (!dateInput.value) {
@@ -352,6 +356,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       alert('記事データの取得に失敗しました');
     } finally {
       selectExisting.disabled = false;
+      setTimeout(() => {
+        const leftPane = document.querySelector('.admin-pane-left');
+        if (leftPane) leftPane.scrollTop = 0;
+      }, 50);
     }
   });
 
