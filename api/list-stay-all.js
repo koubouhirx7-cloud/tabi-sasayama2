@@ -12,8 +12,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    // microCMS Management API: draftKey不要で下書き含む全記事を取得
-    const url = `https://${domain}.microcms.io/api/v1/stay?limit=100&orders=-createdAt&status=all`;
+    // microCMS Management API: 管理APIで下書き含む全コンテンツを取得
+    const url = `https://${domain}.microcms-management.io/api/v1/contents/stay?limit=100&orders=-createdAt`;
     const apiRes = await fetch(url, {
       headers: {
         'X-MICROCMS-API-KEY': managementKey,
