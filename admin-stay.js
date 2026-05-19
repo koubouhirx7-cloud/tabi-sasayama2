@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     return fetch('https://tabi-sasayama2.vercel.app/api/upload-media', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ base64: base64Data, name: filename })
+      body: JSON.stringify({ imageBase64: dataUrl, filename: filename })
     })
     .then(r => r.json())
     .then(d => {
