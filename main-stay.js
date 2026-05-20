@@ -12,7 +12,7 @@ import { fetchStay } from './cms.js';
     if (recruitmentContainer) recruitmentContainer.innerHTML = '';
     
     stayData.sort((a,b) => (a.order || Number.MAX_SAFE_INTEGER) - (b.order || Number.MAX_SAFE_INTEGER));
-    const publicStayData = stayData || [];
+    const publicStayData = stayData ? stayData.filter(item => item.isPublic !== false) : [];
 
     if (!publicStayData || publicStayData.length === 0) {
       container.innerHTML = '<p style="text-align: center; color: #666; font-size: 1.1rem; padding: 4rem 0;">現在提供中のプログラムはありません。公開をお待ちください。</p>';

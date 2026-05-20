@@ -143,7 +143,8 @@ initTranslate();
   // 1. 体験・滞在プログラム (STAY) の取得・レンダリング
   if (stayContainer) {
     try {
-      const stays = await fetchStay(6);
+      const allStays = await fetchStay(100);
+      const stays = allStays ? allStays.filter(s => s.isPublic !== false).slice(0, 6) : [];
       
       if (stays && stays.length > 0) {
         stayContainer.innerHTML = '';
@@ -202,7 +203,8 @@ initTranslate();
   // 2. 最新情報 (NEWS) の取得・レンダリング
   if (newsContainer) {
     try {
-      const news = await fetchNews(3);
+      const allNews = await fetchNews(3);
+      const news = allNews ? allNews.filter(n => n.isPublic !== false) : [];
       
       if (news && news.length > 0) {
         newsContainer.innerHTML = '';
@@ -237,7 +239,8 @@ initTranslate();
   // 3. お客様の声 (VOICES) の取得・レンダリング
   if (voicesContainer) {
     try {
-      const voices = await fetchVoices(5);
+      const allVoices = await fetchVoices(5);
+      const voices = allVoices ? allVoices.filter(v => v.isPublic !== false) : [];
       
       if (voices && voices.length > 0) {
         voicesContainer.innerHTML = '';
