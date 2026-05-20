@@ -5,7 +5,7 @@
  */
 
 // 環境設定ファイル読み込み
-$env_file = __DIR__ . '/../.env.php';
+$env_file = __DIR__ . '/../../.env.php';
 if (file_exists($env_file)) {
     require_once $env_file;
 }
