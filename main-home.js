@@ -145,7 +145,7 @@ initTranslate();
     try {
       const rawStays = await fetchStay(6);
       // フロントエンドの絶対防壁: ユーザー独自の公開フラグ (isPublic) が false のものを除外
-      const stays = rawStays || [];
+      const stays = rawStays ? rawStays.filter(s => s.isPublic !== false) : [];
       
       if (stays && stays.length > 0) {
         stayContainer.innerHTML = '';
@@ -205,7 +205,7 @@ initTranslate();
   if (newsContainer) {
     try {
       const rawNews = await fetchNews(3);
-      const news = rawNews || [];
+      const news = rawNews ? rawNews.filter(n => n.isPublic !== false) : [];
       
       if (news && news.length > 0) {
         newsContainer.innerHTML = '';
@@ -241,7 +241,7 @@ initTranslate();
   if (voicesContainer) {
     try {
       const rawVoices = await fetchVoices(5);
-      const voices = rawVoices || [];
+      const voices = rawVoices ? rawVoices.filter(v => v.isPublic !== false) : [];
       
       if (voices && voices.length > 0) {
         voicesContainer.innerHTML = '';
