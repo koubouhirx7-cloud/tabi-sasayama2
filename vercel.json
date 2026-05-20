@@ -2,27 +2,6 @@
   "framework": "vite",
   "headers": [
     {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "https://satoyamatour.withsasayama.jp"
-        },
-        {
-          "key": "Access-Control-Allow-Credentials",
-          "value": "true"
-        },
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "GET, POST, PATCH, DELETE, OPTIONS"
-        },
-        {
-          "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Authorization, X-Gemini-API-Key"
-        }
-      ]
-    },
-    {
       "source": "/images/(.*)",
       "headers": [
         {
@@ -60,4 +39,5 @@
     }
   ]
 }
+
 
