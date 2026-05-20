@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { id, age, gender, stayProgram, fromOrigin, purpose, comment, image } = req.body;
+  const { id, age, gender, stayProgram, fromOrigin, purpose, comment, image, isPublic } = req.body;
   if (!id) return res.status(400).json({ message: 'Item ID is required for update' });
   
   const domain = process.env.VITE_MICROCMS_SERVICE_DOMAIN || process.env.MICROCMS_SERVICE_DOMAIN;
@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ message: 'Server Configuration Missing' });
   }
 
-  const payload = { age, gender, stayProgram, fromOrigin, purpose, comment };
+  const payload = { age, gender, stayProgram, fromOrigin, purpose, comment, isPublic: isPublic !== false };
   // imageはURLがある時だけ付与（undefinedをmicroCMSへ送るとエラーになるため）
   if (image && typeof image === 'string' && image.startsWith('http')) {
     payload.image = image;

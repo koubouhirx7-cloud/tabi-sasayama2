@@ -200,6 +200,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       thumbnailPreview.style.display = 'none';
       removeImgBtn.style.display = 'none';
       eyecatchText.style.display = 'block';
+      const isPublicCheckbox = document.getElementById('input-isPublic');
+      if (isPublicCheckbox) isPublicCheckbox.checked = true;
       if (unpublishBtn) unpublishBtn.style.display = 'none';
       updatePreview();
       return;
@@ -218,6 +220,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         programInput.value = detail.stayProgram || '';
         purposeInput.value = detail.purpose || '';
         commentInput.value = detail.comment || '';
+        
+        const isPublicCheckbox = document.getElementById('input-isPublic');
+        if (isPublicCheckbox) {
+          isPublicCheckbox.checked = detail.isPublic !== false;
+        }
         
         if (unpublishBtn) {
           unpublishBtn.style.display = detail.publishedAt ? 'block' : 'none';
@@ -261,6 +268,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         fromOrigin: originInput.value,
         purpose: purposeInput.value,
         comment: commentInput.value,
+        isPublic: document.getElementById('input-isPublic') ? document.getElementById('input-isPublic').checked : true,
         isDraft
       };
       

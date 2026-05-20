@@ -28,7 +28,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   try {
-    const voices = await fetchVoices(100);
+    const allVoices = await fetchVoices(100);
+    const voices = allVoices ? allVoices.filter(v => v.isPublic !== false) : [];
     
     if (!voices || voices.length === 0) {
       container.innerHTML = '<p style="text-align:center; color:#888; width:100%;">現在掲載中のお客様の声はありません。しばらくお待ちください。</p>';

@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { age, gender, stayProgram, fromOrigin, purpose, comment, image, isDraft } = req.body;
+  const { age, gender, stayProgram, fromOrigin, purpose, comment, image, isPublic, isDraft } = req.body;
   
   const domain = process.env.VITE_MICROCMS_SERVICE_DOMAIN || process.env.MICROCMS_SERVICE_DOMAIN;
   const writeApiKey = process.env.MICROCMS_API_KEY;
@@ -18,7 +18,8 @@ export default async function handler(req, res) {
     stayProgram,
     fromOrigin,
     purpose,
-    comment
+    comment,
+    isPublic: isPublic !== false
   };
   // imageはURLがある時だけ付与（undefinedをmicroCMSへ送るとエラーになるため）
   if (image && typeof image === 'string' && image.startsWith('http')) {
