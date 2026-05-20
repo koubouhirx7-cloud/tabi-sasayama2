@@ -21,8 +21,17 @@ async function fetchFromMicroCMS(endpoint, id = null, params = {}) {
     return await res.json();
   }
   
-  // 本番用 (Vercel Serverless Proxy経由で安全に取得)
-  let url = `/api/get-content?endpoint=${endpoint}`;
+  // 本番用 (Vercel Serverless Proxy または XServer PHP Proxy 経由で安全に取得)
+  let baseUrl = '/api/get-content';
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    // XServer環境（satoyamatour.withsasayama.jp または初期ドメインなど）の場合はPHPプロキシを使用
+    if (hostname.includes('withsasayama.jp') || hostname.includes('xsrv.jp')) {
+      baseUrl = '/api-php/get-content.php';
+    }
+  }
+
+  let url = `${baseUrl}?endpoint=${endpoint}`;
   if (typeof window !== 'undefined' && window.location.pathname.includes('/admin-')) {
     url += '&isAdmin=true';
   }
