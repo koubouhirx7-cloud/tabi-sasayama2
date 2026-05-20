@@ -21,19 +21,37 @@ async function fetchFromMicroCMS(endpoint, id = null, params = {}) {
     return await res.json();
   }
   
-  // 本番用 (Vercel Serverless Proxy 経由で安全に取得)
-  let url = `/api/get-content?endpoint=${endpoint}`;
+  // 共通クエリパラメータの構築
+  let queryParts = `endpoint=${endpoint}`;
   if (typeof window !== 'undefined' && window.location.pathname.includes('/admin-')) {
-    url += '&isAdmin=true';
+    queryParts += '&isAdmin=true';
   }
-  if (id) url += `&id=${id}`;
+  if (id) queryParts += `&id=${id}`;
   for (const [k, v] of Object.entries(params)) {
-    if (v !== undefined && v !== null) url += `&${k}=${v}`;
+    if (v !== undefined && v !== null) queryParts += `&${k}=${v}`;
   }
-  
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Proxy Error: ${res.status}`);
-  return await res.json();
+
+  // 1. Vercel API経由での取得を試行
+  try {
+    const vercelUrl = `/api/get-content?${queryParts}`;
+    const res = await fetch(vercelUrl);
+    const contentType = res.headers.get('content-type');
+    
+    // ステータスがOKであり、かつレスポンスがJSONである場合のみVercelとみなす
+    if (res.ok && contentType && contentType.includes('application/json')) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.warn('Vercel API connection failed, falling back to PHP proxy...', err);
+  }
+
+  // 2. Vercelが使えない場合（XServer環境など）、PHPプロキシへ瞬時にフォールバック
+  const phpUrl = `/api-php/get-content.php?${queryParts}`;
+  const phpRes = await fetch(phpUrl);
+  if (!phpRes.ok) {
+    throw new Error(`Both Vercel API and PHP Proxy failed. PHP Status: ${phpRes.status}`);
+  }
+  return await phpRes.json();
 }
 
 export async function fetchNews(limit = 3) {
