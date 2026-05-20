@@ -37,11 +37,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 管理API (Management API) を使って下書きを含む全件を強制取得（公開ページには影響させない）
-    const url = `https://${domain}.microcms-management.io/api/v1/contents/stay?limit=100&orders=-createdAt`;
+    // Content API を isAdmin=true で使用し、全フィールド（title, isPublic等）を含む全件を取得
+    const apiKey = process.env.MICROCMS_MANAGEMENT_KEY || process.env.MICROCMS_API_KEY;
+    const url = `https://${domain}.microcms.io/api/v1/stay?limit=100`;
     const apiRes = await fetch(url, {
       headers: {
-        'X-MICROCMS-API-KEY': managementKey,
+        'X-MICROCMS-API-KEY': apiKey,
       }
     });
 
@@ -50,26 +51,7 @@ export default async function handler(req, res) {
       return res.status(apiRes.status).json({ message: 'microCMS取得エラー', detail: errText });
     }
 
-    let data = await apiRes.json();
-    
-    // Management APIの特殊なレスポンス構造（titleがネストされている）を、フロントエンド用に平滑化する
-    if (data && data.contents) {
-      data.contents = data.contents.map(item => {
-        // 色々なネストパターンからタイトルを安全に抽出
-        const rawTitle = item.title 
-                      || (item.draftData && item.draftData.title) 
-                      || (item.publishData && item.publishData.title) 
-                      || (item.draftItem && item.draftItem.title) 
-                      || (item.content && item.content.title);
-                      
-        return {
-          id: item.id,
-          title: rawTitle || '名称未設定の下書き',
-          createdAt: item.createdAt,
-          publishedAt: item.publishedAt || null
-        };
-      });
-    }
+    const data = await apiRes.json();
 
     return res.status(200).json(data);
 
