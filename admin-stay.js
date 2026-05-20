@@ -445,6 +445,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         els.title.value = detail.title || '';
         els.subtitle.value = detail.subtitle || '';
+
+        const categorySelect = document.getElementById('input-category');
+        if (categorySelect && detail.category) {
+          categorySelect.value = detail.category;
+        }
         els.infoDates.value = detail.infoDates || '';
         els.infoCapacity.value = detail.infoCapacity || '';
         els.infoDecision.value = detail.infoDecision || '';
@@ -527,6 +532,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // 2. Prepare Payload
       const data = {
+        category: document.getElementById('input-category').value,
         title: els.title.value,
         subtitle: els.subtitle.value,
         heroImage: realImage,
