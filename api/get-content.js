@@ -34,6 +34,21 @@ export default async function handler(req, res) {
   // ブラウザのReferer制限に影響されない、確実なクエリパラメータでの判定
   const isAdminRequest = (isAdmin === 'true');
 
+  // セキュリティ対策: 管理者モード(isAdmin=true)でのリクエスト時は、必ずBasic認証を検証する
+  if (isAdminRequest) {
+    const basicAuth = req.headers.authorization;
+    if (basicAuth) {
+      const authValue = basicAuth.split(' ')[1];
+      const [user, pwd] = Buffer.from(authValue, 'base64').toString().split(':');
+      if (user !== process.env.ADMIN_USER || pwd !== process.env.ADMIN_PASS) {
+        return res.status(401).json({ message: 'Unauthorized (Invalid credentials)' });
+      }
+    } else {
+      res.setHeader('WWW-Authenticate', 'Basic realm="Secure Admin Area"');
+      return res.status(401).end('Basic Auth required for Admin fetch');
+    }
+  }
+
   // 本来の正しい設計: 管理画面からのアクセス時は下書き取得権限のあるManagement Keyを、公開サイトからはPublic Keyを使用する
   const apiKey = isAdminRequest 
     ? (process.env.MICROCMS_MANAGEMENT_KEY || process.env.MICROCMS_API_KEY)

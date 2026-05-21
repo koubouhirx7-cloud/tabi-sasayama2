@@ -16,6 +16,11 @@ $limit     = $_GET['limit'] ?? null;
 $draft_key = $_GET['draftKey'] ?? null;
 $is_admin  = ($_GET['isAdmin'] ?? '') === 'true';
 
+// セキュリティ対策: 管理者モード(isAdmin=true)でのリクエスト時は、必ずBasic認証を検証する
+if ($is_admin) {
+    require_basic_auth();
+}
+
 // 確実な判定でAPIキーを使い分け（管理画面はManagement Key、公開サイトはPublic Key）
 $api_key = $is_admin ? ($mgmt_key ?: $public_key) : $public_key;
 

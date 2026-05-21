@@ -25,6 +25,11 @@ $name     = h($_POST['name'] ?? '');
 $kana     = h($_POST['kana'] ?? '');
 $tel      = h($_POST['tel'] ?? '');
 $email    = h($_POST['email'] ?? '');
+// メールヘッダインジェクション対策（改行コードの除去）
+$email    = str_replace(array("\r", "\n"), '', $email);
+if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    die("エラー：不正なメールアドレス形式です。ブラウザの「戻る」ボタンで前の画面に戻り、正しいメールアドレスを入力してください。");
+}
 $date1    = h($_POST['date1'] ?? '');
 $date2    = h($_POST['date2'] ?? '');
 $duration = h($_POST['duration'] ?? '');
