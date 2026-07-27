@@ -12,9 +12,20 @@ if (!$domain || !$public_key) {
 
 $endpoint  = $_GET['endpoint'] ?? null;
 $id        = $_GET['id'] ?? null;
-$limit     = $_GET['limit'] ?? null;
+$limit     = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT) ?: null;
 $draft_key = $_GET['draftKey'] ?? null;
 $is_admin  = ($_GET['isAdmin'] ?? '') === 'true';
+
+// エンドポイントのホワイトリスト
+$allowed_endpoints = ['news', 'stay', 'voices', 'downloads', 'stay-templates', 'news-categories'];
+if ($endpoint && !in_array($endpoint, $allowed_endpoints, true)) {
+    json_response(['message' => '不正なエンドポイント'], 400);
+}
+
+// IDのバリデーション
+if ($id && !preg_match('/^[a-zA-Z0-9_-]+$/', $id)) {
+    json_response(['message' => '不正なID形式'], 400);
+}
 
 // セキュリティ対策: 管理者モード(isAdmin=true)でのリクエスト時は、必ずBasic認証を検証する
 if ($is_admin) {
@@ -45,7 +56,8 @@ if ($params)    $url .= '?' . implode('&', $params);
 ]);
 
 if (!$ok || $status >= 400) {
-    json_response(['message' => 'microCMS取得に失敗しました', 'error' => $res], $status ?: 500);
+    // ログ記録などの処理を推奨
+    json_response(['message' => 'microCMS取得に失敗しました'], $status ?: 500);
 }
 
 $data = json_decode($res, true);

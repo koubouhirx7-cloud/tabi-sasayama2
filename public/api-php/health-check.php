@@ -14,7 +14,7 @@ $overall = 'ok';
 $results['php_version'] = [
     'label'  => 'PHPバージョン',
     'status' => version_compare(PHP_VERSION, '7.4', '>=') ? 'ok' : 'warn',
-    'value'  => PHP_VERSION,
+    'value'  => version_compare(PHP_VERSION, '7.4', '>=') ? 'OK' : '要更新',
 ];
 
 // 2. cURL
@@ -43,7 +43,7 @@ foreach ($env_checks as $key => $label) {
     $results['env_' . strtolower($key)] = [
         'label'  => $label,
         'status' => $set ? 'ok' : 'warn',
-        'value'  => $set ? '設定済み (' . mb_substr($val, 0, 4) . '***)' : '未設定',
+        'value'  => $set ? '設定済み' : '未設定',
     ];
 }
 

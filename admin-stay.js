@@ -1,4 +1,5 @@
 import { fetchStay, fetchStayDetail } from './cms.js';
+import { handleError, notifyDiscord } from './admin-error.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
 
@@ -60,10 +61,10 @@ document.addEventListener('DOMContentLoaded', async () => {
               try {
                 const range = quillInstance.getSelection(true);
                 quillInstance.insertText(range.index, '🚀 画像をアップロード中...', 'color', 'blue');
-                
+
                 const dataUrl = await compressImage(file, 1200, 0.8);
                 const realUrl = await uploadMediaIfBase64(dataUrl, file.name);
-                
+
                 quillInstance.deleteText(range.index, 17);
                 quillInstance.insertEmbed(range.index, 'image', realUrl);
               } catch(e) {
@@ -130,7 +131,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           try {
             let { width, height } = img;
             if (width > maxSize || height > maxSize) {
-              if (width > height) { height = Math.round(height * maxSize / width); width = maxSize; } 
+              if (width > height) { height = Math.round(height * maxSize / width); width = maxSize; }
               else { width = Math.round(width * maxSize / height); height = maxSize; }
             }
             const canvas = document.createElement('canvas');
@@ -152,9 +153,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Utility: Media Upload Proxy
   async  function uploadMediaIfBase64(dataUrl, filename) {
     if (!dataUrl || !dataUrl.startsWith('data:image')) return dataUrl; // return as is if empty or absolute URL
-    
+
     const base64Data = dataUrl.split(',')[1];
-    return fetch('https://tabi-sasayama2.vercel.app/api/upload-media', {
+    return fetch('/api/upload-media', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ imageBase64: dataUrl, filename: filename })
@@ -171,18 +172,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!currentGalleryDataUrls.includes(url)) {
       currentGalleryDataUrls.push(url);
     }
-    
+
     const wrapper = document.createElement('div');
     wrapper.style.position = 'relative';
     wrapper.style.display = 'inline-block';
     wrapper.style.margin = '4px 8px 4px 0';
-    
+
     const img = document.createElement('img');
     img.src = url;
     img.style.height = '60px';
     img.style.objectFit = 'cover';
     img.style.borderRadius = '4px';
-    
+
     const removeBtn = document.createElement('button');
     removeBtn.innerHTML = '✕';
     removeBtn.style.position = 'absolute';
@@ -202,7 +203,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     removeBtn.style.justifyContent = 'center';
     removeBtn.style.padding = '0';
     removeBtn.style.zIndex = '10';
-    
+
     removeBtn.addEventListener('click', (e) => {
       e.preventDefault();
       const index = currentGalleryDataUrls.indexOf(url);
@@ -212,7 +213,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       wrapper.remove();
       updatePreview();
     });
-    
+
     wrapper.appendChild(img);
     wrapper.appendChild(removeBtn);
     els.galleryThumbnails.appendChild(wrapper);
@@ -228,9 +229,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       p.infoDates.textContent = els.infoDates.value;
       p.infoCapacity.textContent = els.infoCapacity.value;
       p.infoDecision.textContent = els.infoDecision.value;
-      
+
       p.image.src = currentImageDataUrl;
-      
+
       // Gallery
       if (currentGalleryDataUrls.length > 0) {
         p.gallery.style.display = 'grid'; // CSS dictates grid-template-columns
@@ -239,7 +240,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         p.gallery.style.display = 'none';
         p.gallery.innerHTML = '';
       }
-      
+
       p.about.innerHTML = editors.about.root.innerHTML;
       p.schedule.innerHTML = editors.schedule.root.innerHTML;
       p.includes.innerHTML = editors.includes.root.innerHTML;
@@ -326,19 +327,19 @@ document.addEventListener('DOMContentLoaded', async () => {
       unpublishBtn.disabled = true;
 
       try {
-        const res = await fetch('https://tabi-sasayama2.vercel.app/api/unpublish', {
+        const res = await fetch('/api/unpublish', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ endpoint: 'stay', id: currentEditId })
         });
         const resJson = await res.json();
-        
+
         if (!res.ok) throw new Error(resJson.message || '通信エラー');
-        
+
         alert('公開を停止しました。下書き状態に戻りました。');
         window.location.reload();
       } catch (err) {
-        alert('管理用APIキーが未設定か、エラーが発生しました:\n' + err.message);
+        handleError('公開停止エラー', err);
       } finally {
         unpublishBtn.textContent = originalText;
         unpublishBtn.disabled = false;
@@ -350,12 +351,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       const selectObj = document.getElementById('select-existing');
       selectObj.innerHTML = '<option value="">-- ✨ 新規作成モード (選ぶと編集になります) --</option>';
-      
+
       const res = await fetch('/api/list-stay-all', { credentials: 'include' });
       if (!res.ok) throw new Error('list fetch failed');
       const data = await res.json();
       const items = data.contents || data || [];
-      
+
       items.forEach(item => {
         const option = document.createElement('option');
         option.value = item.id;
@@ -375,7 +376,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         existingList.forEach(item => {
           const option = document.createElement('option');
           option.value = item.id;
-          
+
           let statusText = `[体験・滞在] `;
           if (item.isPublic === false) {
             statusText = `[非公開] `;
@@ -390,12 +391,40 @@ document.addEventListener('DOMContentLoaded', async () => {
           selectObj.value = currentEditId;
         }
       } catch (e) {
-        console.warn('Failed to load existing stays for selector', e);
+        notifyDiscord('プログラム一覧読み込みエラー', e?.message || String(e), 'warn');
       }
     }
   }
 
+  let currentCategories = [];
+  const categorySelect = document.getElementById('input-category');
+
+  async function loadCategories() {
+    try {
+      const res = await fetch('/api/categories');
+      if (!res.ok) throw new Error('Failed to fetch categories');
+      currentCategories = await res.json();
+
+      const prevVal = categorySelect ? categorySelect.value : null;
+      if (categorySelect) {
+        categorySelect.innerHTML = '';
+        currentCategories.forEach(cat => {
+          const option = document.createElement('option');
+          option.value = cat;
+          option.textContent = cat;
+          categorySelect.appendChild(option);
+        });
+        if (prevVal && currentCategories.includes(prevVal)) {
+          categorySelect.value = prevVal;
+        }
+      }
+    } catch (err) {
+      notifyDiscord('カテゴリ読み込みエラー', err?.message || String(err));
+    }
+  }
+
   // 初回ロード
+  await loadCategories();
   loadArticleList();
 
   // Reset scroll robustly after async init and Quill render completes
@@ -429,9 +458,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       const isPublicCheckbox = document.getElementById('input-isPublic');
       if (isPublicCheckbox) isPublicCheckbox.checked = true;
       if (unpublishBtn) unpublishBtn.style.display = 'none';
+      const dangerZone = document.getElementById('danger-zone');
+      if (dangerZone) dangerZone.style.display = 'none';
       currentGalleryDataUrls = [];
       els.galleryThumbnails.innerHTML = '';
-      
+
       updatePreview();
       return;
     }
@@ -442,27 +473,37 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (detail) {
         currentEditId = detail.id;
         submitBtn.textContent = '編集内容を上書き保存する';
-        
+
         els.title.value = detail.title || '';
         els.subtitle.value = detail.subtitle || '';
 
         const categorySelect = document.getElementById('input-category');
         if (categorySelect && detail.category) {
+          let optionExists = Array.from(categorySelect.options).some(opt => opt.value === detail.category);
+          if (!optionExists) {
+            const tempOption = document.createElement('option');
+            tempOption.value = detail.category;
+            tempOption.textContent = `${detail.category} (一時ロード中)`;
+            categorySelect.appendChild(tempOption);
+          }
           categorySelect.value = detail.category;
         }
         els.infoDates.value = detail.infoDates || '';
         els.infoCapacity.value = detail.infoCapacity || '';
         els.infoDecision.value = detail.infoDecision || '';
-        
+
         const isPublicCheckbox = document.getElementById('input-isPublic');
         if (isPublicCheckbox) {
           isPublicCheckbox.checked = detail.isPublic !== false;
         }
-        
+
         if (unpublishBtn) {
           unpublishBtn.style.display = detail.publishedAt ? 'block' : 'none';
         }
-        
+
+        const dangerZone = document.getElementById('danger-zone');
+        if (dangerZone) dangerZone.style.display = 'block';
+
         if (detail.heroImage && detail.heroImage.url) {
           currentImageDataUrl = detail.heroImage.url;
           p.thumbnail.src = currentImageDataUrl;
@@ -485,18 +526,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
           });
         }
-        
+
         editors.about.clipboard.dangerouslyPasteHTML(detail.aboutBody || '');
         editors.schedule.clipboard.dangerouslyPasteHTML(detail.scheduleBody || '');
         editors.includes.clipboard.dangerouslyPasteHTML(detail.includesBody || '');
         editors.price.clipboard.dangerouslyPasteHTML(detail.infoPrice || '');
         editors.cancel.clipboard.dangerouslyPasteHTML(detail.infoCancel || '');
-        
+
         updatePreview();
       }
     } catch(err) {
-      console.error('Error fetching stay detail:', err);
-      alert('プログラムデータの取得に失敗しました');
+      handleError('プログラムデータ取得エラー', err);
     } finally {
       selectExisting.disabled = false;
       // データのセットが終わってDOMの高さが変わった直後にスクロール位置を確実に一番上に戻す
@@ -522,12 +562,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       // 1. Upload Media
       const realImage = await uploadMediaIfBase64(currentImageDataUrl, 'stay-main.jpg');
-      
+
       const realGallery = [];
       for (let i = 0; i < currentGalleryDataUrls.length; i++) {
         const gUrl = await uploadMediaIfBase64(currentGalleryDataUrls[i], `gallery-${i}.jpg`);
         // microCMS expects an array of string URLs for multiple image fields
-        realGallery.push(typeof gUrl === 'string' ? gUrl : gUrl.url); 
+        realGallery.push(typeof gUrl === 'string' ? gUrl : gUrl.url);
       }
 
       // 2. Prepare Payload
@@ -564,13 +604,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
-      
+
       const resJson = await res.json();
       if (!res.ok) {
         const detailMessage = typeof resJson.error === 'object' ? JSON.stringify(resJson.error) : (resJson.error || '');
         throw new Error((resJson.message || '通信エラー') + (detailMessage ? '\n詳細: ' + detailMessage : ''));
       }
-      
+
       alert(isDraft ? `下書きを保存しました！` : `プログラムが正常にmicroCMSへ${currentEditId ? '上書き保存' : '公開保存'}されました！`);
       console.log('Success:', resJson);
 
@@ -606,8 +646,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadArticleList();
       }
     } catch(err) {
-      alert('エラーが発生しました: ' + err.message);
-      console.error(err);
+      handleError('保存エラー', err);
     } finally {
       submitBtn.textContent = currentEditId ? '編集内容を上書き保存する' : '保存する（新規公開）';
       if (draftBtn) draftBtn.textContent = '下書きとして保存する';
@@ -628,18 +667,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   async function getTemplates() {
     try {
-      const res = await fetch('https://tabi-sasayama2.vercel.app/api/get-content?endpoint=stay-templates&limit=100', { credentials: 'include' });
+      const res = await fetch('/api/get-content?endpoint=stay-templates&limit=100', { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to load templates');
       const json = await res.json();
       return json.contents || [];
     } catch(err) {
-      console.error(err);
+      notifyDiscord('テンプレート読み込みエラー', err?.message || String(err));
       return [];
     }
   }
 
   async function saveTemplate(template) {
-    const res = await fetch('https://tabi-sasayama2.vercel.app/api/manage-templates', {
+    const res = await fetch('/api/manage-templates', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(template)
@@ -665,9 +704,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!selectTemplate) return;
     selectTemplate.innerHTML = '<option value="">読込中...</option>';
     selectTemplate.disabled = true;
-    
+
     currentTemplates = await getTemplates();
-    
+
     selectTemplate.innerHTML = '<option value="">▼ 呼び出すテンプレートを選択</option>';
     currentTemplates.forEach(t => {
       const opt = document.createElement('option');
@@ -701,7 +740,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert('テンプレートをクラウドに保存しました！他のマシンからも呼び出せます。');
         await renderTemplatesDropdown();
       } catch (err) {
-        alert('保存エラー: microCMS側で「滞在基本テンプレート(stay-templates)」のAPIを指示通り作成しているか確認してください。\n詳細: ' + err.message);
+        handleError('テンプレート保存エラー', err);
       } finally {
         btnSaveTemplate.textContent = originalText;
         btnSaveTemplate.disabled = false;
@@ -737,10 +776,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert('削除するテンプレートを選択してください');
         return;
       }
-      
+
       const template = currentTemplates.find(t => t.id === selectedId);
       if (!confirm(`テンプレート「${template?.name}」を完全に削除しますか？`)) return;
-      
+
       const originalText = btnDeleteTemplate.textContent;
       btnDeleteTemplate.textContent = '削除中...';
       btnDeleteTemplate.disabled = true;
@@ -750,7 +789,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert('削除しました。');
         await renderTemplatesDropdown();
       } catch(err) {
-        alert('削除エラー: ' + err.message);
+        handleError('テンプレート削除エラー', err);
       } finally {
         btnDeleteTemplate.textContent = originalText;
         btnDeleteTemplate.disabled = false;
@@ -775,22 +814,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     activeMediaTarget = target;
     mediaModal.style.display = 'flex';
     mediaModalBody.innerHTML = '<div class="media-loading">画像一覧を取得中...</div>';
-    
+
     // fetch logic is already higher above so we don't need to replace it here... wait!
     // I am doing endline 444 so let's preserve everything correctly down to btn assignments.
 
-    
+
     try {
-      const res = await fetch('https://tabi-sasayama2.vercel.app/api/get-media', { credentials: 'include' });
+      const res = await fetch('/api/get-media', { credentials: 'include' });
       const json = await res.json();
       if (!res.ok) throw new Error(json.message || '取得エラー');
-      
+
       const mediaList = json.data.media || [];
       if (mediaList.length === 0) {
         mediaModalBody.innerHTML = '<div class="media-loading">アップロードされた画像がありません。</div>';
         return;
       }
-      
+
       const grid = document.createElement('div');
       grid.className = 'media-grid';
       mediaList.forEach(m => {
@@ -819,11 +858,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         grid.appendChild(item);
       });
-      
+
       mediaModalBody.innerHTML = '';
       mediaModalBody.appendChild(grid);
     } catch (err) {
-      console.error(err);
+      notifyDiscord('メディア読み込みエラー', err?.message || String(err));
       mediaModalBody.innerHTML = `<div class="media-loading" style="color:red;">画像の読み込みに失敗しました: ${err.message}</div>`;
     }
   }
@@ -879,9 +918,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     e.preventDefault();
     photoModeModal.style.display = 'flex';
   });
-  
+
   photoModeClose.addEventListener('click', () => photoModeModal.style.display = 'none');
-  
+
   // File input already covers the upload zone via CSS (position:absolute, opacity:0)
 
   pmInputPhotos.addEventListener('change', async (e) => {
@@ -905,7 +944,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           mimeType: 'image/jpeg',
           fileName: uniqueName
         });
-        
+
         const wrapper = document.createElement('div');
         wrapper.style.position = 'relative';
         wrapper.style.width = '60px';
@@ -939,25 +978,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     pmLoading.style.display = 'flex';
     pmBtnApply.style.display = 'none';
-    
+
     try {
       const personaId = pmInputPersona.value;
-      const systemPrompt = pmInputSystemPrompt.value.trim() || PERSONA_PROMPTS[personaId] || PERSONA_PROMPTS.program_intro;
       const personaName = pmInputPersona.options[pmInputPersona.selectedIndex].text;
-      
-      const apiKey = localStorage.getItem('geminiApiKey') || '';
 
-      const response = await fetch('https://tabi-sasayama2.vercel.app/api/generate-article', {
+      const response = await fetch('/api/generate-article', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'X-Gemini-API-Key': apiKey
+        headers: {
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           images: pmSelectedImages,
           timelineText,
+          personaId,
           personaName,
-          systemPrompt,
           articleLength: document.querySelector('input[name="pm-length"]:checked')?.value || 'medium'
         })
       });
@@ -967,14 +1002,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         throw new Error(errData.error || `API Error (${response.status})`);
       }
       const data = await response.json();
-      
+
       pmGeneratedTitle = data.title;
       // storyをHTML段落に変換（段落間配置のため）
       let storyHtml = data.story || '';
       storyHtml = storyHtml.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
       if (!storyHtml.startsWith('<p>')) storyHtml = '<p>' + storyHtml + '</p>';
       pmGeneratedHtml = storyHtml;
-      
+
       pmOutputContainer.innerHTML = `
         <h3 style="font-size:1.1rem; margin-top:0; color:#4c1d95;">${data.title}</h3>
         <div style="font-size:0.95rem; line-height:1.6;">${data.story}</div>
@@ -982,7 +1017,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       pmBtnApply.style.display = 'block';
 
     } catch (err) {
-      alert('生成に失敗しました: ' + err.message);
+      handleError('AI記事生成エラー', err);
     } finally {
       pmLoading.style.display = 'none';
     }
@@ -1059,12 +1094,239 @@ document.addEventListener('DOMContentLoaded', async () => {
       alert(`入力フォームの「プログラムについて」に反映しました！\n（写真${imageUrls.length}枚を記事内に配置しました）`);
 
     } catch (err) {
-      alert('画像のアップロードに失敗しました: ' + err.message);
-      console.error(err);
+      handleError('画像アップロードエラー', err);
     } finally {
       pmBtnApply.disabled = false;
       pmBtnApply.textContent = '記事と画像をエディタに反映する';
     }
   });
+
+  // --- Delete Content Logic ---
+  const btnOpenDeleteModal = document.getElementById('btn-open-delete-modal');
+  const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+  const btnCloseDeleteModal = document.getElementById('btn-close-delete-modal');
+  const btnCancelDelete = document.getElementById('btn-cancel-delete');
+  const btnConfirmDelete = document.getElementById('btn-confirm-delete');
+  const inputDeleteConfirm = document.getElementById('input-delete-confirm');
+  const deleteTargetTitle = document.getElementById('delete-target-title');
+
+  if (btnOpenDeleteModal) {
+    btnOpenDeleteModal.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (!currentEditId) return;
+      deleteTargetTitle.textContent = els.title.value || '無題';
+      inputDeleteConfirm.value = '';
+      btnConfirmDelete.disabled = true;
+      btnConfirmDelete.style.cursor = 'not-allowed';
+      btnConfirmDelete.style.opacity = '0.5';
+      deleteConfirmModal.style.display = 'flex';
+    });
+  }
+
+  const closeDeleteModal = () => {
+    deleteConfirmModal.style.display = 'none';
+  };
+
+  if (btnCloseDeleteModal) btnCloseDeleteModal.addEventListener('click', closeDeleteModal);
+  if (btnCancelDelete) btnCancelDelete.addEventListener('click', closeDeleteModal);
+  deleteConfirmModal.addEventListener('click', (e) => {
+    if (e.target === deleteConfirmModal) closeDeleteModal();
+  });
+
+  if (inputDeleteConfirm) {
+    inputDeleteConfirm.addEventListener('input', (e) => {
+      if (e.target.value.trim() === '削除') {
+        btnConfirmDelete.disabled = false;
+        btnConfirmDelete.style.cursor = 'pointer';
+        btnConfirmDelete.style.opacity = '1';
+      } else {
+        btnConfirmDelete.disabled = true;
+        btnConfirmDelete.style.cursor = 'not-allowed';
+        btnConfirmDelete.style.opacity = '0.5';
+      }
+    });
+  }
+
+  if (btnConfirmDelete) {
+    btnConfirmDelete.addEventListener('click', async () => {
+      if (!currentEditId) return;
+      if (inputDeleteConfirm.value.trim() !== '削除') return;
+
+      const originalText = btnConfirmDelete.textContent;
+      btnConfirmDelete.textContent = '削除中...';
+      btnConfirmDelete.disabled = true;
+
+      try {
+        const res = await fetch('/api/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ endpoint: 'stay', id: currentEditId })
+        });
+        const resJson = await res.json();
+        if (!res.ok) throw new Error(resJson.message || '通信エラー');
+
+        alert('プログラムを完全に削除しました。');
+        deleteConfirmModal.style.display = 'none';
+
+        // 編集モードを抜けて新規作成に戻す
+        selectExisting.value = '';
+        selectExisting.dispatchEvent(new Event('change'));
+
+        // リストを再読込
+        loadArticleList();
+      } catch (err) {
+        handleError('削除エラー', err);
+      } finally {
+        btnConfirmDelete.textContent = originalText;
+        btnConfirmDelete.disabled = false;
+      }
+    });
+  }
+
+  // --- Category Manage Logic ---
+  const btnManageCategories = document.getElementById('btn-manage-categories');
+  const categoryManageModal = document.getElementById('category-manage-modal');
+  const btnCloseCatModal = document.getElementById('btn-close-cat-modal');
+  const btnCancelCat = document.getElementById('btn-cancel-cat');
+  const btnSaveCat = document.getElementById('btn-save-cat');
+  const btnAddNewCat = document.getElementById('btn-add-new-cat');
+  const inputNewCat = document.getElementById('input-new-cat');
+  const catListContainer = document.getElementById('cat-list-container');
+
+  let localCategoriesCopy = [];
+
+  const renderLocalCategories = () => {
+    catListContainer.innerHTML = '';
+    localCategoriesCopy.forEach((cat, index) => {
+      const row = document.createElement('div');
+      row.style.display = 'flex';
+      row.style.gap = '8px';
+      row.style.alignItems = 'center';
+      row.style.marginBottom = '8px';
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = cat;
+      input.style.flex = '1';
+      input.style.padding = '8px';
+      input.style.border = '1px solid #cbd5e0';
+      input.style.borderRadius = '4px';
+      input.style.fontSize = '0.95rem';
+      input.addEventListener('input', (e) => {
+        localCategoriesCopy[index] = e.target.value.trim();
+      });
+
+      const btnDelete = document.createElement('button');
+      btnDelete.type = 'button';
+      btnDelete.textContent = '削除';
+      btnDelete.style.background = '#ef4444';
+      btnDelete.style.color = 'white';
+      btnDelete.style.border = 'none';
+      btnDelete.style.padding = '8px 12px';
+      btnDelete.style.borderRadius = '4px';
+      btnDelete.style.cursor = 'pointer';
+      btnDelete.style.fontWeight = 'bold';
+      btnDelete.style.fontSize = '0.85rem';
+      btnDelete.addEventListener('click', () => {
+        localCategoriesCopy.splice(index, 1);
+        renderLocalCategories();
+      });
+
+      row.appendChild(input);
+      row.appendChild(btnDelete);
+      catListContainer.appendChild(row);
+    });
+  };
+
+  if (btnManageCategories) {
+    btnManageCategories.addEventListener('click', (e) => {
+      e.preventDefault();
+      localCategoriesCopy = [...currentCategories];
+      renderLocalCategories();
+      inputNewCat.value = '';
+      categoryManageModal.style.display = 'flex';
+    });
+  }
+
+  const closeCatModal = () => {
+    categoryManageModal.style.display = 'none';
+  };
+
+  if (btnCloseCatModal) btnCloseCatModal.addEventListener('click', closeCatModal);
+  if (btnCancelCat) btnCancelCat.addEventListener('click', closeCatModal);
+  categoryManageModal.addEventListener('click', (e) => {
+    if (e.target === categoryManageModal) closeCatModal();
+  });
+
+  if (btnAddNewCat) {
+    btnAddNewCat.addEventListener('click', () => {
+      const val = inputNewCat.value.trim();
+      if (!val) {
+        alert('カテゴリ名を入力してください');
+        return;
+      }
+      if (localCategoriesCopy.includes(val)) {
+        alert('すでに同じ名前のカテゴリが存在します');
+        return;
+      }
+      localCategoriesCopy.push(val);
+      renderLocalCategories();
+      inputNewCat.value = '';
+    });
+  }
+
+  if (btnSaveCat) {
+    btnSaveCat.addEventListener('click', async () => {
+      const validCategories = localCategoriesCopy.map(c => c.trim()).filter(Boolean);
+      if (validCategories.length === 0) {
+        alert('カテゴリは最低1つ登録してください');
+        return;
+      }
+
+      const originalText = btnSaveCat.textContent;
+      btnSaveCat.textContent = '保存中...';
+      btnSaveCat.disabled = true;
+
+      try {
+        const res = await fetch('/api/categories', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ categories: validCategories })
+        });
+
+        if (!res.ok) {
+          const json = await res.json().catch(() => ({}));
+          throw new Error(json.message || '保存エラー');
+        }
+
+        alert('カテゴリリストを保存しました！');
+        currentCategories = validCategories;
+
+        // Restore category select options
+        const prevValue = categorySelect.value;
+        categorySelect.innerHTML = '';
+        currentCategories.forEach(cat => {
+          const option = document.createElement('option');
+          option.value = cat;
+          option.textContent = cat;
+          categorySelect.appendChild(option);
+        });
+
+        if (currentCategories.includes(prevValue)) {
+          categorySelect.value = prevValue;
+        } else {
+          categorySelect.value = currentCategories[0];
+        }
+
+        closeCatModal();
+      } catch (err) {
+        handleError('カテゴリ保存エラー', err);
+      } finally {
+        btnSaveCat.textContent = originalText;
+        btnSaveCat.disabled = false;
+      }
+    });
+  }
 
 });

@@ -3,176 +3,398 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>オーダーメイドツアー相談 | ウイズささやま</title>
-    <meta name="description" content="お客様のご予算や目的に合わせた、丹波篠山でのオリジナル体験プログラム（農業・田舎暮らし体験など）をご提案いたします。" />
+    <title>事例紹介・ストーリー｜丹波篠山の旅づくり｜ウイズささやま</title>
+    <meta name="description" content="ご相談からご提案、当日とその後まで。丹波篠山での旅づくりや地域との出会いから生まれた事例とストーリーを紹介します。" />
     <link rel="stylesheet" href="./style.css" />
     <style>
-      .page-header {
-        background-color: #a99c79;
-        height: 300px;
+      .customize-page {
+        background: #ffffff;
+        color: #24312f;
+      }
+
+      .customize-page .header {
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(10px);
+        padding: 1rem 0;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+      }
+
+      .customize-page .logo img {
+        height: 65px;
+      }
+
+      .case-main {
+        padding-top: 96px;
+      }
+
+      .case-hero {
+        width: min(1180px, 90%);
+        margin: 0 auto;
+        padding: 46px 0 26px;
+      }
+
+      .case-title-row {
         display: flex;
         align-items: center;
-        justify-content: center;
-        position: relative;
-        margin-top:  140px;
-      }
-      .page-header h1 {
-        position: relative;
-        z-index: 1;
-        color: white;
-        font-family: var(--font-display);
-        font-size: clamp(2rem, 5vw, 4rem);
-        text-align: center;
+        gap: 22px;
+        margin-bottom: 20px;
       }
 
-      .info-box {
-        background: white;
-        border-radius: var(--border-radius-md);
-        padding: var(--spacing-lg);
-        margin-bottom: var(--spacing-lg);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        border: 1px solid var(--color-border);
-      }
-      .info-box h2 {
-        color: var(--color-primary);
-        margin-bottom: var(--spacing-md);
-        font-family: var(--font-display);
-        text-align: center;
-      }
-
-      .company-table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      .company-table th, .company-table td {
-        border-bottom: 1px solid var(--color-border);
-        padding: 1rem;
-        text-align: left;
-      }
-      .company-table th {
-        width: 30%;
-        background: rgba(90, 126, 90, 0.05);
-        color: var(--color-primary);
-        font-weight: bold;
-      }
-
-      .form-group {
-        margin-bottom: 1.5rem;
-      }
-      .form-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: bold;
-        color: var(--color-text);
-      }
-      .form-group input, 
-      .form-group textarea, 
-      .form-group select {
-        width: 100%;
-        padding: 0.8rem;
-        border: 1px solid var(--color-border);
-        border-radius: var(--border-radius-sm);
-        font-family: var(--font-base);
-        font-size: 1rem;
-        transition: border-color 0.3s;
-      }
-      .form-group input:focus, 
-      .form-group textarea:focus, 
-      .form-group select:focus {
-        outline: none;
-        border-color: var(--color-primary);
-        box-shadow: 0 0 5px rgba(90, 126, 90, 0.2);
-      }
-      
-      .required {
-        color: var(--color-accent);
-        font-size: 0.8rem;
-        margin-left: 0.5rem;
-      }
-
-      /* --- Voices Integration Styles --- */
-      .voices-detail-list {
-        max-width: 1000px;
-        margin: 0 auto 5rem;
-        padding: 0 5%;
-        display: flex;
-        flex-direction: column;
-        gap: 3rem;
-      }
-      .voice-row {
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
-        padding-top: 3rem;
-        border-top: 1px solid #ddd;
-      }
-      .voice-row:first-child {
-        border-top: none;
-        padding-top: 0;
-      }
-      @media (min-width: 768px) {
-        .voice-row {
-          flex-direction: row;
-          justify-content: space-between;
-        }
-      }
-      .voice-text {
-        flex: 1;
-      }
-      @media (min-width: 768px) {
-        .voice-text { padding-right: 3rem; }
-      }
-      .voice-image {
-        width: 100%;
-        max-width: 400px;
-        flex-shrink: 0;
-      }
-      .voice-image img {
-        width: 100%;
-        height: auto;
-        object-fit: cover;
-      }
-      .voice-headline {
-        font-family: var(--font-display, "Zen Old Mincho", serif);
-        font-size: 1.3rem;
-        font-weight: 700;
-        margin-bottom: 1.5rem;
+      .case-title-row h1 {
+        width: min(560px, 76vw);
+        height: 132px;
+        margin: 0;
         display: flex;
         align-items: flex-start;
-        gap: 0.8rem;
-        line-height: 1.5;
-        color: #222;
+        overflow: hidden;
       }
-      .voice-headline::before {
-        content: "";
-        display: block;
-        width: 20px;
-        height: 20px;
-        flex-shrink: 0;
-        border-radius: 50%;
-        border: 1.5px solid #444;
-        margin-top: 0.3rem;
+
+      .case-title-mark {
+        width: 7px;
+        height: 82px;
+        background: #203c3d;
+        flex: 0 0 auto;
       }
-      .voice-meta-group {
-        font-size: 0.9rem;
-        color: #666;
-        line-height: 1.8;
-        margin-bottom: 1.5rem;
+
+      .case-title-image {
+        width: 100%;
+        max-width: 100%;
+        transform: translateY(-43px);
+      }
+
+      .case-title-fallback {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+
+      .case-lead {
+        max-width: 1040px;
+        color: #4d5753;
+        font-size: 0.98rem;
+        line-height: 1.9;
+      }
+
+      .case-index {
+        width: min(1180px, 90%);
+        margin: 0 auto;
+        padding: 10px 0 72px;
+      }
+
+      .case-visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      .case-status {
+        display: none;
+        margin: 0 0 18px;
+        color: #727a76;
+        font-size: 0.82rem;
+        line-height: 1.7;
+      }
+
+      .case-preview-link {
+        display: none;
+        width: fit-content;
+        margin: -6px 0 20px;
+        padding: 8px 13px;
+        border: 1px solid #9da5a1;
+        color: #354744;
+        font-size: 0.78rem;
+        line-height: 1;
+        text-decoration: none;
+      }
+
+      .case-card-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px 16px;
+      }
+
+      .story-card-link {
+        min-width: 0;
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .story-card-link:focus-visible {
+        outline: 2px solid #203c3d;
+        outline-offset: 4px;
+      }
+
+      .story-card {
+        min-width: 0;
+        min-height: 326px;
+        border: 1px solid #9da5a1;
+        background: #ffffff;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      }
+
+      .story-card:hover {
+        transform: translateY(-3px);
+        border-color: #9eb3aa;
+        box-shadow: 0 14px 32px rgba(22, 43, 38, 0.12);
+      }
+
+      .story-card-visual {
+        position: relative;
+        aspect-ratio: 1.5 / 1;
+        background: #eef1ee;
+        overflow: hidden;
+      }
+
+      .story-card-visual img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .story-card-visual.is-empty {
+        background: #f2f4f1;
+      }
+
+      .story-card-visual.is-empty::after {
+        content: "microCMS";
+        position: absolute;
+        inset: 50% auto auto 50%;
+        transform: translate(-50%, -50%);
+        color: rgba(32, 60, 61, 0.3);
+        font-family: var(--font-en);
+        font-size: 0.86rem;
+        letter-spacing: 0.1em;
+      }
+
+      .story-card-date {
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        min-width: 74px;
+        padding: 7px 10px;
+        background: #211b19;
+        color: #ffffff;
+        font-family: var(--font-en);
+        font-size: 0.72rem;
+        line-height: 1;
+        letter-spacing: 0.05em;
+        z-index: 1;
+      }
+
+      .story-card-body {
+        position: relative;
+        flex: 1;
+        min-height: 112px;
+        padding: 13px 72px 16px 14px;
+      }
+
+      .story-card-title {
+        color: #263331;
+        font-family: var(--font-base);
+        font-size: 0.92rem;
         font-weight: 500;
+        line-height: 1.55;
+        letter-spacing: 0.03em;
+        margin-bottom: 5px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
-      .voice-full-comment {
-        font-size: 0.95rem;
-        line-height: 2;
-        color: #111;
+
+      .story-card-excerpt {
+        color: #606b67;
+        font-size: 0.76rem;
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .story-card-number {
+        position: absolute;
+        right: 14px;
+        bottom: 7px;
+        color: #1f2726;
+        font-family: var(--font-en);
+        font-size: 3.15rem;
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .story-card.is-placeholder {
+        border-style: dashed;
+      }
+
+      .story-card.is-placeholder .story-card-title,
+      .story-card.is-placeholder .story-card-excerpt {
+        color: #7c8581;
+      }
+
+      .case-pagination {
+        min-height: 20px;
+        margin-top: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .case-page-dot {
+        width: 9px;
+        height: 9px;
+        border: 0;
+        border-radius: 50%;
+        background: #9e9995;
+        padding: 0;
+        cursor: pointer;
+        transition: transform 0.2s ease, background-color 0.2s ease;
+      }
+
+      .case-page-dot:hover,
+      .case-page-dot:focus-visible {
+        transform: scale(1.25);
+        outline: 2px solid rgba(32, 60, 61, 0.24);
+        outline-offset: 3px;
+      }
+
+      .case-page-dot[aria-current="page"] {
+        background: #203c3d;
+      }
+
+      .case-landscape {
+        height: clamp(340px, 39vw, 610px);
+        overflow: hidden;
+      }
+
+      .case-landscape img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 58%;
+      }
+
+      .customize-page .footer {
+        background: #203c3d;
+        border-top: 0;
+        color: rgba(255, 255, 255, 0.84);
+        padding: 68px 0 32px;
+      }
+
+      .customize-page .footer-logo,
+      .customize-page .footer-info,
+      .customize-page .footer-nav-col a,
+      .customize-page .footer-bottom {
+        color: rgba(255, 255, 255, 0.84);
+      }
+
+      .customize-page .footer-bottom {
+        border-top-color: rgba(255, 255, 255, 0.18);
+      }
+
+      .customize-page .footer-left {
+        display: flex;
+        align-items: flex-start;
+        gap: 22px;
+      }
+
+      .customize-page .footer-mark {
+        width: 112px;
+        height: auto;
+        flex: 0 0 auto;
+      }
+
+      @media (max-width: 980px) {
+        .case-card-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 720px) {
+        .case-main {
+          padding-top: 94px;
+        }
+
+        .case-hero {
+          padding-top: 34px;
+        }
+
+        .case-title-row {
+          gap: 16px;
+        }
+
+        .case-title-mark {
+          height: 56px;
+        }
+
+        .case-title-row h1 {
+          height: 88px;
+        }
+
+        .case-title-image {
+          transform: translateY(-25px);
+        }
+
+        .case-lead {
+          margin-left: 0;
+        }
+
+        .case-card-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .story-card {
+          min-height: auto;
+        }
+
+        .case-landscape {
+          height: 330px;
+        }
+
+        .case-landscape img {
+          object-position: 64% center;
+        }
+
+        .customize-page .footer-left {
+          display: block;
+        }
+
+        .customize-page .footer-mark {
+          width: 104px;
+          margin-bottom: 18px;
+        }
+
+        .customize-page .footer-nav {
+          gap: 2rem;
+        }
       }
     </style>
-      <meta name="keywords" content="丹波篠山,農業,体験,移住,田舎,暮らし,兵庫県,里山,古民家,Tamba Sasayama,Farm stay,Agriculture,Rural life,Kominka,Hyogo" />
+    <meta name="keywords" content="事例紹介,ストーリー,オーダーメイドツアー,カスタム旅行,丹波篠山旅,体験,農業,里山,企業研修,団体旅行,withささやま,兵庫県" />
+    <link rel="canonical" href="https://withsasayama.jp/customize.html" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="一般社団法人ウイズささやま" />
-    <meta property="og:image" content="https://withsasayama.jp/images/PC032939.jpg" />
+    <meta property="og:title" content="事例紹介・ストーリー｜丹波篠山の旅づくり｜ウイズささやま" />
+    <meta property="og:description" content="ご相談からご提案、当日とその後まで。丹波篠山での旅づくりや地域との出会いから生まれた事例とストーリーを紹介します。" />
+    <meta property="og:url" content="https://withsasayama.jp/customize.html" />
+    <meta property="og:image" content="https://withsasayama.jp/images/cases/case-story-landscape.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="事例紹介・ストーリー｜丹波篠山の旅づくり｜ウイズささやま" />
+    <meta name="twitter:description" content="相談から提案、当日とその後まで。丹波篠山での旅づくりの事例を紹介します。" />
+    <meta name="twitter:image" content="https://withsasayama.jp/images/cases/case-story-landscape.jpg" />
   </head>
-  <body>
+  <body class="customize-page">
     <!-- HEADER -->
                                         <header class="header">
       <div class="container nav-container">
@@ -194,40 +416,47 @@
       </div>
     </header>
 
-    <main>
-      <div class="page-header fade-in">
-        <h1>カスタムメイドと事例<br><span style="font-size:0.5em; font-family: var(--font-base); letter-spacing: 0.1em; font-weight: normal;">- custom made -</span></h1>
-      </div>
-
-      <section class="section">
-        <div class="container">
-          
-          <div class="fade-in">
-            <h2 class="title" style="color: var(--color-primary); font-family: var(--font-display);">カスタムメイドと事例</h2>
-            <p class="text-center mb-md" style="color: #666; line-height: 1.8;">
-              主に旅行会社や団体向けの内容です。お気軽にお問い合わせください。
-            </p>
-
-            <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 3rem;">
-              <a href="/pdf/inbound.pdf" target="_blank" class="btn-outline pdf-link" data-pdf-title="海外から丹波篠山へ">海外から丹波篠山へ（PDF詳細）</a>
-              <a href="/pdf/sasaguide.pdf" target="_blank" class="btn-outline pdf-link" data-pdf-title="SASAGUIDE">SASAGUIDE（PDF詳細）</a>
-            </div>
-
-            <hr style="border: none; border-top: 1px dashed var(--color-border); margin: 2rem 0;">
-            
-            <h3 style="color: var(--color-primary); margin-bottom: 2rem; font-family: var(--font-display); text-align: center;">今までの旅づくり<br><span style="font-size: 0.8rem; color: #666;">（ここに参加者の声）</span></h3>
-
-            <div id="voices-container" class="voices-detail-list" style="margin-top: 2rem;">
-              <!-- 読み込み中 -->
-              <p style="text-align:center; color:#888; width:100%;">読み込み中...</p>
-            </div>
-
-            <div class="text-center" style="margin-top: 3rem;">
-              <a href="contact.html" class="btn btn-primary" style="padding: 1rem 3rem;">お問い合わせはこちら</a>
-            </div>
-          </div>
-
+    <main class="case-main">
+      <section class="case-hero fade-in">
+        <div class="case-title-row">
+          <span class="case-title-mark" aria-hidden="true"></span>
+          <h1>
+            <span class="case-title-fallback">事例紹介・ストーリー</span>
+            <img class="case-title-image" src="./images/title-options/title-option-a-case.png" alt="">
+          </h1>
         </div>
+        <p class="case-lead">
+          ここでは、ご相談、ご提案、当日とその後まで、ご依頼者や地域のみなさんと一緒につくった旅と、その実例のストーリーを紹介します。
+          型のあるツアーでは届きにくい学びや交流を、丹波篠山の暮らしの現場から組み立てています。
+        </p>
+      </section>
+
+      <section class="case-index fade-in" aria-labelledby="case-index-title">
+        <h2 id="case-index-title" class="case-visually-hidden">事例紹介一覧</h2>
+        <p id="voices-status" class="case-status" role="status"></p>
+        <a
+          id="voices-detail-preview"
+          class="case-preview-link"
+          href="./customize-detail.html?preview=1&no=01"
+        >詳細ページの表示を確認</a>
+
+        <div id="voices-container" class="case-card-grid" aria-live="polite">
+          <article class="story-card is-placeholder">
+            <div class="story-card-visual is-empty">
+              <span class="story-card-date">Loading</span>
+            </div>
+            <div class="story-card-body">
+              <h3 class="story-card-title">事例を読み込んでいます</h3>
+              <p class="story-card-excerpt">公開中の投稿を確認しています。</p>
+              <span class="story-card-number">--</span>
+            </div>
+          </article>
+        </div>
+        <nav id="voices-pagination" class="case-pagination" aria-label="事例一覧のページ"></nav>
+      </section>
+
+      <section class="case-landscape" aria-label="丹波篠山での体験風景">
+        <img src="./images/cases/case-story-landscape-drive.jpg" alt="丹波篠山の畑で地域の人と参加者が交流している風景">
       </section>
     </main>
 
@@ -236,15 +465,17 @@
       <div class="container">
         <div class="footer-top">
           <div class="footer-left">
-            <div class="footer-logo">一般社団法人ウイズささやま</div>
-            <div class="footer-info">
-              〒669-2321 兵庫県丹波篠山市黒岡191 丹波篠山市民センター内<br>
-              TEL: 079-552-7373 / FAX: 079-552-4680<br>
-              兵庫県知事登録旅行業 地域-797号<br>
-              営業時間：平日9:00-17:00（土日祝定休）
+            <img class="footer-mark" src="./images/logo-white.png" alt="丹波篠山ローカルトラベル">
+            <div>
+              <div class="footer-logo">一般社団法人ウイズささやま</div>
+              <div class="footer-info">
+                〒669-2321 兵庫県丹波篠山市黒岡191<br>
+                丹波篠山市民センター内<br>
+                TEL: 079-552-7373
+              </div>
             </div>
           </div>
-          
+
           <div class="footer-nav">
             <div class="footer-nav-col">
               <a href="index.html">＞ホーム</a>
@@ -256,12 +487,12 @@
               <a href="contact.html">＞お問い合わせ</a>
             </div>
             <div class="footer-nav-col">
-              <a href="https://drive.google.com/file/d/1YQNORvYI_3ykokxJf36AKLx-hU9EOlUE/view?usp=sharing" target="_blank">＞会社案内・旅行業登録</a>
-              <a href="https://drive.google.com/file/d/1Z4aZs0c8mSOcT5otj1DunceqjGFVjj6R/view?usp=sharing" target="_blank">＞プライバシーポリシー</a>
+              <a href="company.html">＞会社案内・旅行業登録</a>
+              <a href="https://drive.google.com/file/d/1ogeZLtQ7jQ91XwM-UyOWyyZhMOIsl6N9/view?usp=drive_link" target="_blank">＞プライバシーポリシー</a>
             </div>
           </div>
         </div>
-        
+
         <div class="footer-bottom">
           <p>&copy; 2026 一般社団法人ウイズささやま All Rights Reserved.</p>
         </div>

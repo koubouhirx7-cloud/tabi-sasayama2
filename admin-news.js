@@ -1,4 +1,5 @@
 import { fetchAllNews, fetchNewsDetail } from './cms.js';
+import { handleError, notifyDiscord } from './admin-error.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
 
@@ -39,10 +40,10 @@ document.addEventListener('DOMContentLoaded', async () => {
               try {
                 const range = quillInstance.getSelection(true);
                 quillInstance.insertText(range.index, '🚀 画像をアップロード中...', 'color', 'blue');
-                
+
                 const dataUrl = await compressImage(file, 1200, 0.8);
                 const realUrl = await uploadMediaIfBase64(dataUrl, file.name);
-                
+
                 quillInstance.deleteText(range.index, 17);
                 quillInstance.insertEmbed(range.index, 'image', realUrl);
               } catch(e) {
@@ -120,19 +121,19 @@ document.addEventListener('DOMContentLoaded', async () => {
           const option = document.createElement('option');
           option.value = item.id;
           const dateStr = item.publishedAt ? item.publishedAt.substring(0, 10).replace(/-/g, '.') : '';
-          
+
           let statusText = ``;
           if (item.isPublic === false) {
             statusText = `[非公開] `;
           } else if (item.isPublic === undefined || item.isPublic === null) {
             statusText = item.publishedAt ? `[旧:公開済] ` : `[旧:下書き] `;
           }
-          
+
           option.textContent = `${statusText}${dateStr} ${item.title}`;
           selectExisting.appendChild(option);
         });
       } catch(e) {
-        console.warn('Failed to load article list', e);
+        notifyDiscord('記事リスト読み込みエラー', e?.message || String(e), 'warn');
       }
     }
   }
@@ -165,7 +166,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           try {
             let { width, height } = img;
             if (width > maxSize || height > maxSize) {
-              if (width > height) { height = Math.round(height * maxSize / width); width = maxSize; } 
+              if (width > height) { height = Math.round(height * maxSize / width); width = maxSize; }
               else { width = Math.round(width * maxSize / height); height = maxSize; }
             }
             const canvas = document.createElement('canvas');
@@ -187,13 +188,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Utility: Media Upload Proxy
   async function uploadMediaIfBase64(dataUrl, filename) {
     if (!dataUrl || !dataUrl.startsWith('data:image')) return dataUrl; // return as is if empty or absolute URL
-    const res = await fetch('https://tabi-sasayama2.vercel.app/api/upload-media', {
+    const res = await fetch('/api/upload-media', {
       method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ imageBase64: dataUrl, filename })
     });
     const json = await res.json();
     if (!res.ok) throw new Error(json.message || '画像アップロードに失敗しました');
-    return json.data.url; 
+    return json.data.url;
   }
 
   // Update logic
@@ -265,19 +266,19 @@ document.addEventListener('DOMContentLoaded', async () => {
       unpublishBtn.disabled = true;
 
       try {
-        const res = await fetch('https://tabi-sasayama2.vercel.app/api/unpublish', {
+        const res = await fetch('/api/unpublish', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ endpoint: 'news', id: currentEditId })
         });
         const resJson = await res.json();
-        
+
         if (!res.ok) throw new Error(resJson.message || '通信エラー');
-        
+
         alert('公開を停止しました。下書き状態に戻りました。');
         window.location.reload();
       } catch (err) {
-        alert('管理用APIキーが未設定か、エラーが発生しました:\n' + err.message);
+        handleError('公開停止エラー', err);
       } finally {
         unpublishBtn.textContent = originalText;
         unpublishBtn.disabled = false;
@@ -305,6 +306,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       eyecatchText.style.display = 'block';
       if (isPublicCheckbox) isPublicCheckbox.checked = true;
       if (unpublishBtn) unpublishBtn.style.display = 'none';
+      const dangerZone = document.getElementById('danger-zone');
+      if (dangerZone) dangerZone.style.display = 'none';
 
       quill.clipboard.dangerouslyPasteHTML('<p>ここに本文を入力します。</p>');
       updatePreview();
@@ -318,9 +321,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (detail) {
         currentEditId = detail.id;
         submitBtn.textContent = '編集内容を上書き保存する';
-        
+
+        const dangerZone = document.getElementById('danger-zone');
+        if (dangerZone) dangerZone.style.display = 'block';
+
         titleInput.value = detail.title || '';
-        
+
         // publishedAtが存在しない（下書き）場合への安全なガード
         if (detail.publishedAt && typeof detail.publishedAt === 'string') {
           dateInput.value = detail.publishedAt.split('T')[0];
@@ -338,7 +344,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else if (typeof detail.category === 'string') {
           categoryInput.value = detail.category;
         }
-        
+
         if (isPublicCheckbox) {
           isPublicCheckbox.checked = detail.isPublic !== false;
         }
@@ -346,7 +352,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (unpublishBtn) {
           unpublishBtn.style.display = detail.publishedAt ? 'block' : 'none';
         }
-        
+
         if (detail.eyecatch && detail.eyecatch.url) {
           currentEyecatchDataUrl = detail.eyecatch.url;
           thumbnailPreview.src = currentEyecatchDataUrl;
@@ -364,8 +370,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         updatePreview();
       }
     } catch(err) {
-      console.error('Error fetching detail:', err);
-      alert('記事データの取得に失敗しました');
+      handleError('記事データ取得エラー', err);
     } finally {
       selectExisting.disabled = false;
       setTimeout(() => {
@@ -420,13 +425,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
-      
+
       const resJson = await res.json();
       if (!res.ok) {
         const detailMessage = typeof resJson.error === 'object' ? JSON.stringify(resJson.error) : (resJson.error || '');
         throw new Error((resJson.message || '通信エラー') + (detailMessage ? '\n詳細: ' + detailMessage : ''));
       }
-      
+
       alert(isDraft ? `下書きを保存しました！` : `記事が正常にmicroCMSへ${currentEditId ? '上書き保存' : '公開保存'}されました！`);
       console.log('Success:', resJson);
 
@@ -447,10 +452,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         loadArticleList();
       }
-      
+
     } catch(err) {
-      alert('エラーが発生しました: ' + err.message);
-      console.error(err);
+      handleError('保存エラー', err);
     } finally {
       submitBtn.textContent = currentEditId ? '編集内容を上書き保存する' : '記事を公開エリアへ保存';
       if (draftBtn) draftBtn.textContent = '下書きとして保存する';
@@ -475,18 +479,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     activeMediaTarget = target;
     mediaModal.style.display = 'flex';
     mediaModalBody.innerHTML = '<div class="media-loading">画像一覧を取得中...</div>';
-    
+
     try {
-      const res = await fetch('https://tabi-sasayama2.vercel.app/api/get-media', { credentials: 'include' });
+      const res = await fetch('/api/get-media', { credentials: 'include' });
       const json = await res.json();
       if (!res.ok) throw new Error(json.message || '取得エラー');
-      
+
       const mediaList = json.data.media || [];
       if (mediaList.length === 0) {
         mediaModalBody.innerHTML = '<div class="media-loading">アップロードされた画像がありません。</div>';
         return;
       }
-      
+
       const grid = document.createElement('div');
       grid.className = 'media-grid';
       mediaList.forEach(m => {
@@ -509,11 +513,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         grid.appendChild(item);
       });
-      
+
       mediaModalBody.innerHTML = '';
       mediaModalBody.appendChild(grid);
     } catch (err) {
-      console.error(err);
+      notifyDiscord('メディア読み込みエラー', err?.message || String(err));
       mediaModalBody.innerHTML = `<div class="media-loading" style="color:red;">画像の読み込みに失敗しました: ${err.message}</div>`;
     }
   }
@@ -563,9 +567,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     e.preventDefault();
     photoModeModal.style.display = 'flex';
   });
-  
+
   photoModeClose.addEventListener('click', () => photoModeModal.style.display = 'none');
-  
+
   // File input already covers the upload zone via CSS (position:absolute, opacity:0)
   // No extra JS click handler needed — it would conflict and cancel the first native click
 
@@ -591,7 +595,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           mimeType: 'image/jpeg',
           fileName: uniqueName
         });
-        
+
         const wrapper = document.createElement('div');
         wrapper.style.position = 'relative';
         wrapper.style.width = '60px';
@@ -625,25 +629,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     pmLoading.style.display = 'flex';
     pmBtnApply.style.display = 'none';
-    
+
     try {
       const personaId = pmInputPersona.value;
-      const systemPrompt = pmInputSystemPrompt.value.trim() || PERSONA_PROMPTS[personaId];
       const personaName = pmInputPersona.options[pmInputPersona.selectedIndex].text;
-      
-      const apiKey = localStorage.getItem('geminiApiKey') || '';
 
-      const response = await fetch('https://tabi-sasayama2.vercel.app/api/generate-article', {
+      const response = await fetch('/api/generate-article', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'X-Gemini-API-Key': apiKey
+        headers: {
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           images: pmSelectedImages,
           timelineText,
+          personaId,
           personaName,
-          systemPrompt,
           articleLength: document.querySelector('input[name="pm-length"]:checked')?.value || 'medium'
         })
       });
@@ -653,12 +653,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         throw new Error(errData.error || `API Error (${response.status})`);
       }
       const data = await response.json();
-      
+
       pmGeneratedTitle = data.title;
       let htmlBody = data.story;
       htmlBody = htmlBody.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
       if (!htmlBody.startsWith('<p>')) htmlBody = '<p>' + htmlBody + '</p>';
-      
+
       let tagsHtml = '';
       if (data.highlights) {
         tagsHtml = data.highlights.map(tag => `<span style="background:#e0e7ff; color:#3730a3; padding:2px 8px; border-radius:12px; font-size:0.8rem; margin-right:5px;">#${tag}</span>`).join('');
@@ -673,7 +673,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       pmBtnApply.style.display = 'block';
 
     } catch (err) {
-      alert('生成に失敗しました: ' + err.message);
+      handleError('AI記事生成エラー', err);
     } finally {
       pmLoading.style.display = 'none';
     }
@@ -753,12 +753,93 @@ document.addEventListener('DOMContentLoaded', async () => {
       alert(`入力フォームに反映しました！\n（写真${imageUrls.length}枚を記事内に配置しました）`);
 
     } catch (err) {
-      alert('画像のアップロードに失敗しました: ' + err.message);
-      console.error(err);
+      handleError('画像アップロードエラー', err);
     } finally {
       pmBtnApply.disabled = false;
       pmBtnApply.textContent = '記事と画像をエディタに反映する';
     }
   });
+
+  // --- Delete Content Logic ---
+  const btnOpenDeleteModal = document.getElementById('btn-open-delete-modal');
+  const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+  const btnCloseDeleteModal = document.getElementById('btn-close-delete-modal');
+  const btnCancelDelete = document.getElementById('btn-cancel-delete');
+  const btnConfirmDelete = document.getElementById('btn-confirm-delete');
+  const inputDeleteConfirm = document.getElementById('input-delete-confirm');
+  const deleteTargetTitle = document.getElementById('delete-target-title');
+
+  if (btnOpenDeleteModal) {
+    btnOpenDeleteModal.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (!currentEditId) return;
+      deleteTargetTitle.textContent = titleInput.value || '無題';
+      inputDeleteConfirm.value = '';
+      btnConfirmDelete.disabled = true;
+      btnConfirmDelete.style.cursor = 'not-allowed';
+      btnConfirmDelete.style.opacity = '0.5';
+      deleteConfirmModal.style.display = 'flex';
+    });
+  }
+
+  const closeDeleteModal = () => {
+    deleteConfirmModal.style.display = 'none';
+  };
+
+  if (btnCloseDeleteModal) btnCloseDeleteModal.addEventListener('click', closeDeleteModal);
+  if (btnCancelDelete) btnCancelDelete.addEventListener('click', closeDeleteModal);
+  deleteConfirmModal.addEventListener('click', (e) => {
+    if (e.target === deleteConfirmModal) closeDeleteModal();
+  });
+
+  if (inputDeleteConfirm) {
+    inputDeleteConfirm.addEventListener('input', (e) => {
+      if (e.target.value.trim() === '削除') {
+        btnConfirmDelete.disabled = false;
+        btnConfirmDelete.style.cursor = 'pointer';
+        btnConfirmDelete.style.opacity = '1';
+      } else {
+        btnConfirmDelete.disabled = true;
+        btnConfirmDelete.style.cursor = 'not-allowed';
+        btnConfirmDelete.style.opacity = '0.5';
+      }
+    });
+  }
+
+  if (btnConfirmDelete) {
+    btnConfirmDelete.addEventListener('click', async () => {
+      if (!currentEditId) return;
+      if (inputDeleteConfirm.value.trim() !== '削除') return;
+
+      const originalText = btnConfirmDelete.textContent;
+      btnConfirmDelete.textContent = '削除中...';
+      btnConfirmDelete.disabled = true;
+
+      try {
+        const res = await fetch('/api/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ endpoint: 'news', id: currentEditId })
+        });
+        const resJson = await res.json();
+        if (!res.ok) throw new Error(resJson.message || '通信エラー');
+
+        alert('記事を完全に削除しました。');
+        deleteConfirmModal.style.display = 'none';
+
+        // 編集モードを抜けて新規作成に戻す
+        selectExisting.value = '';
+        selectExisting.dispatchEvent(new Event('change'));
+
+        // リストを再読込
+        loadArticleList();
+      } catch (err) {
+        handleError('削除エラー', err);
+      } finally {
+        btnConfirmDelete.textContent = originalText;
+        btnConfirmDelete.disabled = false;
+      }
+    });
+  }
 
 });

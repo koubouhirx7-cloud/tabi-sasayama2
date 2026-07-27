@@ -1,10 +1,11 @@
 import { fetchDownloads, fetchDownloadsDetail } from './cms.js';
+import { handleError, notifyDiscord } from './admin-error.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
 
   const titleInput = document.getElementById('input-title');
   const descInput = document.getElementById('input-description');
-  
+
   const fileInput = document.getElementById('input-file');
   const filePreviewName = document.getElementById('file-preview-name');
   const removeFileBtn = document.getElementById('btn-remove-file');
@@ -26,6 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function loadArticleList() {
     try {
       const existingList = await fetchDownloads(100);
+      while (selectExisting.options.length > 1) selectExisting.remove(1);
       existingList.forEach(item => {
         const option = document.createElement('option');
         option.value = item.id;
@@ -34,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         selectExisting.appendChild(option);
       });
     } catch (err) {
-      console.warn('Failed to load existing downloads', err);
+      notifyDiscord('資料リスト読み込みエラー', err?.message || String(err), 'warn');
     }
   }
   loadArticleList();
@@ -48,10 +50,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Utility: Media Upload Proxy
   async function uploadMediaIfBase64(base64Str, filename) {
     if (!base64Str || !base64Str.startsWith('data:')) return base64Str;
-    
+
     // 1. まずXServer向けのPHPアップロードAPIを試行する
     try {
-      const res = await fetch('https://tabi-sasayama2.vercel.app/api/upload_pdf.php', {
+      const res = await fetch('/api/upload_pdf.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ imageBase64: base64Str, filename })
@@ -65,16 +67,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch(err) {
       console.warn("PHP API is not available, falling back to Vercel/MicroCMS API.");
     }
-    
+
     // 2. PHPが使えない環境(Vercelやローカル開発環境)の場合は従来のMicroCMS APIにフォールバック
-    const res = await fetch('https://tabi-sasayama2.vercel.app/api/upload-media', {
+    const res = await fetch('/api/upload-media', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ imageBase64: base64Str, filename })
     });
     const json = await res.json();
     if (!res.ok) throw new Error(json.message || 'アップロード失敗');
-    return json.data.url; 
+    return json.data.url;
   }
 
   function updatePreview() {
@@ -123,7 +125,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       unpublishBtn.textContent = '処理中...';
       unpublishBtn.disabled = true;
       try {
-        const res = await fetch('https://tabi-sasayama2.vercel.app/api/unpublish', {
+        const res = await fetch('/api/unpublish', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ endpoint: 'downloads', id: currentEditId })
@@ -132,7 +134,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert('下書き状態に戻りました。');
         window.location.reload();
       } catch (err) {
-        alert('エラーが発生しました:\n' + err.message);
+        handleError('公開停止エラー', err);
       } finally {
         unpublishBtn.textContent = '非表示にする';
         unpublishBtn.disabled = false;
@@ -158,6 +160,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       removeFileBtn.style.display = 'none';
       fileText.style.display = 'block';
       if (unpublishBtn) unpublishBtn.style.display = 'none';
+      const dangerZone = document.getElementById('danger-zone');
+      if (dangerZone) dangerZone.style.display = 'none';
       updatePreview();
       return;
     }
@@ -168,14 +172,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (detail) {
         currentEditId = detail.id;
         submitBtn.textContent = '編集内容を上書き保存する';
-        
+
+        const dangerZone = document.getElementById('danger-zone');
+        if (dangerZone) dangerZone.style.display = 'block';
+
         titleInput.value = detail.title || '';
         descInput.value = detail.description || '';
-        
+
         if (unpublishBtn) {
           unpublishBtn.style.display = detail.publishedAt ? 'block' : 'none';
         }
-        
+
         if (detail.file) {
           const fileUrl = typeof detail.file === 'object' ? detail.file.url : detail.file;
           currentFileDataUrl = fileUrl;
@@ -194,8 +201,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         updatePreview();
       }
     } catch(err) {
-      console.error('Error fetching download detail:', err);
-      alert('データの取得に失敗しました');
+      handleError('資料データ取得エラー', err);
     } finally {
       selectExisting.disabled = false;
     }
@@ -206,7 +212,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       alert('ダウンロード資料名は必須です。');
       return;
     }
-    
+
     const btn = isDraft ? draftBtn : submitBtn;
     btn.textContent = '保存中...';
     submitBtn.disabled = true;
@@ -225,7 +231,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         description: descInput.value,
         isDraft
       };
-      
+
       if (realFileUrl) {
         data.file = realFileUrl;
       }
@@ -243,18 +249,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
-      
+
       const resJson = await res.json();
       if (!res.ok) throw new Error(resJson.message || '通信エラー');
-      
+
       alert(isDraft ? `下書きを保存しました！` : `正常に${currentEditId ? '上書き保存' : '公開保存'}されました！`);
-      
+
       if (!currentEditId) {
         window.location.reload();
       }
-      
+
     } catch(err) {
-      alert('エラーが発生しました: ' + err.message);
+      handleError('保存エラー', err);
     } finally {
       submitBtn.textContent = currentEditId ? '編集内容を上書き保存する' : '資料を公開する';
       if (draftBtn) draftBtn.textContent = '下書きとして保存する';
@@ -265,4 +271,87 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   submitBtn.addEventListener('click', () => submitData(false));
   if (draftBtn) draftBtn.addEventListener('click', () => submitData(true));
+
+  // --- Delete Content Logic ---
+  const btnOpenDeleteModal = document.getElementById('btn-open-delete-modal');
+  const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+  const btnCloseDeleteModal = document.getElementById('btn-close-delete-modal');
+  const btnCancelDelete = document.getElementById('btn-cancel-delete');
+  const btnConfirmDelete = document.getElementById('btn-confirm-delete');
+  const inputDeleteConfirm = document.getElementById('input-delete-confirm');
+  const deleteTargetTitle = document.getElementById('delete-target-title');
+
+  if (btnOpenDeleteModal) {
+    btnOpenDeleteModal.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (!currentEditId) return;
+      deleteTargetTitle.textContent = titleInput.value || '無題';
+      inputDeleteConfirm.value = '';
+      btnConfirmDelete.disabled = true;
+      btnConfirmDelete.style.cursor = 'not-allowed';
+      btnConfirmDelete.style.opacity = '0.5';
+      deleteConfirmModal.style.display = 'flex';
+    });
+  }
+
+  const closeDeleteModal = () => {
+    deleteConfirmModal.style.display = 'none';
+  };
+
+  if (btnCloseDeleteModal) btnCloseDeleteModal.addEventListener('click', closeDeleteModal);
+  if (btnCancelDelete) btnCancelDelete.addEventListener('click', closeDeleteModal);
+  deleteConfirmModal.addEventListener('click', (e) => {
+    if (e.target === deleteConfirmModal) closeDeleteModal();
+  });
+
+  if (inputDeleteConfirm) {
+    inputDeleteConfirm.addEventListener('input', (e) => {
+      if (e.target.value.trim() === '削除') {
+        btnConfirmDelete.disabled = false;
+        btnConfirmDelete.style.cursor = 'pointer';
+        btnConfirmDelete.style.opacity = '1';
+      } else {
+        btnConfirmDelete.disabled = true;
+        btnConfirmDelete.style.cursor = 'not-allowed';
+        btnConfirmDelete.style.opacity = '0.5';
+      }
+    });
+  }
+
+  if (btnConfirmDelete) {
+    btnConfirmDelete.addEventListener('click', async () => {
+      if (!currentEditId) return;
+      if (inputDeleteConfirm.value.trim() !== '削除') return;
+
+      const originalText = btnConfirmDelete.textContent;
+      btnConfirmDelete.textContent = '削除中...';
+      btnConfirmDelete.disabled = true;
+
+      try {
+        const res = await fetch('/api/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ endpoint: 'downloads', id: currentEditId })
+        });
+        const resJson = await res.json();
+        if (!res.ok) throw new Error(resJson.message || '通信エラー');
+
+        alert('資料を完全に削除しました。');
+        deleteConfirmModal.style.display = 'none';
+
+        // 編集モードを抜けて新規作成に戻す
+        selectExisting.value = '';
+        selectExisting.dispatchEvent(new Event('change'));
+
+        // リストを再読込
+        loadArticleList();
+      } catch (err) {
+        handleError('削除エラー', err);
+      } finally {
+        btnConfirmDelete.textContent = originalText;
+        btnConfirmDelete.disabled = false;
+      }
+    });
+  }
+
 });

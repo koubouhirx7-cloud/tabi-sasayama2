@@ -2,7 +2,7 @@
 require_once __DIR__ . '/_common.php';
 require_basic_auth();
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $_SERVER['REQUEST_METHOD'] !== 'PATCH') {
     json_response(['message' => 'Method Not Allowed'], 405);
 }
 

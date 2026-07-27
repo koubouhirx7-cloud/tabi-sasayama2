@@ -7,6 +7,16 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     exit;
 }
 
+// スパムチェック
+if (empty($_POST['not_a_robot']) || $_POST['not_a_robot'] !== 'yes') {
+    die("スパム判定エラー。ブラウザの「戻る」ボタンで前の画面に戻り、チェックを入れてから再度送信してください。");
+}
+
+// ハニーポット（スパムボット対策）
+if (!empty($_POST['website_url'])) {
+    die("スパム判定エラー：不正なリクエストです。");
+}
+
 function h($str) {
     if ($str === null) return '';
     return htmlspecialchars(trim($str), ENT_QUOTES, 'UTF-8');
@@ -23,9 +33,22 @@ if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
 }
 $purpose = isset($_POST['purpose']) ? implode('、', array_map('h', (array)$_POST['purpose'])) : '';
 $date    = h($_POST['date'] ?? '');
+$date_first = h($_POST['date_first'] ?? '');
+$date_second = h($_POST['date_second'] ?? '');
 $people  = h($_POST['people'] ?? '');
-$budget  = h($_POST['budget'] ?? '');
+$adult_count = h($_POST['adult_count'] ?? '');
+$child_count = h($_POST['child_count'] ?? '');
+$infant_count = h($_POST['infant_count'] ?? '');
+$raw_budget = h($_POST['budget'] ?? '');
+$budget_labels = [
+    '15000' => '15,000円〜',
+    '25000' => '25,000円〜',
+    '40000' => '40,000円〜',
+    '未定'   => '相談して決めたい'
+];
+$budget = $budget_labels[$raw_budget] ?? $raw_budget;
 $message = h($_POST['message'] ?? '');
+$experience = h($_POST['experience'] ?? '');
 
 $to      = "tour@withsasayama.jp";
 $subject = "【ウイズささやま】Webサイトからのお問い合わせ";
@@ -34,11 +57,20 @@ $body  = "Webサイトのお問い合わせフォームより、以下の内容�
 $body .= "■ お名前\n{$name} ({$kana})\n\n";
 $body .= "■ 電話番号\n{$tel}\n\n";
 $body .= "■ メールアドレス\n{$email}\n\n";
-$body .= "■ ご希望の体験内容\n" . ($purpose ?: '未選択') . "\n\n";
-$body .= "■ 希望日程 / 時期\n" . ($date ?: '未入力') . "\n\n";
-$body .= "■ 想定人数\n" . ($people ?: '未入力') . "\n\n";
-$body .= "■ ご予算（お一人様）\n" . ($budget ?: '未選択') . "\n\n";
-$body .= "■ 自由記入・その他ご要望\n{$message}\n\n";
+$body .= "■ お問い合わせ内容\n{$message}\n\n";
+$body .= "■ ご希望日\n";
+$body .= "第一候補: " . ($date_first ?: ($date ?: '未入力')) . "\n";
+$body .= "第二候補: " . ($date_second ?: '未入力') . "\n\n";
+$body .= "■ ご人数\n";
+$body .= "大人（12歳以上）: " . ($adult_count !== '' ? $adult_count . '名' : '未入力') . "\n";
+$body .= "小人（6〜12歳）: " . ($child_count !== '' ? $child_count . '名' : '未入力') . "\n";
+$body .= "乳幼児（0〜6歳）: " . ($infant_count !== '' ? $infant_count . '名' : '未入力') . "\n";
+if ($people !== '') {
+    $body .= "旧フォーム入力: {$people}\n";
+}
+$body .= "\n";
+$body .= "■ ご予算\n" . ($budget ?: '未入力') . "\n\n";
+$body .= "■ ご希望の体験内容\n" . ($experience ?: ($purpose ?: '未入力')) . "\n\n";
 $body .= "--------------------------------------------------------\n";
 $body .= "送信元IPアドレス: {$_SERVER['REMOTE_ADDR']}\n";
 $body .= "--------------------------------------------------------\n";

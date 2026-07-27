@@ -15,46 +15,58 @@ if (empty($_POST['not_a_robot']) || $_POST['not_a_robot'] !== 'yes') {
     die("スパム判定エラー：チェックボックスが選択されていません。ブラウザの「戻る」ボタンで前の画面に戻り、チェックを入れてから再度送信してください。");
 }
 
+// ハニーポット（スパムボット対策）
+if (!empty($_POST['website_url'])) {
+    // 隠しフィールドに入力がある場合はボットとみなす
+    die("スパム判定エラー：不正なリクエストです。");
+}
+
 // フォームデータの受け取りとエスケープ（XSS対策）
 function h($str) {
     if ($str === null) return '';
     return htmlspecialchars(trim($str), ENT_QUOTES, 'UTF-8');
 }
 
-$name     = h($_POST['name'] ?? '');
-$kana     = h($_POST['kana'] ?? '');
-$tel      = h($_POST['tel'] ?? '');
-$email    = h($_POST['email'] ?? '');
+$tour_name    = h($_POST['tour_name'] ?? '');
+$count_adult  = h($_POST['count_adult'] ?? '0');
+$count_child  = h($_POST['count_child'] ?? '0');
+$count_infant = h($_POST['count_infant'] ?? '0');
+$name_kanji   = h($_POST['name_kanji'] ?? '');
+$name_kana    = h($_POST['name_kana'] ?? '');
+$email        = h($_POST['email'] ?? '');
 // メールヘッダインジェクション対策（改行コードの除去）
-$email    = str_replace(array("\r", "\n"), '', $email);
+$email        = str_replace(array("\r", "\n"), '', $email);
 if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     die("エラー：不正なメールアドレス形式です。ブラウザの「戻る」ボタンで前の画面に戻り、正しいメールアドレスを入力してください。");
 }
-$date1    = h($_POST['date1'] ?? '');
-$date2    = h($_POST['date2'] ?? '');
-$duration = h($_POST['duration'] ?? '');
-$people   = h($_POST['people'] ?? '');
-$budget   = h($_POST['budget'] ?? '');
-$message  = h($_POST['message'] ?? '');
+$phone        = h($_POST['phone'] ?? '');
+$birthday     = h($_POST['birthday'] ?? '');
+$zipcode      = h($_POST['zipcode'] ?? '');
+$address      = h($_POST['address'] ?? '');
+$allergy      = h($_POST['allergy'] ?? '');
 
 // ===== メールの送信設定 =====
 // 宛先メールアドレス（要件通り設定）
 $to = "tour@withsasayama.jp";
 
 // メールの件名
-$subject = "【ウイズささやま】Webサイトからのお問い合わせ（カスタマイズ相談）";
+$subject = "【ウイズささやま】体験プログラムお申し込み（{$tour_name}）";
 
 // メールの本文（管理者が受け取る内容）
-$body = "Webサイトのカスタマイズ相談フォームより、以下の内容でお問い合わせがありました。\n\n";
-$body .= "■ お名前\n{$name} ({$kana})\n\n";
-$body .= "■ 電話番号\n{$tel}\n\n";
-$body .= "■ メールアドレス\n{$email}\n\n";
-$body .= "■ 第1希望日\n{$date1}\n\n";
-$body .= "■ 第2希望日\n{$date2}\n\n";
-$body .= "■ 所要時間\n{$duration}\n\n";
-$body .= "■ 想定人数\n{$people}\n\n";
-$body .= "■ ご予算\n{$budget}\n\n";
-$body .= "■ その他ご要望\n{$message}\n\n";
+$body = "Webサイトのプログラムお申し込みフォームより、以下の内容でお申し込みがありました。\n\n";
+$body .= "■ お申し込みプログラム\n{$tour_name}\n\n";
+$body .= "■ 申し込み人数\n";
+$body .= "・大人（12歳以上）：{$count_adult} 名\n";
+$body .= "・子供（5〜12歳）：{$count_child} 名\n";
+$body .= "・幼児（5歳以下）：{$count_infant} 名\n\n";
+$body .= "■ 代表者情報\n";
+$body .= "・お名前（漢字）：{$name_kanji}\n";
+$body .= "・お名前（ふりがな）：{$name_kana}\n";
+$body .= "・メールアドレス：{$email}\n";
+$body .= "・携帯番号：{$phone}\n";
+$body .= "・生年月日：{$birthday}\n";
+$body .= "・ご住所：〒{$zipcode} {$address}\n\n";
+$body .= "■ アレルギー情報\n" . ($allergy ?: '特になし') . "\n\n";
 $body .= "--------------------------------------------------------\n";
 $body .= "送信元IPアドレス: {$_SERVER['REMOTE_ADDR']}\n";
 $body .= "--------------------------------------------------------\n";

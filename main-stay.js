@@ -1,118 +1,88 @@
 import { fetchStay } from './cms.js';
+import DOMPurify from 'dompurify';
 
 (async function initStayList() {
   const container = document.getElementById('stay-grid-container');
-  const recruitmentContainer = document.getElementById('recruitment-grid-container');
   if (!container) return;
 
   const stayData = await fetchStay(100);
 
-  function renderStay() {
-    container.innerHTML = '';
-    if (recruitmentContainer) recruitmentContainer.innerHTML = '';
-    
-    stayData.sort((a,b) => (a.order || Number.MAX_SAFE_INTEGER) - (b.order || Number.MAX_SAFE_INTEGER));
-    const publicStayData = stayData ? stayData.filter(item => item.isPublic !== false) : [];
+  const stripHtml = (value = '') => value.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+  const addImageParams = (url) => {
+    if (!url) return './images/P8217785.jpg';
+    return `${url}${url.includes('?') ? '&' : '?'}fm=webp&w=1000&q=82`;
+  };
 
-    if (!publicStayData || publicStayData.length === 0) {
-      container.innerHTML = '<p style="text-align: center; color: #666; font-size: 1.1rem; padding: 4rem 0;">現在提供中のプログラムはありません。公開をお待ちください。</p>';
-      return;
-    }
+  const publicStayData = Array.isArray(stayData)
+    ? stayData
+        .filter((item) => item.isPublic !== false)
+        .sort((a, b) => (a.order ?? Number.MAX_SAFE_INTEGER) - (b.order ?? Number.MAX_SAFE_INTEGER))
+    : [];
 
-    // カテゴリごとに分けてレンダリング
-    const stayCategories = [];
-    const recruitmentCategories = [];
-    const grouped = {};
+  if (publicStayData.length === 0) {
+    const previewCards = [
+      { image: './images/R0334248.jpg', category: '季節限定' },
+      { image: './images/P8217785.jpg', category: '季節限定' },
+      { image: './images/P1011277.jpg', category: '通年開催' },
+      { image: './images/PC032939.jpg', category: '通年開催' },
+      { image: './images/DSC_5792.jpg', category: '季節限定' },
+      { image: './images/stay/stay-landscape-drive.jpg', category: '通年開催' },
+    ];
 
-    publicStayData.forEach(item => {
-      const cat = item.category || 'その他プログラム';
-      if (!grouped[cat]) {
-        grouped[cat] = [];
-        // カテゴリ名に「募集」が含まれる場合は募集セクションへ
-        if (cat.includes('募集') || cat.includes('通年')) {
-          recruitmentCategories.push(cat);
-        } else {
-          stayCategories.push(cat);
-        }
-      }
-      grouped[cat].push(item);
-    });
+    const previewHtml = previewCards.map((card, index) => `
+      <a class="program-card is-preview" href="stay-detail.html?preview=1" aria-label="詳細レイアウト確認用プログラム ${index + 1}">
+        <div class="program-img">
+          <img src="${card.image}" alt="">
+        </div>
+        <span class="program-badge${card.category.includes('通年') ? ' is-annual' : ''}">${card.category}</span>
+        <div class="program-content">
+          <h2 class="program-title">プログラム掲載準備中</h2>
+          <div class="program-meta-list">
+            <span>microCMS公開後に日程を表示</span>
+            <span>料金を表示</span>
+          </div>
+        </div>
+      </a>
+    `).join('');
 
-    // レンダリング用ヘルパー
-    const renderCategory = (cat, targetContainer) => {
-      const sectionEl = document.createElement('div');
-      sectionEl.className = 'stay-category-section fade-in is-visible';
-      sectionEl.style.marginBottom = '4rem';
-
-      const titleEl = document.createElement('h2');
-      titleEl.textContent = cat;
-      titleEl.className = 'stay-category-title';
-      titleEl.style.borderBottom = '2px solid var(--color-primary)';
-      titleEl.style.paddingBottom = '0.5rem';
-      titleEl.style.marginBottom = '1.5rem';
-      titleEl.style.color = 'var(--color-primary)';
-      titleEl.style.fontFamily = 'var(--font-display)';
-      sectionEl.appendChild(titleEl);
-
-      const gridEl = document.createElement('div');
-      gridEl.className = 'program-grid';
-
-      grouped[cat].forEach((item, index) => {
-        const delay = (index % 3) * 0.1;
-        const fetchedImg = item.heroImage?.url || item.image?.url;
-        const imgUrl = fetchedImg ? fetchedImg + '?fm=webp&w=800&q=80' : '/images/P8217785.jpg';
-        
-        let plainPrice = '個別にお問合せください';
-        if (item.infoPrice) {
-          plainPrice = item.infoPrice.replace(/<[^>]+>/g, '').substring(0, 30);
-        }
-        
-        const dates = item.infoDates || '個別にお問合せください';
-        const capacity = item.infoCapacity || '個別にお問合せください';
-
-        let tagsHtml = '';
-        if (item.tags && Array.isArray(item.tags) && item.tags.length > 0) {
-          tagsHtml = item.tags.map(tag => `<span class="prog-tag">#${tag}</span>`).join('');
-        } else {
-          tagsHtml = `<span class="prog-tag">#体験プログラム</span>`;
-        }
-
-        const html = `
-          <a href="stay-detail.html?id=${item.id}" class="program-card" style="animation-delay: ${delay}s">
-            <div class="program-img">
-              <img src="${imgUrl}" alt="${item.title}" />
-            </div>
-            <div class="program-content">
-              <div class="program-tags">
-                ${tagsHtml}
-              </div>
-              <h3 class="program-title">${item.title}</h3>
-              <p class="program-meta">🗓 日程: ${dates}</p>
-              <p class="program-meta">💰 価格: ${plainPrice}</p>
-              <p class="program-meta">👥 定員: ${capacity}</p>
-            </div>
-          </a>
-        `;
-        gridEl.insertAdjacentHTML('beforeend', html);
-      });
-
-      sectionEl.appendChild(gridEl);
-      targetContainer.appendChild(sectionEl);
-    };
-
-    // 前半 (Stay) を描画
-    stayCategories.forEach(cat => renderCategory(cat, container));
-    
-    // 後半 (Recruitment) を描画
-    if (recruitmentContainer) {
-      recruitmentCategories.forEach(cat => renderCategory(cat, recruitmentContainer));
-      // 募集カテゴリが空の場合のメッセージ
-      if (recruitmentCategories.length === 0) {
-        recruitmentContainer.innerHTML = '<p style="text-align: center; color: #888; padding: 2rem 0;">現在、特定の募集プランはありません。</p>';
-      }
-    }
+    container.innerHTML = DOMPurify.sanitize(`
+      <p class="stay-preview-note">表示レイアウト確認用：microCMSで公開したプログラムに自動で置き換わります。</p>
+      <div class="stay-program-grid">${previewHtml}</div>
+    `);
+    return;
   }
 
-  // 初期描画
-  renderStay();
+  const grid = document.createElement('div');
+  grid.className = 'stay-program-grid';
+
+  publicStayData.forEach((item) => {
+    const category = item.category || '体験プログラム';
+    const title = item.title || item.stayProgram || '体験・滞在プログラム';
+    const imageUrl = addImageParams(item.heroImage?.url || item.image?.url);
+    const dates = stripHtml(item.infoDates || item.date || '日程は詳細ページへ');
+    const price = stripHtml(item.infoPrice || item.price || '料金は詳細ページへ');
+    const duration = stripHtml(item.infoDuration || item.duration || '');
+    const isAnnual = category.includes('通年') || category.includes('年間') || category.includes('定期');
+
+    const html = `
+      <a href="stay-detail.html?id=${encodeURIComponent(item.id)}" class="program-card">
+        <div class="program-img">
+          <img src="${imageUrl}" alt="${title}">
+        </div>
+        <span class="program-badge${isAnnual ? ' is-annual' : ''}">${category}</span>
+        <div class="program-content">
+          <h2 class="program-title">${title}</h2>
+          <div class="program-meta-list">
+            <span>${dates}</span>
+            ${duration ? `<span>${duration}</span>` : ''}
+            <span>${price}</span>
+          </div>
+        </div>
+      </a>
+    `;
+
+    grid.insertAdjacentHTML('beforeend', DOMPurify.sanitize(html));
+  });
+
+  container.replaceChildren(grid);
 })();

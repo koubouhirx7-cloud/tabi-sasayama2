@@ -1,113 +1,116 @@
-import { fetchNewsDetail, fetchAllNews } from './cms.js';
+import { fetchNewsDetail } from './cms.js';
+import DOMPurify from 'dompurify';
+import { getNewsPreviewArticle } from './news-preview-data.js';
 
 (async function initNewsDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const id = urlParams.get('id');
   const draftKey = urlParams.get('draftKey');
-  
-  if (!id) return; // IDがない場合は静的プレースホルダーのままとする
 
-  // 詳細記事と、サイドバー用の全記事を並行して取得
-  const [article, allNews] = await Promise.all([
-    fetchNewsDetail(id, draftKey),
-    fetchAllNews()
-  ]);
-  
-  if (!article) return; // 取得失敗時
-
-  const dateObj = new Date(article.date || article.publishedAt);
-  const y = dateObj.getFullYear();
-  const m = String(dateObj.getMonth() + 1).padStart(2, '0');
-  const d = String(dateObj.getDate()).padStart(2, '0');
-
-  const elCat = document.getElementById('detail-category');
+  const elCategory = document.getElementById('detail-category');
   const elDate = document.getElementById('detail-date');
   const elTitle = document.getElementById('detail-title');
   const elCover = document.getElementById('detail-cover');
   const elCoverContainer = document.getElementById('detail-cover-container');
+  const elContent = document.querySelector('.detail-content');
   const elBody = document.getElementById('detail-body');
+  const elArticle = document.querySelector('.detail-inner');
 
-  if (elCat) {
-    if (article.category) {
-      elCat.textContent = article.category;
-      elCat.style.display = '';
-    } else {
-      elCat.style.display = 'none';
+  const showMessage = (message) => {
+    if (elTitle) elTitle.textContent = '最新情報';
+    if (elCategory) elCategory.style.display = 'none';
+    if (elDate) elDate.style.display = 'none';
+    if (elCoverContainer) elCoverContainer.hidden = true;
+    elContent?.classList.remove('has-cover');
+    if (elBody) {
+      elBody.innerHTML = DOMPurify.sanitize(`
+        <p class="detail-message">${message}</p>
+        <div class="back-to-list"><a href="news.html">← 最新情報一覧へ戻る</a></div>
+      `);
     }
+  };
+
+  if (!id) {
+    showMessage('表示する記事が選択されていません。');
+    return;
   }
-  
-  if (elDate) elDate.textContent = `${y}年${m}月${d}日`;
-  if (elTitle) elTitle.textContent = article.title;
-  
-  if (elCoverContainer && elCover) {
-    if (article.eyecatch) {
-      elCover.src = article.eyecatch.url + '?fm=webp&w=1200&q=80';
-      elCover.alt = article.title;
-    } else {
-      elCover.src = '/images/P6170310.jpg';
-      elCover.alt = 'アイキャッチ画像';
-    }
-    elCoverContainer.style.display = '';
+
+  const article = id.startsWith('preview-')
+    ? getNewsPreviewArticle(id)
+    : await fetchNewsDetail(id, draftKey);
+  if (!article) {
+    showMessage('記事を読み込めませんでした。公開状態をご確認ください。');
+    return;
+  }
+
+  const dateValue =
+    article.date || article.publishedAt || article.createdAt || article.updatedAt;
+  const date = dateValue ? new Date(dateValue) : new Date(0);
+  const validDate = !Number.isNaN(date.getTime()) && date.getFullYear() > 1970;
+  const formattedDate = validDate
+    ? `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`
+    : '';
+
+  const category = article.category || 'お知らせ';
+  const title = article.title || 'タイトル未設定';
+  elArticle?.classList.toggle('is-preview-article', Boolean(article.isPreview));
+
+  if (elCategory) {
+    elCategory.textContent = category;
+    elCategory.style.display = '';
+  }
+
+  if (elDate) {
+    elDate.textContent = formattedDate;
+    elDate.style.display = formattedDate ? '' : 'none';
+  }
+
+  if (elTitle) elTitle.textContent = title;
+
+  if (article.eyecatch?.url && elCover && elCoverContainer) {
+    const coverUrl = article.eyecatch.url;
+    elCover.src = coverUrl.includes('images.microcms-assets.io')
+      ? `${coverUrl}?fm=webp&w=900&q=82`
+      : coverUrl;
+    elCover.alt = title;
+    elCoverContainer.hidden = false;
+    elContent?.classList.add('has-cover');
+  } else if (elCoverContainer) {
+    elCoverContainer.hidden = true;
+    elContent?.classList.remove('has-cover');
   }
 
   if (elBody) {
-    let optimizedContent = article.body || '';
-    optimizedContent = optimizedContent.replace(/(src="https:\/\/images\.microcms-assets\.io\/[^"]+)"/g, '$1?fm=webp&w=1000&q=80"');
-    elBody.innerHTML = optimizedContent;
-    elBody.innerHTML += `
-      <div class="back-to-list">
-        <a href="news.html">← News一覧に戻る</a>
-      </div>
-    `;
+    let optimizedContent = article.body || '<p>本文は準備中です。</p>';
+    optimizedContent = optimizedContent.replace(
+      /(src="https:\/\/images\.microcms-assets\.io\/[^"]+)"/g,
+      '$1?fm=webp&w=1200&q=82"'
+    );
+    elBody.innerHTML = DOMPurify.sanitize(optimizedContent);
+    elBody.insertAdjacentHTML(
+      'beforeend',
+      '<div class="back-to-list"><a href="news.html">← 最新情報一覧へ戻る</a></div>'
+    );
   }
 
-  // 動的SEOタグの更新
-  document.title = `${article.title} | 最新情報 | 丹波篠山で田舎・農業体験`;
+  document.title = `${title}｜最新情報｜ウイズささやま`;
+
   if (article.body) {
-    const plainText = article.body.replace(/<[^>]+>/g, '').substring(0, 120) + '...';
-    document.querySelector('meta[name="description"]')?.setAttribute('content', plainText);
-  }
-  if (article.eyecatch) {
-    document.querySelector('meta[property="og:image"]')?.setAttribute('content', article.eyecatch.url);
-  }
-
-  // --- サイドバー生成処理 ---
-  if (allNews && allNews.length > 0) {
-    const cats = new Set();
-    const archives = new Set();
-    
-    allNews.forEach(item => {
-      if (item.category) cats.add(item.category);
-      const bd = new Date(item.date || item.publishedAt);
-      const ym = `${bd.getFullYear()}年${bd.getMonth() + 1}月`;
-      archives.add(ym);
-    });
-
-    const catFilterList = document.getElementById('category-filter-list');
-    const archFilterList = document.getElementById('archive-filter-list');
-
-    if (catFilterList) {
-      catFilterList.innerHTML = `<li><a href="news.html?cat=${encodeURIComponent('すべて')}" data-cat="すべて">すべて</a></li>`;
-      if (cats.size === 0) {
-        cats.add('お知らせ');
-        cats.add('イベント情報');
-        cats.add('レポート');
-      }
-      cats.forEach(c => {
-        catFilterList.insertAdjacentHTML('beforeend', `<li><a href="news.html?cat=${encodeURIComponent(c)}" data-cat="${c}">${c}</a></li>`);
-      });
+    const plainText = article.body
+      .replace(/<[^>]+>/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 120);
+    if (plainText) {
+      document
+        .querySelector('meta[name="description"]')
+        ?.setAttribute('content', plainText);
     }
+  }
 
-    if (archFilterList) {
-      archFilterList.innerHTML = `<li><a href="news.html?arc=${encodeURIComponent('すべて')}" data-arc="すべて">すべて</a></li>`;
-      if (archives.size === 0) {
-        archives.add('2026年3月');
-        archives.add('2026年2月');
-        archives.add('2026年1月');
-      }
-      archives.forEach(arc => {
-        archFilterList.insertAdjacentHTML('beforeend', `<li><a href="news.html?arc=${encodeURIComponent(arc)}" data-arc="${arc}">${arc}</a></li>`);
-      });
-    }
+  if (article.eyecatch?.url) {
+    document
+      .querySelector('meta[property="og:image"]')
+      ?.setAttribute('content', article.eyecatch.url);
   }
 })();

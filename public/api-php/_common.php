@@ -16,7 +16,23 @@ if (file_exists($env_file)) {
 function json_response($data, $status = 200) {
     http_response_code($status);
     header('Content-Type: application/json; charset=utf-8');
-    header('Access-Control-Allow-Origin: *');
+    // 許可するオリジンのリスト（ローカルと本番環境）
+    $allowed_origins = [
+        'http://localhost:5173',
+        'http://127.0.0.1:5173',
+        'https://withsasayama.jp',
+        'https://www.withsasayama.jp',
+        'https://admin.withsasayama.jp'
+    ];
+
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    if (in_array($origin, $allowed_origins)) {
+        header('Access-Control-Allow-Origin: ' . $origin);
+    } else {
+        // デフォルト (必要に応じて)
+        // header('Access-Control-Allow-Origin: https://withsasayama.jp');
+    }
+
     header('Access-Control-Allow-Methods: GET, POST, PATCH, DELETE, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type, Authorization');
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
@@ -43,28 +59,44 @@ function get_microcms_config() {
 
 /**
  * Basic認証チェック
+ *
+ * XServerではCGI/PHP-FPMモードでAuthorizationヘッダーが自動的にPHPへ渡されない。
+ * .htaccessに以下を追加することで回避済み:
+ *   RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+ * これにより $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] 経由でヘッダーを取得できる。
  */
 function require_basic_auth() {
-    $admin_user = getenv('ADMIN_USER') ?: (defined('ADMIN_USER') ? ADMIN_USER : '');
-    $admin_pass = getenv('ADMIN_PASS') ?: (defined('ADMIN_PASS') ? ADMIN_PASS : '');
+    $user = getenv('ADMIN_USER') ?: (defined('ADMIN_USER') ? ADMIN_USER : '');
+    $pass = getenv('ADMIN_PASS') ?: (defined('ADMIN_PASS') ? ADMIN_PASS : '');
 
-    if (!$admin_user || !$admin_pass) {
-        json_response(['message' => 'Server configuration error: ADMIN_USER/ADMIN_PASS not set'], 500);
+    if (!$user || !$pass) {
+        json_response(['message' => 'Server configuration error: ADMIN_USER/ADMIN_PASS not set in .env.php'], 500);
     }
 
-    if (
-        isset($_SERVER['PHP_AUTH_USER']) &&
-        $_SERVER['PHP_AUTH_USER'] === $admin_user &&
-        $_SERVER['PHP_AUTH_PASS'] === $admin_pass
-    ) {
-        return; // OK
+    // XServer対応: mod_rewrite経由で転送されたAuthorizationヘッダーを取得
+    $auth = $_SERVER['HTTP_AUTHORIZATION']
+        ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION']
+        ?? '';
+
+    if (!preg_match('/^Basic\s+(.+)$/i', $auth, $m)) {
+        header('WWW-Authenticate: Basic realm="Member Only"');
+        json_response(['message' => 'Unauthorized'], 401);
     }
 
-    // 6時間ごとにセッションを切るためにrealm名を変える
-    $session_block = floor(time() / (6 * 3600));
-    header('WWW-Authenticate: Basic realm="Secure Admin Area (Session ' . $session_block . ')"');
-    header('HTTP/1.0 401 Unauthorized');
-    json_response(['message' => 'Basic Auth required'], 401);
+    $decoded = base64_decode($m[1], true);
+    $sep     = ($decoded !== false) ? strpos($decoded, ':') : false;
+    if ($decoded === false || $sep === false) {
+        header('WWW-Authenticate: Basic realm="Member Only"');
+        json_response(['message' => 'Unauthorized'], 401);
+    }
+
+    $req_user = substr($decoded, 0, $sep);
+    $req_pass = substr($decoded, $sep + 1);
+
+    if (!hash_equals($user, $req_user) || !hash_equals($pass, $req_pass)) {
+        header('WWW-Authenticate: Basic realm="Member Only"');
+        json_response(['message' => 'Unauthorized'], 401);
+    }
 }
 
 /**
@@ -96,7 +128,18 @@ function curl_request($url, $method, $headers = [], $body = null) {
 
 // OPTIONSリクエスト（CORSプリフライト）は即時OK
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    header('Access-Control-Allow-Origin: *');
+    // OPTIONSリクエスト（CORSプリフライト）は即時OK
+    $allowed_origins = [
+        'http://localhost:5173',
+        'http://127.0.0.1:5173',
+        'https://withsasayama.jp',
+        'https://www.withsasayama.jp',
+        'https://admin.withsasayama.jp'
+    ];
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    if (in_array($origin, $allowed_origins)) {
+        header('Access-Control-Allow-Origin: ' . $origin);
+    }
     header('Access-Control-Allow-Methods: GET, POST, PATCH, DELETE, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type, Authorization');
     http_response_code(204);

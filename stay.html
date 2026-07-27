@@ -3,130 +3,578 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>体験・滞在プログラム | 丹波篠山で田舎暮らし・農業体験</title>
-    <meta name="description" content="兵庫県丹波篠山での里山暮らし体験、農業体験、文化体験の一覧。週末の田舎暮らしや移住前の体験に最適なプログラムを見つけてください。Explore farm stays and rural experiences in Tamba-Sasayama." />
+    <title>里山・農業体験プログラム｜丹波篠山旅トラベル｜ウイズささやま（with ささやま）</title>
+    <meta name="description" content="兵庫県丹波篠山の里山で農業体験・滞在体験。週末の非日常トラベルや移住前の田舎体験に最適なプログラム一覧。京阪神からのアクセスも便利。with ささやま（ウイズささやま）の本物の里山体験をどうぞ。" />
     <link rel="stylesheet" href="./style.css" />
     <style>
-      .page-header {
-        background-color: #a99c79;
-        height: 300px;
+      .stay-page {
+        background: #ffffff;
+        color: #24312f;
+      }
+
+      .stay-page .header {
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(10px);
+        padding: 1rem 0;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+      }
+
+      .stay-page .logo img {
+        height: 65px;
+      }
+
+      .stay-main {
+        padding-top: 96px;
+      }
+
+      .stay-hero {
+        width: min(1180px, 90%);
+        margin: 0 auto;
+        padding: 42px 0 24px;
+      }
+
+      .stay-title-row {
         display: flex;
         align-items: center;
-        justify-content: center;
-        position: relative;
-        margin-top:  140px;
-      }
-      .page-header h1 {
-        position: relative;
-        z-index: 1;
-        color: white;
-        font-family: var(--font-display);
-        font-size: clamp(2rem, 5vw, 4rem);
-        text-align: center;
+        gap: 22px;
       }
 
-      .filter-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        justify-content: center;
-        margin-bottom: var(--spacing-lg);
-      }
-      
-      .tag {
-        padding: 0.5rem 1rem;
-        background: white;
-        border: 1px solid var(--color-border);
-        border-radius: 0;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: 0.3s;
-      }
-      .tag:hover, .tag.active {
-        background: var(--color-primary);
-        color: white;
-        border-color: var(--color-primary);
+      .stay-title-mark {
+        width: 7px;
+        height: 86px;
+        background: #203c3d;
+        flex: 0 0 auto;
       }
 
-      .program-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 3.5rem;
-      }
-      @media (min-width: 768px) {
-        .program-grid {
-          grid-template-columns: repeat(3, 1fr);
-        }
-      }
-
-      .program-card {
-        text-decoration: none;
-        color: inherit;
-        display: block;
-        padding: 0;
-        background-color: var(--color-bg);
-        border: 1px solid var(--color-border);
-        border-radius: 0;
-        overflow: hidden;
-        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s;
-      }
-      .program-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
-      }
-
-      .program-img {
-        height: 200px;
+      .stay-title-frame {
+        width: min(700px, 78vw);
+        height: 140px;
         overflow: hidden;
       }
-      .program-img img {
+
+      .stay-title-image {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.5s;
+        object-position: center;
       }
+
+      .stay-title-fallback {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+
+      .stay-programs {
+        width: min(1240px, 96%);
+        margin: 0 auto;
+        padding: 0 0 96px;
+      }
+
+      .stay-program-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 5px;
+      }
+
+      .program-card {
+        position: relative;
+        display: block;
+        min-width: 0;
+        aspect-ratio: 1.45 / 1;
+        overflow: hidden;
+        background: #dfe5e1;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 0;
+      }
+
+      .program-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(16, 30, 28, 0.76), rgba(16, 30, 28, 0.02) 67%);
+        pointer-events: none;
+      }
+
+      .program-card:focus-visible {
+        outline: 3px solid #203c3d;
+        outline-offset: 3px;
+        z-index: 2;
+      }
+
+      .program-card:hover {
+        opacity: 1;
+      }
+
+      .program-img,
+      .program-img img {
+        width: 100%;
+        height: 100%;
+      }
+
+      .program-img {
+        position: absolute;
+        inset: 0;
+      }
+
+      .program-img img {
+        object-fit: cover;
+        transition: transform 0.45s ease;
+      }
+
       .program-card:hover .program-img img {
-        transform: scale(1.05);
+        transform: scale(1.035);
       }
-      
+
+      .program-badge {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        z-index: 1;
+        min-width: 88px;
+        padding: 7px 12px;
+        background: #426061;
+        color: #ffffff;
+        font-size: 0.72rem;
+        line-height: 1;
+        text-align: center;
+      }
+
+      .program-badge.is-annual {
+        background: #a99c79;
+      }
+
       .program-content {
-        padding: 20px 24px 24px;
+        position: absolute;
+        inset: auto 0 0;
+        z-index: 1;
+        padding: 22px 20px 18px;
       }
-      
-      .program-tags {
-        display: flex;
-        gap: 0.4rem;
-        margin-bottom: 0.5rem;
-      }
-      
-      .prog-tag {
-        font-size: 0.8rem;
-        color: var(--color-accent);
-        background: rgba(217, 108, 74, 0.1);
-        padding: 0.2rem 0.6rem;
-        border-radius: 4px;
-      }
-      
+
       .program-title {
-        font-size: 1.2rem;
-        font-weight: bold;
-        margin-bottom: 0.5rem;
-        font-family: var(--font-display);
+        margin: 0 0 8px;
+        color: #ffffff;
+        font-family: var(--font-base);
+        font-size: clamp(1rem, 1.45vw, 1.32rem);
+        font-weight: 500;
+        line-height: 1.55;
+        letter-spacing: 0.03em;
+        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.35);
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
-      
-      .program-meta {
-        font-size: 0.9rem;
-        color: #666;
-        margin-bottom: 0.2rem;
+
+      .program-meta-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3px 14px;
+        color: rgba(255, 255, 255, 0.92);
+        font-size: 0.72rem;
+        line-height: 1.5;
+      }
+
+      .stay-empty {
+        padding: 64px 20px;
+        border-top: 1px solid #d9dedb;
+        border-bottom: 1px solid #d9dedb;
+        color: #737d79;
+        text-align: center;
+      }
+
+      .stay-preview-note {
+        margin: 0 0 14px;
+        color: #77807d;
+        font-size: 0.76rem;
+        text-align: right;
+      }
+
+      .program-card.is-preview {
+        cursor: default;
+      }
+
+      .program-card.is-preview:hover .program-img img {
+        transform: none;
+      }
+
+      .stay-guide {
+        width: min(980px, 88%);
+        margin: 0 auto;
+        padding: 30px 0 100px;
+        display: grid;
+        grid-template-columns: 240px minmax(0, 1fr);
+        align-items: center;
+        gap: 64px;
+      }
+
+      .guide-identity {
+        position: relative;
+        min-height: 190px;
+        color: #426061;
+      }
+
+      .guide-dot,
+      .guide-ring {
+        position: absolute;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        font-family: var(--font-en);
+      }
+
+      .guide-dot {
+        left: 16px;
+        top: 78px;
+        width: 66px;
+        height: 66px;
+        background: #426061;
+        color: #ffffff;
+        font-size: 0.72rem;
+      }
+
+      .guide-ring {
+        left: 112px;
+        top: 44px;
+        width: 116px;
+        height: 116px;
+        border: 8px solid #426061;
+        background: #ffffff;
+        font-size: 4.7rem;
+        line-height: 1;
+      }
+
+      .guide-ring::after {
+        content: "";
+        position: absolute;
+        left: 42%;
+        top: 100%;
+        width: 14px;
+        height: 38px;
+        border: 4px solid #426061;
+        border-top: 0;
+        transform: skew(-8deg);
+      }
+
+      .guide-copy h2 {
+        margin: 0 0 14px;
+        color: #263432;
+        font-family: var(--font-en);
+        font-size: clamp(2rem, 4vw, 3.45rem);
+        font-weight: 500;
+        letter-spacing: 0.05em;
+      }
+
+      .guide-copy h2 ruby {
+        ruby-position: over;
+      }
+
+      .guide-copy h2 rt {
+        font-family: var(--font-base);
+        font-size: 0.32em;
+        letter-spacing: 0.18em;
+      }
+
+      .guide-copy p {
+        margin: 0 0 16px;
+        color: #4d5955;
+        font-size: 0.92rem;
+        line-height: 2;
+      }
+
+      .guide-actions {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px 20px;
+      }
+
+      .guide-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 150px;
+        min-height: 42px;
+        border: 1px solid #426061;
+        color: #334947;
+        background: #ffffff;
+        font-size: 0.82rem;
+      }
+
+      .guide-price {
+        color: #d87570;
+        font-size: 0.86rem;
+      }
+
+      .stay-values {
+        position: relative;
+        width: min(1120px, 92%);
+        margin: 0 auto;
+        padding: 0 0 74px;
+      }
+
+      .stay-values::before {
+        content: "";
+        position: absolute;
+        left: -12vw;
+        top: -20px;
+        width: 24vw;
+        height: 260px;
+        background: #b2a782;
+        z-index: 0;
+      }
+
+      .value-grid {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .value-item {
+        background: #ffffff;
+      }
+
+      .value-image {
+        aspect-ratio: 1.5 / 1;
+        overflow: hidden;
+      }
+
+      .value-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .value-copy {
+        padding: 14px 20px 24px;
+      }
+
+      .value-copy h3 {
+        margin: 0 0 6px;
+        color: #34403d;
+        font-size: 1.22rem;
+        font-weight: 400;
+        letter-spacing: 0.04em;
+      }
+
+      .value-copy p {
+        color: #69726f;
+        font-size: 0.82rem;
+        line-height: 1.8;
+      }
+
+      .stay-landscape {
+        width: 100%;
+        height: clamp(330px, 44vw, 610px);
+        overflow: hidden;
+      }
+
+      .stay-landscape img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 54%;
+      }
+
+      .stay-page .footer {
+        border-top: 0;
+        background: #203c3d;
+        color: #ffffff;
+        padding: 54px 0 26px;
+      }
+
+      .stay-page .footer-brand {
+        display: flex;
+        align-items: flex-start;
+        gap: 22px;
+      }
+
+      .stay-page .footer-brand img {
+        width: 110px;
+        height: auto;
+        flex: 0 0 auto;
+      }
+
+      .stay-page .footer-logo,
+      .stay-page .footer-info,
+      .stay-page .footer-nav-col a,
+      .stay-page .footer-bottom {
+        color: rgba(255, 255, 255, 0.88);
+      }
+
+      .stay-page .footer-logo {
+        font-size: 1.42rem;
+      }
+
+      .stay-page .footer-info {
+        font-size: 0.8rem;
+      }
+
+      .stay-page .footer-bottom {
+        border-top-color: rgba(255, 255, 255, 0.24);
+      }
+
+      @media (max-width: 900px) {
+        .stay-program-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .stay-guide {
+          grid-template-columns: 190px minmax(0, 1fr);
+          gap: 32px;
+        }
+
+        .guide-ring {
+          left: 82px;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .stay-page .header {
+          padding: 0.8rem 0;
+        }
+
+        .stay-main {
+          padding-top: 76px;
+        }
+
+        .stay-hero {
+          padding: 32px 0 18px;
+        }
+
+        .stay-title-row {
+          gap: 13px;
+        }
+
+        .stay-title-mark {
+          width: 5px;
+          height: 62px;
+        }
+
+        .stay-title-frame {
+          width: calc(100% - 18px);
+          height: auto;
+          aspect-ratio: 1957 / 804;
+        }
+
+        .stay-title-image {
+          object-fit: contain;
+          object-position: left center;
+        }
+
+        .stay-programs {
+          width: 100%;
+          padding-bottom: 66px;
+        }
+
+        .stay-preview-note {
+          margin: 0;
+          padding: 0 20px 18px;
+          line-height: 1.8;
+          text-align: left;
+        }
+
+        .stay-program-grid {
+          grid-template-columns: 1fr;
+          gap: 3px;
+        }
+
+        .program-card {
+          aspect-ratio: 1.38 / 1;
+        }
+
+        .program-title {
+          font-size: 1.08rem;
+        }
+
+        .stay-guide {
+          width: 88%;
+          grid-template-columns: 1fr;
+          gap: 22px;
+          padding: 8px 0 72px;
+        }
+
+        .guide-identity {
+          width: 230px;
+          min-height: 165px;
+          margin: 0 auto;
+        }
+
+        .guide-copy {
+          text-align: center;
+        }
+
+        .guide-actions {
+          justify-content: center;
+        }
+
+        .stay-values {
+          width: 100%;
+          padding-bottom: 42px;
+        }
+
+        .stay-values::before {
+          display: none;
+        }
+
+        .value-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .value-copy {
+          padding: 14px 7% 30px;
+        }
+
+        .stay-landscape {
+          height: 360px;
+        }
+
+        .stay-landscape img {
+          object-position: 56% center;
+        }
+
+        .stay-page .footer-brand {
+          gap: 14px;
+        }
+
+        .stay-page .footer-brand img {
+          width: 82px;
+        }
       }
     </style>
-      <meta name="keywords" content="丹波篠山,農業,体験,移住,田舎,暮らし,兵庫県,里山,古民家,Tamba Sasayama,Farm stay,Agriculture,Rural life,Kominka,Hyogo" />
+    <meta name="keywords" content="体験,農業体験,里山体験,丹波篠山旅,トラベル,滞在,ファームステイ,非日常,withささやま,京阪神,兵庫県,田舎暮らし" />
+    <link rel="canonical" href="https://withsasayama.jp/stay.html" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="一般社団法人ウイズささやま" />
+    <meta property="og:title" content="里山・農業体験プログラム｜丹波篠山旅｜ウイズささやま" />
+    <meta property="og:description" content="兵庫県丹波篠山の里山で農業体験・滞在体験。週末の非日常トラベルや移住前の田舎体験に最適なプログラム一覧。京阪神からのアクセスも便利。" />
+    <meta property="og:url" content="https://withsasayama.jp/stay.html" />
     <meta property="og:image" content="https://withsasayama.jp/images/PC032939.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="里山・農業体験プログラム｜丹波篠山旅｜ウイズささやま" />
+    <meta name="twitter:description" content="兵庫県丹波篠山の里山で農業体験・滞在体験。京阪神からのアクセスも便利な非日常トラベル。" />
+    <meta name="twitter:image" content="https://withsasayama.jp/images/PC032939.jpg" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "丹波篠山 里山・農業体験プログラム一覧",
+      "description": "ウイズささやまが提供する丹波篠山の里山・農業体験・滞在プログラム",
+      "url": "https://withsasayama.jp/stay.html",
+      "provider": {
+        "@type": "Organization",
+        "name": "一般社団法人ウイズささやま",
+        "url": "https://withsasayama.jp"
+      }
+    }
+    </script>
   </head>
-  <body>
+  <body class="stay-page">
     <!-- HEADER (共通) -->
                                         <header class="header">
       <div class="container nav-container">
@@ -148,42 +596,77 @@
       </div>
     </header>
 
-    <main>
-
-      <div class="page-header fade-in">
-        <h1>体験と滞在プログラム<br><span style="font-size:0.5em; font-family: var(--font-base); letter-spacing: 0.1em; font-weight: normal;">- stay -</span></h1>
-      </div>
-
-
-
-
-
-      <!-- 中間から先頭へ移動: コンセプト導入 (Image 1 スタイル) -->
-      <section class="section-location-banner fade-in" style="padding-top: 4rem; padding-bottom: 2rem;">
-        <div class="container" style="text-align: center;">
-          <img src="/images/location-banner.jpg" alt="LOCATION 兵庫県、丹波篠山市" style="max-width: 100%; height: auto;">
+    <main class="stay-main">
+      <section class="stay-hero">
+        <div class="stay-title-row">
+          <span class="stay-title-mark" aria-hidden="true"></span>
+          <h1 class="stay-title-frame">
+            <img class="stay-title-image" src="./images/title-options/title-option-a-stay.png" alt="体験・滞在プログラム">
+            <span class="stay-title-fallback">体験・滞在プログラム</span>
+          </h1>
         </div>
       </section>
 
-      <section class="section" style="padding-top: 0;">
-        <div class="container">
-          <!-- 前半: 定番・おすすめプログラム -->
-          <div id="stay-grid-container">
-            <p style="text-align: center; color: #888;">プログラムを読み込んでいます...</p>
+      <section class="stay-programs" aria-label="体験・滞在プログラム一覧">
+        <div id="stay-grid-container">
+          <p class="stay-empty">プログラムを読み込んでいます...</p>
+        </div>
+      </section>
+
+      <section class="stay-guide" aria-labelledby="guide-title">
+        <div class="guide-identity" aria-hidden="true">
+          <span class="guide-dot">LOCAL</span>
+          <span class="guide-ring">S</span>
+        </div>
+        <div class="guide-copy">
+          <h2 id="guide-title"><ruby>SASAGUIDE<rt>ささがいど</rt></ruby></h2>
+          <p>
+            英語対応も可能なローカルガイドチームが、城下町散策、丹波焼の窯元訪問、
+            農業体験、文化体験、宿泊相談など、旅の目的に合わせてご案内します。
+            丹波篠山に暮らす人だからこそ伝えられる、この町の文化と日々の営みをお楽しみください。
+          </p>
+          <div class="guide-actions">
+            <a class="guide-button" href="download.html">パンフレット</a>
+            <span class="guide-price">料金目安：3,000〜6,000円 / 時間</span>
           </div>
         </div>
       </section>
 
-      </section>
-
-      <!-- 後半: 通年募集・定期プログラム -->
-      <section class="section">
-        <div class="container">
-          <div id="recruitment-grid-container">
-            <!-- JavaScriptでここに募集中プログラムを流し込む -->
-          </div>
+      <section class="stay-values" aria-label="丹波篠山で過ごす3つの価値">
+        <div class="value-grid">
+          <article class="value-item">
+            <div class="value-image">
+              <img src="./images/R0334248.jpg" alt="霧の里山に残る伝統的な家屋と稲木">
+            </div>
+            <div class="value-copy">
+              <h3>変わらぬ文化が息づく</h3>
+              <p>文化が活きるまちで、この先も続いてほしいと思える伝統文化のある暮らし。</p>
+            </div>
+          </article>
+          <article class="value-item">
+            <div class="value-image">
+              <img src="./images/PC032939.jpg" alt="丹波篠山の山と畑で過ごす人々">
+            </div>
+            <div class="value-copy">
+              <h3>人とつながる</h3>
+              <p>滞在中の偶然の出会いを愉しみ、飾り気のない人々と過ごす、いつもの暮らし。</p>
+            </div>
+          </article>
+          <article class="value-item">
+            <div class="value-image">
+              <img src="./images/P8217785.jpg" alt="緑豊かな里山を自転車で巡る人々">
+            </div>
+            <div class="value-copy">
+              <h3>里山の自然と四季</h3>
+              <p>秋冬春夏の移ろいを感じ、生き物と食の恵みを受ける、なつかしい田舎の暮らし。</p>
+            </div>
+          </article>
         </div>
       </section>
+
+      <figure class="stay-landscape">
+        <img src="./images/stay/stay-landscape-drive.jpg" alt="丹波篠山の城下町を歩く人々">
+      </figure>
     </main>
 
     <!-- FOOTER (共通簡易版で省略しないように気を配る) -->
@@ -191,15 +674,20 @@
       <div class="container">
         <div class="footer-top">
           <div class="footer-left">
-            <div class="footer-logo">一般社団法人ウイズささやま</div>
-            <div class="footer-info">
-              〒669-2321 兵庫県丹波篠山市黒岡191 丹波篠山市民センター内<br>
-              TEL: 079-552-7373 / FAX: 079-552-4680<br>
-              兵庫県知事登録旅行業 地域-797号<br>
-              営業時間：平日9:00-17:00（土日祝定休）
+            <div class="footer-brand">
+              <img src="./images/logo-white.png" alt="丹波篠山ローカルトラベル">
+              <div>
+                <div class="footer-logo">一般社団法人ウイズささやま</div>
+                <div class="footer-info">
+                  〒669-2321 兵庫県丹波篠山市黒岡191 丹波篠山市民センター内<br>
+                  TEL: 079-552-7373 / FAX: 079-552-4680<br>
+                  兵庫県知事登録旅行業 地域-797号<br>
+                  営業時間：平日9:00-17:00（土日祝定休）
+                </div>
+              </div>
             </div>
           </div>
-          
+
           <div class="footer-nav">
             <div class="footer-nav-col">
               <a href="index.html">＞ホーム</a>
@@ -211,18 +699,18 @@
               <a href="contact.html">＞お問い合わせ</a>
             </div>
             <div class="footer-nav-col">
-              <a href="https://drive.google.com/file/d/1YQNORvYI_3ykokxJf36AKLx-hU9EOlUE/view?usp=sharing" target="_blank">＞会社案内・旅行業登録</a>
-              <a href="https://drive.google.com/file/d/1Z4aZs0c8mSOcT5otj1DunceqjGFVjj6R/view?usp=sharing" target="_blank">＞プライバシーポリシー</a>
+              <a href="company.html">＞会社案内・旅行業登録</a>
+              <a href="https://drive.google.com/file/d/1ogeZLtQ7jQ91XwM-UyOWyyZhMOIsl6N9/view?usp=drive_link" target="_blank">＞プライバシーポリシー</a>
             </div>
           </div>
         </div>
-        
+
         <div class="footer-bottom">
           <p>&copy; 2026 一般社団法人ウイズささやま All Rights Reserved.</p>
         </div>
       </div>
     </footer>
     <script type="module" src="/main.js"></script>
-    <script type="module" src="/main-stay.js?v=20260519"></script>
+    <script type="module" src="/main-stay.js?v=20260727"></script>
   </body>
 </html>

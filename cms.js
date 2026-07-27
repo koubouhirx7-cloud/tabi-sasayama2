@@ -15,12 +15,12 @@ async function fetchFromMicroCMS(endpoint, id = null, params = {}) {
     if (id) url += `/${id}`;
     const search = new URLSearchParams(params).toString();
     if (search) url += `?${search}`;
-    
+
     const res = await fetch(url, { headers: { 'X-MICROCMS-API-KEY': localDevApiKey} });
     if (!res.ok) throw new Error(`API Error: ${res.status}`);
     return await res.json();
   }
-  
+
   // 共通クエリパラメータの構築
   let queryParts = `endpoint=${endpoint}`;
   if (typeof window !== 'undefined' && window.location.pathname.includes('/admin-')) {
@@ -36,7 +36,7 @@ async function fetchFromMicroCMS(endpoint, id = null, params = {}) {
     const vercelUrl = `/api/get-content?${queryParts}`;
     const res = await fetch(vercelUrl);
     const contentType = res.headers.get('content-type');
-    
+
     // ステータスがOKであり、かつレスポンスがJSONである場合のみVercelとみなす
     if (res.ok && contentType && contentType.includes('application/json')) {
       return await res.json();
@@ -50,6 +50,11 @@ async function fetchFromMicroCMS(endpoint, id = null, params = {}) {
   const phpRes = await fetch(phpUrl);
   if (!phpRes.ok) {
     throw new Error(`Both Vercel API and PHP Proxy failed. PHP Status: ${phpRes.status}`);
+  }
+  const phpContentType = phpRes.headers.get('content-type');
+  if (!phpContentType || !phpContentType.includes('application/json')) {
+    if (import.meta.env.DEV) return { contents: [] };
+    throw new Error('PHP Proxy returned a non-JSON response.');
   }
   return await phpRes.json();
 }
@@ -145,4 +150,3 @@ export async function fetchDownloadsDetail(id, draftKey = null) {
     return null;
   }
 }
-

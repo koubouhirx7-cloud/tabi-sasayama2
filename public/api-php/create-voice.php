@@ -15,7 +15,7 @@ $body = get_request_body();
 $is_draft = !empty($body['isDraft']);
 
 $payload = [];
-$fields = ['age', 'gender', 'stayProgram', 'fromOrigin', 'purpose', 'comment'];
+$fields = ['age', 'gender', 'stayProgram', 'fromOrigin', 'purpose', 'comment', 'isPublic'];
 foreach ($fields as $f) {
     if (isset($body[$f])) $payload[$f] = $body[$f];
 }

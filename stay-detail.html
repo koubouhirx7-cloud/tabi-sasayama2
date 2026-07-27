@@ -4,247 +4,367 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>プログラム詳細 | 丹波篠山で田舎・農業体験</title>
-    <meta name="description" content="丹波篠山の体験・滞在プログラムの詳細ページです。古民家（Kominka）での滞在や農業・エコツアーなどの情報をご確認いただけます。" />
+    <meta
+      name="description"
+      content="丹波篠山の体験・滞在プログラムの詳細ページです。日程、行程、料金、キャンセル規定をご確認いただけます。"
+    />
     <link rel="stylesheet" href="./style.css" />
     <style>
-      body {
-        background-color: #F9F8F3; /* 全体の背景色を少し温かみのあるクリーム色に */
+      .stay-detail-page {
+        background: #ffffff;
+        color: #303938;
       }
-      .detail-header {
-        margin-top: 140px;
-        position: relative;
-        height: 60vh;
+
+      .stay-detail-page .header {
+        background: rgba(255, 255, 255, 0.98);
+        border-bottom: 1px solid #e8ebe9;
+        box-shadow: none;
       }
-      .detail-header img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+
+      .stay-detail-page .header .nav-links a {
+        color: #303938;
       }
-      .detail-title-card {
-        position: absolute;
-        bottom: -50px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: white;
-        padding: var(--spacing-md) var(--spacing-lg);
-        border-radius: 0;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        text-align: center;
-        width: 90%;
-        max-width: 800px;
-        z-index: 10;
-        border: 2px solid var(--color-primary);
+
+      .stay-detail-page .logo img {
+        height: 65px;
       }
-      .detail-title-card h1 {
-        font-family: var(--font-display);
-        color: var(--color-primary);
-        margin-bottom: 0.5rem;
+
+      .stay-detail-main {
+        padding-top: 132px;
       }
-      
-      /* --- 2カラムレイアウト --- */
-      .program-layout {
-        display: grid;
-        grid-template-columns: 1fr 350px;
-        gap: 3rem;
-        max-width: 1100px;
+
+      .stay-detail-article {
+        width: min(960px, 88%);
         margin: 0 auto;
-      }
-      @media (max-width: 900px) {
-        .program-layout {
-          grid-template-columns: 1fr;
-        }
+        padding: 58px 0 72px;
       }
 
-      /* 左カラム */
-      .program-content h2 {
+      .program-heading {
+        display: grid;
+        grid-template-columns: 7px minmax(0, 1fr);
+        gap: 22px;
+        align-items: start;
+        margin-bottom: 30px;
+      }
+
+      .program-heading-mark {
+        width: 7px;
+        min-height: 86px;
+        background: #203c3d;
+      }
+
+      .program-heading h1 {
+        margin: 0;
+        color: #303938;
         font-family: var(--font-base);
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: var(--color-primary);
-        border-bottom: 2px solid var(--color-primary);
-        padding-bottom: 0.5rem;
-        margin-top: 3rem;
-        margin-bottom: 1.5rem;
-      }
-      .program-content h2:first-child { margin-top: 0; }
-      
-      .program-desc {
-        line-height: 1.8;
-        color: var(--color-text);
-        margin-bottom: 3rem;
+        font-size: clamp(1.75rem, 3.1vw, 2.65rem);
+        font-weight: 400;
+        line-height: 1.5;
+        letter-spacing: 0;
       }
 
-      /* ギャラリー (PC 3列 / スマホ スライダー) */
+      .program-subtitle {
+        margin: 8px 0 0;
+        color: #b46861;
+        font-size: 0.9rem;
+        line-height: 1.8;
+      }
+
+      .detail-preview-note {
+        display: none;
+        width: fit-content;
+        margin: 0 0 20px 29px;
+        padding: 6px 10px;
+        background: #f2f4f2;
+        color: #697572;
+        font-size: 0.72rem;
+      }
+
+      .detail-preview-note.is-visible {
+        display: block;
+      }
+
+      .program-intro {
+        margin: 0 0 34px 29px;
+        color: #4e5856;
+        font-size: 0.95rem;
+        line-height: 2;
+      }
+
+      .program-intro > :first-child {
+        margin-top: 0;
+      }
+
+      .program-intro > :last-child {
+        margin-bottom: 0;
+      }
+
       .stay-gallery {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
-        margin-bottom: 3rem;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 5px;
+        margin: 0 0 14px 29px;
       }
+
       .stay-gallery img {
+        display: block;
         width: 100%;
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 1.45 / 1;
         object-fit: cover;
-        border-radius: 0;
       }
-      
-      @media (max-width: 768px) {
+
+      .gallery-dots {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        min-height: 12px;
+        margin: 0 0 28px 29px;
+      }
+
+      .gallery-dots span {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #9e9892;
+      }
+
+      .program-facts {
+        margin: 0 0 30px 29px;
+        border-top: 1px solid #78817e;
+        border-left: 1px solid #78817e;
+      }
+
+      .fact-row {
+        display: grid;
+        grid-template-columns: 172px minmax(0, 1fr);
+        margin: 0;
+        border-right: 1px solid #78817e;
+        border-bottom: 1px solid #78817e;
+      }
+
+      .fact-row[hidden] {
+        display: none;
+      }
+
+      .fact-row dt,
+      .fact-row dd {
+        margin: 0;
+        padding: 15px 18px;
+        font-size: 0.88rem;
+        line-height: 1.9;
+      }
+
+      .fact-row dt {
+        background: #d4dcdb;
+        color: #334442;
+        border-right: 1px solid #78817e;
+        font-weight: 500;
+      }
+
+      .fact-row dd {
+        min-width: 0;
+        color: #414a48;
+        overflow-wrap: anywhere;
+      }
+
+      .fact-row dd > :first-child {
+        margin-top: 0;
+      }
+
+      .fact-row dd > :last-child {
+        margin-bottom: 0;
+      }
+
+      .fact-row table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .fact-row table td,
+      .fact-row table th {
+        padding: 7px 9px;
+        border: 1px solid #c9cfcd;
+        text-align: left;
+      }
+
+      .detail-actions {
+        display: grid;
+        justify-content: center;
+        gap: 10px;
+        margin-left: 29px;
+      }
+
+      .detail-actions a {
+        display: block;
+        min-width: 190px;
+        padding: 12px 24px;
+        text-align: center;
+        text-decoration: none;
+        font-size: 0.88rem;
+        transition: background-color 0.2s, color 0.2s;
+      }
+
+      .apply-btn {
+        background: #315958;
+        color: #ffffff;
+        border: 1px solid #315958;
+      }
+
+      .apply-btn:hover {
+        background: #203c3d;
+        color: #ffffff;
+      }
+
+      .custom-apply-btn {
+        background: #ffffff;
+        color: #315958;
+        border: 1px solid #315958;
+      }
+
+      .custom-apply-btn:hover {
+        background: #eef2f0;
+        color: #203c3d;
+      }
+
+      .back-link {
+        color: #707a77;
+        font-size: 0.78rem !important;
+      }
+
+      .detail-error {
+        margin: 40px 0;
+        padding: 32px;
+        border-top: 1px solid #d8dddb;
+        border-bottom: 1px solid #d8dddb;
+        color: #68726f;
+        text-align: center;
+      }
+
+      .stay-detail-page .footer {
+        background: #203c3d;
+        color: rgba(255, 255, 255, 0.88);
+      }
+
+      .stay-detail-page .footer-brand {
+        display: flex;
+        align-items: flex-start;
+        gap: 22px;
+      }
+
+      .stay-detail-page .footer-brand img {
+        width: 104px;
+        height: auto;
+      }
+
+      .stay-detail-page .footer-logo,
+      .stay-detail-page .footer-info,
+      .stay-detail-page .footer-nav-col a,
+      .stay-detail-page .footer-bottom {
+        color: rgba(255, 255, 255, 0.88);
+      }
+
+      .stay-detail-page .footer-bottom {
+        border-top-color: rgba(255, 255, 255, 0.24);
+      }
+
+      @media (max-width: 680px) {
+        .stay-detail-page .header {
+          padding: 0.8rem 0;
+        }
+
+        .stay-detail-main {
+          padding-top: 76px;
+        }
+
+        .stay-detail-article {
+          width: 90%;
+          padding: 44px 0 56px;
+        }
+
+        .program-heading {
+          grid-template-columns: 5px minmax(0, 1fr);
+          gap: 14px;
+          margin-bottom: 22px;
+        }
+
+        .program-heading-mark {
+          width: 5px;
+          min-height: 68px;
+        }
+
+        .program-heading h1 {
+          font-size: 1.65rem;
+        }
+
+        .detail-preview-note,
+        .program-intro,
+        .stay-gallery,
+        .gallery-dots,
+        .program-facts,
+        .detail-actions {
+          margin-left: 0;
+        }
+
         .stay-gallery {
           display: flex;
+          gap: 5px;
           overflow-x: auto;
           scroll-snap-type: x mandatory;
-          padding-bottom: 1rem;
-          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
         }
+
         .stay-gallery::-webkit-scrollbar {
-          height: 6px;
+          display: none;
         }
-        .stay-gallery::-webkit-scrollbar-thumb {
-          background: #ccc;
-          border-radius: 3px;
-        }
+
         .stay-gallery img {
-          flex: 0 0 85%;
-          scroll-snap-align: center;
+          flex: 0 0 82%;
+          scroll-snap-align: start;
         }
-      }
 
-      /* 行程スケジュールカード */
-      .schedule-card {
-        background: #fff;
-        border-radius: 0;
-        padding: 2rem;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-        margin-bottom: 3rem;
-      }
-      .schedule-day-title {
-        font-weight: bold;
-        font-size: 1.2rem;
-        color: var(--color-secondary);
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-      }
-      .schedule-row {
-        display: flex;
-        gap: 1.5rem;
-        padding: 1rem 0;
-        border-bottom: 1px dashed var(--color-border);
-      }
-      .schedule-row:last-child { border-bottom: none; padding-bottom: 0; }
-      .schedule-time {
-        font-weight: bold;
-        color: #666;
-        min-width: 40px;
-      }
+        .fact-row {
+          grid-template-columns: 1fr;
+        }
 
-      /* 右サイドバー (基本情報カード) */
-      .sidebar-card {
-        background: #fff;
-        border-radius: 0;
-        padding: 2.5rem 2rem;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-        position: sticky;
-        top: 100px;
-      }
-      .sidebar-card h3 {
-        text-align: center;
-        font-family: var(--font-base);
-        font-size: 1.3rem;
-        font-weight: bold;
-        margin-bottom: 2rem;
-        color: var(--color-text);
-      }
-      
-      .info-group {
-        margin-bottom: 1.5rem;
-      }
-      .info-label {
-        font-size: 0.85rem;
-        color: #777;
-        margin-bottom: 0.3rem;
-        font-weight: bold;
-      }
-      .info-val {
-        font-size: 0.95rem;
-        color: var(--color-text);
-        line-height: 1.5;
-      }
-      
-      .price-highlight {
-        color: #d35400;
-        font-weight: bold;
-        font-size: 1.2rem;
-      }
+        .fact-row dt {
+          padding: 9px 13px;
+          border-right: 0;
+          border-bottom: 1px solid #aab3b0;
+        }
 
-      .cancel-table {
-        width: 100%;
-        font-size: 0.85rem;
-        margin-top: 0.5rem;
-      }
-      .cancel-table td {
-        padding: 0.3rem 0;
-        border-bottom: 1px dotted #eee;
-      }
-      .cancel-table td:last-child {
-        text-align: right;
-      }
-      
-      .apply-btn {
-        display: block;
-        width: 100%;
-        background-color: var(--color-secondary);
-        color: #fff;
-        text-align: center;
-        padding: 1rem;
-        border-radius: 0;
-        text-decoration: none;
-        font-weight: bold;
-        margin-top: 2rem;
-        transition: background-color 0.3s;
-      }
-      .apply-btn:hover {
-        background-color: var(--color-primary);
-        color: #fff;
-      }
-      
-      .custom-apply-btn {
-        display: block;
-        width: 100%;
-        background-color: transparent;
-        color: var(--color-primary);
-        border: 2px solid var(--color-primary);
-        text-align: center;
-        padding: 1rem;
-        border-radius: 0;
-        text-decoration: none;
-        font-weight: bold;
-        margin-top: 1rem;
-        transition: 0.3s;
-      }
-      .custom-apply-btn:hover {
-        background-color: var(--color-primary);
-        color: #fff;
-      }
-      .back-link {
-        display: block;
-        text-align: center;
-        margin-top: 1rem;
-        font-size: 0.85rem;
-        color: #888;
-        text-decoration: underline;
+        .fact-row dd {
+          padding: 13px;
+        }
+
+        .detail-actions,
+        .detail-actions a {
+          width: 100%;
+        }
+
+        .stay-detail-page .footer-brand {
+          gap: 14px;
+        }
+
+        .stay-detail-page .footer-brand img {
+          width: 82px;
+        }
       }
     </style>
-      <meta name="keywords" content="丹波篠山,農業,体験,移住,田舎,暮らし,兵庫県,里山,古民家,Tamba Sasayama,Farm stay,Agriculture,Rural life,Kominka,Hyogo" />
-    <meta property="og:type" content="website" />
+    <meta
+      name="keywords"
+      content="丹波篠山,農業,体験,移住,田舎,暮らし,兵庫県,里山,古民家,Tamba Sasayama,Farm stay,Agriculture,Rural life,Kominka,Hyogo"
+    />
+    <meta property="og:type" content="article" />
     <meta property="og:site_name" content="一般社団法人ウイズささやま" />
     <meta property="og:image" content="https://withsasayama.jp/images/PC032939.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
   </head>
-  <body>
-                                        <header class="header">
+  <body class="stay-detail-page">
+    <header class="header">
       <div class="container nav-container">
-        <a href="index.html" class="logo"><img src="/images/logo.png?v=2" alt="丹波篠山ローカルトラベル"></a>
+        <a href="index.html" class="logo">
+          <img src="/images/logo.png?v=2" alt="丹波篠山ローカルトラベル">
+        </a>
         <button class="hamburger" aria-label="メニューを開く">
           <span></span>
           <span></span>
@@ -262,97 +382,87 @@
       </div>
     </header>
 
-    <main>
-      <div class="detail-header fade-in">
-        <img src="" alt="" style="background: var(--color-bg);"  loading="lazy">
-        <div class="detail-title-card">
-          <h1>読み込み中...</h1>
-          <p>Please wait</p>
-        </div>
-      </div>
-
-      <section class="section" style="margin-top: 60px;">
-        <div class="program-layout fade-in">
-          
-          <!-- 左カラム: プログラム詳細 -->
-          <div class="program-content">
-            <!-- microCMS: body (リッチエディタ) または text 等を想定 -->
-            <h2 id="mcs-about-title">プログラムについて</h2>
-            <div class="program-desc" id="mcs-about-body">
-              <p>データを読み込んでいます...</p>
-            </div>
-
-            <!-- ギャラリー -->
-            <div class="stay-gallery" id="mcs-gallery" style="display: none;"></div>
-
-            <!-- microCMS: schedule (繰り返しフィールド) 等を想定 -->
-            <h2 id="mcs-schedule-title">行程（スケジュール）</h2>
-            <div class="schedule-card" id="mcs-schedule-list">
-              <p>データを読み込んでいます...</p>
-            </div>
-
-            <!-- microCMS: includes (リッチエディタ等) を想定 -->
-            <h2 id="mcs-includes-title">料金に含まれるもの</h2>
-            <div class="program-desc" id="mcs-includes-body">
-              <p>...</p>
-            </div>
+    <main class="stay-detail-main">
+      <article class="stay-detail-article" id="stay-detail-article">
+        <header class="program-heading">
+          <span class="program-heading-mark" aria-hidden="true"></span>
+          <div>
+            <h1 id="stay-detail-title">プログラムを読み込んでいます</h1>
+            <p class="program-subtitle" id="stay-detail-subtitle"></p>
           </div>
-          
-          <!-- 右カラム: サイドバー (基本情報・申込) -->
-          <aside class="program-sidebar">
-            <div class="sidebar-card">
-              <h3>基本情報</h3>
-              
-              <!-- microCMS: custom fields (テキストや日付) を想定 -->
-              <div class="info-group">
-                <div class="info-label">日程</div>
-                <div class="info-val" id="mcs-info-dates">...</div>
-              </div>
-              <div class="info-group">
-                <div class="info-label">定員</div>
-                <div class="info-val" id="mcs-info-capacity">...</div>
-              </div>
-              <div class="info-group">
-                <div class="info-label">催行決定判断</div>
-                <div class="info-val" id="mcs-info-decision">...</div>
-              </div>
-              <div class="info-group">
-                <div class="info-label">料金（お一人様価格）</div>
-                <div class="info-val" id="mcs-info-price">
-                  ...
-                </div>
-              </div>
-              <div class="info-group">
-                <div class="info-label">キャンセル料規定</div>
-                <div id="mcs-info-cancel">
-                  ...
-                </div>
-              </div>
-              
-              <a href="company-contact.html" class="apply-btn" id="mcs-apply-link">このプログラムを申し込む</a>
-              <a href="customize.html" class="custom-apply-btn" id="mcs-custom-link">カスタマイズを相談する</a>
-              <a href="stay.html" class="back-link">一覧へ戻る</a>
-            </div>
-          </aside>
+        </header>
 
+        <p class="detail-preview-note" id="detail-preview-note">
+          表示レイアウト確認用：microCMSの公開データに自動で置き換わります。
+        </p>
+
+        <div class="program-intro" id="mcs-about-body">
+          <p>プログラム情報を読み込んでいます。</p>
         </div>
-      </section>
+
+        <div class="stay-gallery" id="mcs-gallery" aria-label="プログラム写真"></div>
+        <div class="gallery-dots" id="gallery-dots" aria-hidden="true"></div>
+
+        <dl class="program-facts">
+          <div class="fact-row" id="row-dates">
+            <dt>開催日程</dt>
+            <dd id="mcs-info-dates"></dd>
+          </div>
+          <div class="fact-row" id="row-capacity">
+            <dt>受入人数</dt>
+            <dd id="mcs-info-capacity"></dd>
+          </div>
+          <div class="fact-row" id="row-decision">
+            <dt>催行判断</dt>
+            <dd id="mcs-info-decision"></dd>
+          </div>
+          <div class="fact-row" id="row-schedule">
+            <dt>行程</dt>
+            <dd id="mcs-schedule-list"></dd>
+          </div>
+          <div class="fact-row" id="row-price">
+            <dt>料金</dt>
+            <dd id="mcs-info-price"></dd>
+          </div>
+          <div class="fact-row" id="row-includes">
+            <dt>料金に含まれるもの</dt>
+            <dd id="mcs-includes-body"></dd>
+          </div>
+          <div class="fact-row" id="row-cancel">
+            <dt>キャンセル料</dt>
+            <dd id="mcs-info-cancel"></dd>
+          </div>
+          <div class="fact-row" id="row-access">
+            <dt>アクセス</dt>
+            <dd id="mcs-info-access"></dd>
+          </div>
+        </dl>
+
+        <nav class="detail-actions" aria-label="プログラムのお申し込み">
+          <a href="stay-apply.html" class="apply-btn" id="mcs-apply-link">申し込む</a>
+          <a href="contact.html" class="custom-apply-btn" id="mcs-custom-link">カスタム</a>
+          <a href="stay.html" class="back-link">一覧へ戻る</a>
+        </nav>
+      </article>
     </main>
 
-    <!-- FOOTER -->
-                                        <footer class="footer">
+    <footer class="footer">
       <div class="container">
         <div class="footer-top">
           <div class="footer-left">
-            <div class="footer-logo">一般社団法人ウイズささやま</div>
-            <div class="footer-info">
-              〒669-2321 兵庫県丹波篠山市黒岡191 丹波篠山市民センター内<br>
-              TEL: 079-552-7373 / FAX: 079-552-4680<br>
-              兵庫県知事登録旅行業 地域-797号<br>
-              営業時間：平日9:00-17:00（土日祝定休）
+            <div class="footer-brand">
+              <img src="./images/logo-white.png" alt="丹波篠山ローカルトラベル">
+              <div>
+                <div class="footer-logo">一般社団法人ウイズささやま</div>
+                <div class="footer-info">
+                  〒669-2321 兵庫県丹波篠山市黒岡191 丹波篠山市民センター内<br>
+                  TEL: 079-552-7373 / FAX: 079-552-4680<br>
+                  兵庫県知事登録旅行業 地域-797号<br>
+                  営業時間：平日9:00-17:00（土日祝定休）
+                </div>
+              </div>
             </div>
           </div>
-          
           <div class="footer-nav">
             <div class="footer-nav-col">
               <a href="index.html">＞ホーム</a>
@@ -364,18 +474,18 @@
               <a href="contact.html">＞お問い合わせ</a>
             </div>
             <div class="footer-nav-col">
-              <a href="https://drive.google.com/file/d/1YQNORvYI_3ykokxJf36AKLx-hU9EOlUE/view?usp=sharing" target="_blank">＞会社案内・旅行業登録</a>
-              <a href="https://drive.google.com/file/d/1Z4aZs0c8mSOcT5otj1DunceqjGFVjj6R/view?usp=sharing" target="_blank">＞プライバシーポリシー</a>
+              <a href="company.html">＞会社案内・旅行業登録</a>
+              <a href="https://drive.google.com/file/d/1ogeZLtQ7jQ91XwM-UyOWyyZhMOIsl6N9/view?usp=drive_link" target="_blank">＞プライバシーポリシー</a>
             </div>
           </div>
         </div>
-        
         <div class="footer-bottom">
           <p>&copy; 2026 一般社団法人ウイズささやま All Rights Reserved.</p>
         </div>
       </div>
     </footer>
+
     <script type="module" src="/main.js"></script>
-    <script type="module" src="/stay-detail.js"></script>
+    <script type="module" src="/stay-detail.js?v=20260727"></script>
   </body>
 </html>

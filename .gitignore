@@ -11,3 +11,10 @@ node_modules/
 
 # Build output
 dist/
+.vercel
+
+# Local design/deployment artifacts
+.claude/
+source-assets/
+*.zip
+title-logo-options-standalone.html

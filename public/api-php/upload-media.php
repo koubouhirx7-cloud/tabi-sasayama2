@@ -20,12 +20,34 @@ if (!$image_base64) {
 }
 
 // Base64データとMIMEタイプを分離
-if (!preg_match('/^data:([a-zA-Z\-\/]+);base64,(.+)$/', $image_base64, $matches)) {
+if (!preg_match('/^data:([a-zA-Z0-9\-\/\+]+);base64,(.+)$/', $image_base64, $matches)) {
     json_response(['message' => '無効なBase64データです'], 400);
 }
 $mime_type = $matches[1];
 $base64_data = $matches[2];
 $binary_data = base64_decode($base64_data);
+
+if ($binary_data === false) {
+    json_response(['message' => 'Base64デコードに失敗しました'], 400);
+}
+
+// ファイルサイズ制限 (10MB)
+if (strlen($binary_data) > 10 * 1024 * 1024) {
+    json_response(['message' => 'ファイルサイズが大きすぎます (最大10MB)'], 400);
+}
+
+// MIMEタイプのホワイトリスト検証
+$allowed_mimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+$finfo = new finfo(FILEINFO_MIME_TYPE);
+$real_mime = $finfo->buffer($binary_data);
+
+if (!in_array($real_mime, $allowed_mimes)) {
+    json_response(['message' => '許可されていないファイル形式です'], 400);
+}
+
+// ファイル名のサニタイズ
+$filename = basename($filename);
+$filename = preg_replace('/[^a-zA-Z0-9._-]/', '_', $filename);
 
 // 一時ファイルに書き込む
 $tmp_file = tempnam(sys_get_temp_dir(), 'upload_');

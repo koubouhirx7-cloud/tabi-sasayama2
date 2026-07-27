@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CMS管理画面: お客様の声 | ウイズささやま</title>
   <link rel="stylesheet" href="./style.css">
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <style>
     body {
       background: #f4f5f7;
@@ -46,7 +47,7 @@
     .btn-unpublish { background: #ef4444; color: white !important; }
     .btn-unpublish:hover { background: #dc2626; }
     .admin-layout { display: flex; flex: 1; overflow: hidden; }
-    
+
     .admin-pane-left {
       width: 450px;
       min-width: 350px;
@@ -94,7 +95,7 @@
       width: 24px; height: 24px; cursor: pointer; display: none; z-index: 10; font-size: 12px; font-weight: bold;
     }
     .btn-remove-image:hover { background: red; }
-    
+
     .admin-pane-right {
       flex: 1; background: #FFFFFF; overflow-y: auto; position: relative;
     }
@@ -102,22 +103,164 @@
       position: sticky; top: 0; background: rgba(255,255,255,0.9);
       padding: 10px 20px; border-bottom: 1px solid #ddd; font-size: 0.85rem; color: #888; z-index: 100; backdrop-filter: blur(5px);
     }
-    
-    /* PREVIEW STYLES */
-    .preview-container { padding: 40px; }
-    .voice-card {
-      background: white; border-radius: 8px; overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08); max-width: 800px; margin: 0 auto;
-      border: 1px solid rgba(0,0,0,0.05); padding: 50px; text-align: center;
+
+    /* --- Custom Tour Case Studies with Customer Voices (Preview) --- */
+    .case-study-card {
+      background: #fff;
+      border: 1px solid var(--color-border, #E8E6E1);
+      border-radius: var(--border-radius-md, 12px);
+      padding: 2.5rem;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.03);
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      text-align: left;
     }
-    .voice-meta { font-size: 0.95rem; color: var(--color-primary, #8C806A); margin-bottom: 10px; letter-spacing: 0.05em; }
-    .voice-headline { font-size: 1.5rem; color: #333; margin-bottom: 30px; font-family: var(--font-display, serif); }
-    .voice-cover { width: 100%; height: auto; max-height: 400px; object-fit: cover; border-radius: 4px; margin-bottom: 30px; }
-    .voice-comment { font-size: 1.05rem; line-height: 1.8; color: #444; text-align: left; background: #fafafa; padding: 30px; border-radius: 8px; margin-bottom: 30px; }
-    .voice-details { text-align: left; border-top: 1px solid #eee; padding-top: 20px; font-size: 0.95rem; color: #666; }
-    .voice-details p { margin-bottom: 8px; }
-    .voice-details strong { color: #333; }
-    
+    .case-study-header {
+      border-bottom: 1px solid var(--color-border, #E8E6E1);
+      padding-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .case-study-tag {
+      font-family: var(--font-en, sans-serif);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--color-primary, #8C806A);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .case-study-title {
+      font-family: var(--font-display, serif);
+      font-size: 1.6rem;
+      color: #222;
+      margin: 0;
+    }
+    .case-study-body {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    @media (min-width: 768px) {
+      .case-study-body {
+        flex-direction: row;
+        align-items: flex-start;
+      }
+    }
+    .case-study-image-wrapper {
+      width: 100%;
+      max-width: 280px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .case-study-image-wrapper img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+    .case-study-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .case-study-purpose {
+      background: #fbfbf9;
+      border-left: 3px solid var(--color-primary, #8C806A);
+      padding: 1rem 1.2rem;
+      border-radius: 0 4px 4px 0;
+    }
+    .case-study-purpose-title {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: var(--color-primary, #8C806A);
+      margin-bottom: 0.4rem;
+    }
+    .case-study-purpose-text {
+      font-size: 0.95rem;
+      color: #444;
+      line-height: 1.6;
+      margin: 0;
+    }
+    .case-study-voice-box {
+      background: rgba(107, 122, 104, 0.05);
+      border-radius: 8px;
+      padding: 1.5rem;
+      position: relative;
+      border: 1px solid rgba(107, 122, 104, 0.1);
+    }
+    .case-study-voice-header {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: var(--color-accent, #6B7A68);
+      margin-bottom: 0.6rem;
+    }
+    .case-study-voice-meta {
+      font-size: 0.8rem;
+      color: #777;
+      margin-top: 0.5rem;
+      text-align: right;
+      font-weight: 500;
+    }
+    .case-study-voice-comment {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: #222;
+      margin: 0;
+    }
+    .case-study-voice-comment p {
+      margin-bottom: 1rem;
+      line-height: 1.8;
+    }
+    .case-study-voice-comment h2,
+    .case-study-voice-comment h3 {
+      color: var(--color-primary, #8C806A);
+      margin-top: 1.5rem;
+      margin-bottom: 0.8rem;
+      font-family: var(--font-display, serif);
+    }
+    .case-study-voice-comment h2 {
+      font-size: 1.3rem;
+      border-bottom: 1px dashed var(--color-border, #E8E6E1);
+      padding-bottom: 0.3rem;
+    }
+    .case-study-voice-comment h3 {
+      font-size: 1.1rem;
+    }
+    .case-study-voice-comment ul,
+    .case-study-voice-comment ol {
+      margin-bottom: 1rem;
+      padding-left: 1.5rem;
+    }
+    .case-study-voice-comment li {
+      margin-bottom: 0.4rem;
+    }
+    .case-study-voice-comment img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      margin: 1rem 0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    /* Quill Customization */
+    .ql-toolbar {
+      border-radius: 4px 4px 0 0;
+      background: #fafafa;
+    }
+    .ql-container {
+      border-radius: 0 0 4px 4px;
+      min-height: 300px;
+      height: auto;
+      resize: vertical;
+      overflow-y: auto;
+      font-size: 1rem;
+      background: #fff;
+    }
+
     header.header { display: none !important; }
 
     /* Media Modal */
@@ -145,11 +288,10 @@
 <body>
 
   <header class="admin-header">
-    <h1>ウイズささやま / お客様の声 入稿画面</h1>
+    <h1>ウイズささやま / カスタムメイド事例・お客様の声 入稿画面</h1>
     <div style="display: flex; gap: 10px;">
-
       <button class="btn-save btn-draft" id="btn-draft">下書きとして保存する</button>
-      <button class="btn-save" id="btn-submit">お客様の声を公開する</button>
+      <button class="btn-save" id="btn-submit">事例（お客様の声）を公開する</button>
     </div>
   </header>
 
@@ -172,7 +314,7 @@
       </div>
 
       <div class="form-group" style="background: #f0f4ff; padding: 15px; border-radius: 8px; border: 1px dashed #a3bced;">
-        <label style="background: transparent; border: none; padding: 0; margin-bottom: 8px; color: #0056b3;">📝 既存の声を編集する</label>
+        <label style="background: transparent; border: none; padding: 0; margin-bottom: 8px; color: #0056b3;">📝 既存の事例を編集する</label>
         <select id="select-existing" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
           <option value="">-- ✨ 新規作成モード --</option>
         </select>
@@ -181,15 +323,15 @@
 
       <!-- AIフォトモード呼び出しボタン -->
       <div class="form-group" style="background: #f5f3ff; padding: 15px; border-radius: 8px; border: 1px dashed #a78bfa; text-align: center;">
-        <button id="btn-open-photo-mode" style="background: #8b5cf6; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1rem;">📸 写真からAIでお客様の声を自動生成する</button>
-        <small style="display:block; margin-top:8px; color:#555;">写真やメモから、感想文を自動執筆します</small>
+        <button id="btn-open-photo-mode" style="background: #8b5cf6; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1rem;">📸 写真からAIで事例と感想を自動生成する</button>
+        <small style="display:block; margin-top:8px; color:#555;">写真やメモから、紹介文と感想文を自動執筆します</small>
       </div>
 
       <!-- 公開ステータス (独自フラグ) -->
       <div class="form-group" style="background: #eef2ff; padding: 15px; border-radius: 8px; border-left: 4px solid #4f46e5; margin-bottom: 20px;">
         <label style="display: flex; align-items: center; cursor: pointer; font-weight: bold; font-size: 1.1rem; color: #1e1b4b; background: transparent; border: none; padding: 0;">
           <input type="checkbox" id="input-isPublic" checked style="width: 22px; height: 22px; margin-right: 12px; cursor: pointer; accent-color: #4f46e5;">
-          このお客様の声をホームページに公開する
+          この事例をホームページに公開する
         </label>
         <small style="display:block; margin-top:8px; color:#4338ca; line-height: 1.4;">
           ※チェックを外して保存すると「非公開（下書き扱い）」となり、ホームページから完全に表示が消えます。
@@ -198,7 +340,7 @@
 
       <div class="form-group" style="display: flex; gap: 10px;">
         <div style="flex:1;">
-            <label for="input-age">年代</label>
+            <label for="input-age">年代（お客様）</label>
             <select id="input-age">
             <option value="10代">10代</option>
             <option value="20代">20代</option>
@@ -210,7 +352,7 @@
             </select>
         </div>
         <div style="flex:1;">
-            <label for="input-gender">性別</label>
+            <label for="input-gender">性別（お客様）</label>
             <select id="input-gender">
             <option value="男性">男性</option>
             <option value="女性">女性</option>
@@ -220,22 +362,22 @@
       </div>
 
       <div class="form-group">
-        <label for="input-origin">どこから来たか（出身地・居住地）</label>
+        <label for="input-origin">お客様の地域（出身地・居住地）</label>
         <input type="text" id="input-origin" placeholder="例: 兵庫県神戸市、東京都など">
       </div>
 
       <div class="form-group">
-        <label for="input-program">参加した旅はどれ？（プラン名）</label>
+        <label for="input-program">ツアー名・事例タイトル</label>
         <input type="text" id="input-program" placeholder="例: 里山体験ツアー" value="里山体験ツアー">
       </div>
 
       <div class="form-group">
-        <label for="input-purpose">この度に来た目的</label>
-        <input type="text" id="input-purpose" placeholder="例: 都会の喧騒から離れてリフレッシュしたかったため">
+        <label for="input-purpose">お客様のご要望・旅の目的</label>
+        <textarea id="input-purpose" rows="3" placeholder="例: 都会の喧騒から離れてリフレッシュしたかったため"></textarea>
       </div>
 
       <div class="form-group">
-        <label>ギャラリー画像 (任意)</label>
+        <label>ツアー当日の様子（メイン写真・任意）</label>
         <div class="image-upload-zone" id="eyecatch-zone">
           <span id="eyecatch-text" style="color: #666; font-size: 0.9rem;">画像を選択するかドロップ</span>
           <input type="file" id="input-image" accept="image/*">
@@ -246,26 +388,48 @@
       </div>
 
       <div class="form-group">
-        <label for="input-comment">旅の感想</label>
-        <textarea id="input-comment" placeholder="ここに感想を入力してください..."></textarea>
+        <label>紹介文・お客様の声 (リッチエディター)</label>
+        <button class="btn-choose-media" id="btn-open-media-quill" style="margin-bottom:8px; display:block;">📱 過去の画像を本文に挿入する</button>
+        <div id="editor-container"></div>
+        <small style="display:block; margin-top:4px; color:#888;">※ 文字の装飾や画像の挿入が可能です。右側の画面にリアルタイムで反映されます。</small>
+      </div>
+
+      <!-- 削除エリア (編集モード時のみ表示) -->
+      <div id="danger-zone" class="form-group" style="display: none; background: #fff5f5; padding: 15px; border-radius: 8px; border-left: 4px solid #f56565; margin-top: 40px; margin-bottom: 20px;">
+        <h4 style="margin: 0 0 10px 0; color: #c53030; font-size: 1rem; font-weight: bold;">⚠️ 危険ゾーン</h4>
+        <p style="font-size: 0.8rem; color: #742a2a; margin: 0 0 12px 0; line-height: 1.4;">
+          この操作は取り消せません。この事例をMicroCMSから完全に削除します。
+        </p>
+        <button type="button" id="btn-open-delete-modal" style="background: #e53e3e; color: white; border: none; padding: 10px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; font-size: 0.95rem; transition: 0.2s;">この事例を完全に削除する</button>
       </div>
     </aside>
 
     <main class="admin-pane-right">
       <div class="preview-header">ライブプレビュー</div>
-      <div class="preview-container">
-        <div class="voice-card">
-          <p class="voice-meta" id="preview-meta">【兵庫県 / 30代 / 女性】</p>
-          <h3 class="voice-headline" id="preview-headline">里山体験ツアー</h3>
-          
-          <img id="preview-cover" src="" class="voice-cover" style="display:none;">
-
-          <div class="voice-comment" id="preview-comment">
-            ここに感想が表示されます。
+      <div class="preview-container" style="padding: 30px;">
+        <div class="case-study-card" style="max-width: 700px; margin: 0 auto;">
+          <div class="case-study-header">
+            <span class="case-study-tag">カスタムメイド事例</span>
+            <h4 class="case-study-title" id="preview-headline">里山体験ツアー</h4>
           </div>
 
-          <div class="voice-details">
-            <p><strong>目的：</strong> <span id="preview-purpose"></span></p>
+          <div class="case-study-body">
+            <div class="case-study-image-wrapper" id="preview-cover-wrapper" style="display:none; max-width: 260px;">
+              <img id="preview-cover" src="" style="width:100%; height:auto; object-fit:cover;">
+            </div>
+
+            <div class="case-study-details">
+              <div class="case-study-purpose">
+                <div class="case-study-purpose-title">💡 ご要望・目的</div>
+                <p class="case-study-purpose-text" id="preview-purpose">未設定</p>
+              </div>
+
+              <div class="case-study-voice-box">
+                <div class="case-study-voice-header">💬 参加者からの感想</div>
+                <div class="case-study-voice-comment ql-editor" id="preview-comment">ここに感想が表示されます。</div>
+                <div class="case-study-voice-meta" id="preview-meta">【地域未設定 / 年代 / 性別】</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -308,9 +472,22 @@
           <div style="margin-bottom: 15px;">
             <label style="font-weight: bold; font-size: 0.9rem;">ペルソナ</label>
             <select id="pm-input-persona" style="width: 100%; padding: 8px; border: 1px solid #ccc; margin-bottom: 10px;">
-              <option value="customer_voice" selected>【お客様の声用】お客様の声 代筆 (リアルな感想)</option>
-              <option value="casual_sns">カジュアル (ブログ風)</option>
+              <option value="tour_report" selected>【詳細レポート用】事例紹介レポート (詳細な旅行記・紹介ルポ)</option>
+              <option value="customer_voice">【お客様の声用】お客様の声 代筆 (リアルな感想)</option>
+              <option value="casual_sns">【ブログ用】カジュアル (親しみやすい体験ブログ)</option>
             </select>
+            <label style="font-weight: bold; font-size: 0.9rem; margin-top: 8px; display: block;">文字量</label>
+            <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+              <label style="flex:1; text-align:center; padding: 8px; border: 2px solid #ccc; border-radius: 6px; cursor:pointer; font-size:0.9rem;">
+                <input type="radio" name="pm-length" value="short" style="margin-right:4px;">小<br><small style="color:#888;">300〜500字</small>
+              </label>
+              <label style="flex:1; text-align:center; padding: 8px; border: 2px solid #8b5cf6; border-radius: 6px; cursor:pointer; font-size:0.9rem; background:#f5f3ff;">
+                <input type="radio" name="pm-length" value="medium" checked style="margin-right:4px;">中<br><small style="color:#888;">600〜900字</small>
+              </label>
+              <label style="flex:1; text-align:center; padding: 8px; border: 2px solid #ccc; border-radius: 6px; cursor:pointer; font-size:0.9rem;">
+                <input type="radio" name="pm-length" value="long" style="margin-right:4px;">大<br><small style="color:#888;">1000〜1500字</small>
+              </label>
+            </div>
             <label style="font-weight: bold; font-size: 0.85rem; color: #555;">プロンプト詳細（自由に編集できます）</label>
             <textarea id="pm-input-system-prompt" style="width: 100%; height: 80px; padding: 8px; border: 1px solid #ccc; font-size: 0.85rem; color: #444; line-height: 1.4;"></textarea>
           </div>
@@ -359,6 +536,35 @@
     }
   </script>
 
+  <!-- 削除確認モーダル -->
+  <div class="media-modal-overlay" id="delete-confirm-modal" style="z-index: 2000; display: none;">
+    <div class="media-modal-content" style="max-width: 500px; height: auto; max-height: 90vh;">
+      <div class="media-modal-header" style="background: #fff5f5; border-bottom: 1px solid #fed7d7;">
+        <h2 style="color: #9b2c2c; font-size: 1.1rem; font-weight: bold;">⚠️ 事例の永久削除</h2>
+        <button class="media-modal-close" id="btn-close-delete-modal">&times;</button>
+      </div>
+      <div class="media-modal-body" style="padding: 24px; box-sizing: border-box;">
+        <p style="margin: 0 0 15px 0; font-weight: bold; color: #2d3748; font-size: 1rem;">
+          本当にこの事例を削除しますか？
+        </p>
+        <p style="margin: 0 0 15px 0; color: #e53e3e; font-size: 0.9rem; line-height: 1.5; font-weight: bold;">
+          削除対象: <span id="delete-target-title" style="color: #2d3748; text-decoration: underline;">事例タイトル</span><br>
+          ※この操作は取り消せません。MicroCMSからデータが完全に削除されます。
+        </p>
+        <p style="margin: 0 0 8px 0; font-size: 0.85rem; color: #4a5568;">
+          誤削除を防止するため、確認のために以下に <strong>削除</strong> と入力してください。
+        </p>
+        <input type="text" id="input-delete-confirm" placeholder="削除" autocomplete="off" style="width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px; font-size: 1rem; margin-bottom: 20px; box-sizing: border-box;">
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button type="button" id="btn-cancel-delete" style="background: #e2e8f0; color: #4a5568; border: none; padding: 10px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.95rem;">キャンセル</button>
+          <button type="button" id="btn-confirm-delete" disabled style="background: #e53e3e; color: white; border: none; padding: 10px 18px; border-radius: 4px; font-weight: bold; cursor: not-allowed; opacity: 0.5; font-size: 0.95rem;">完全に削除する</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
   <script type="module" src="/admin-voices.js?v=20260520"></script>
 </body>
 </html>

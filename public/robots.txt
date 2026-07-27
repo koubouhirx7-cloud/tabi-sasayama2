@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /api-php/
+Disallow: /logs/
+
+Sitemap: https://withsasayama.jp/sitemap.xml

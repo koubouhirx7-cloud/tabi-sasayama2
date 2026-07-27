@@ -141,7 +141,7 @@
     <div class="info-card">
       <h2>アクセス解析ダッシュボード</h2>
       <p>ここにアクセス解析のグラフを埋め込むことができます。現在は「設定待ち」の状態です。</p>
-      
+
       <div class="iframe-wrapper" id="dashboard-wrapper">
         <div id="placeholder-text">
           <span style="font-size: 3rem; margin-bottom: 15px;">📊</span><br>
@@ -187,24 +187,48 @@
   </div>
 
   <script>
-    // URLの保存と読み込み処理
-    document.addEventListener('DOMContentLoaded', () => {
-      const savedUrl = localStorage.getItem('pm_analytics_iframe_url');
-      if (savedUrl) {
-        document.getElementById('iframe-url-input').value = savedUrl;
-        showIframe(savedUrl);
+    const API = '/api-php/analytics-config.php';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const res = await fetch(API);
+        const json = await res.json();
+        const url = json.data?.dashboardUrl || '';
+        if (url) {
+          document.getElementById('iframe-url-input').value = url;
+          showIframe(url);
+        }
+      } catch (e) {
+        console.warn('設定の読み込みに失敗しました:', e);
       }
     });
 
-    function saveDashboardUrl() {
+    async function saveDashboardUrl() {
       const url = document.getElementById('iframe-url-input').value.trim();
-      if (url) {
-        localStorage.setItem('pm_analytics_iframe_url', url);
-        showIframe(url);
-        alert('ダッシュボードのURLを保存しました。');
-      } else {
-        localStorage.removeItem('pm_analytics_iframe_url');
-        hideIframe();
+      try {
+        const res = await fetch(API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dashboardUrl: url })
+        });
+        if (res.status === 401) {
+          alert('認証に失敗しました。管理者パスワードを確認してください。');
+          return;
+        }
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          alert('保存に失敗しました: ' + (err.message || res.status));
+          return;
+        }
+        if (url) {
+          showIframe(url);
+          alert('ダッシュボードのURLを保存しました。');
+        } else {
+          hideIframe();
+          alert('ダッシュボードのURLを削除しました。');
+        }
+      } catch (e) {
+        alert('通信エラーが発生しました: ' + e.message);
       }
     }
 

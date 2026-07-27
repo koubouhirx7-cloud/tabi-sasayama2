@@ -131,7 +131,7 @@
     /* RIGHT PANE: Preview */
     .admin-pane-right {
       flex: 1;
-      background: #F9F8F3; 
+      background: #F9F8F3;
       overflow-y: auto;
       position: relative;
     }
@@ -253,12 +253,15 @@
 
       <div class="form-group">
         <label>募集期間（カテゴリ）</label>
-        <select id="input-category" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem;">
-          <option value="2026-27年限定">2026-27年限定</option>
-          <option value="通年">通年</option>
-          <option value="募集中">募集中</option>
-          <option value="季節限定">季節限定</option>
-        </select>
+        <div style="display: flex; gap: 8px;">
+          <select id="input-category" style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; background-color: white;">
+            <option value="2026-27年限定">2026-27年限定</option>
+            <option value="通年">通年</option>
+            <option value="募集中">募集中</option>
+            <option value="季節限定">季節限定</option>
+          </select>
+          <button type="button" id="btn-manage-categories" style="padding: 10px 14px; background: #e2e8f0; color: #4a5568; border: 1px solid #cbd5e0; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.9rem; white-space: nowrap; transition: 0.2s;">⚙️ 管理</button>
+        </div>
       </div>
 
       <div class="form-group">
@@ -279,13 +282,13 @@
         </div>
         <button class="btn-choose-media" id="btn-open-media-main">📱 過去の画像から選ぶ</button>
       </div>
-      
+
       <div class="form-group">
         <label>プログラムについて</label>
         <button class="btn-choose-media btn-open-media-quill" data-target="about" style="margin-bottom:8px; display:block;">📱 過去の画像を挿入</button>
         <div id="editor-about"></div>
       </div>
-      
+
       <div class="form-group">
         <label>写真ギャラリー (複数選択可)</label>
         <div class="image-upload-zone" id="gallery-zone">
@@ -295,13 +298,13 @@
         <div class="gallery-preview-container" id="gallery-thumbnails"></div>
         <button class="btn-choose-media" id="btn-open-media-gallery">📱 過去の画像から追加する</button>
       </div>
-      
+
       <div class="form-group">
         <label>行程（スケジュール）</label>
         <button class="btn-choose-media btn-open-media-quill" data-target="schedule" style="margin-bottom:8px; display:block;">📱 過去の画像を挿入</button>
         <div id="editor-schedule"></div>
       </div>
-      
+
       <div class="form-group">
         <label>料金に含まれるもの</label>
         <button class="btn-choose-media btn-open-media-quill" data-target="includes" style="margin-bottom:8px; display:block;">📱 過去の画像を挿入</button>
@@ -309,7 +312,7 @@
       </div>
 
       <hr style="margin: 40px 0 20px; border: none; border-top: 2px dashed #e2e8f0;">
-      
+
       <div class="template-panel" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
           <h3 style="margin: 0; font-size: 1.05rem; color: #334155;">📋 テンプレート機能（基本情報以下）</h3>
@@ -337,7 +340,7 @@
         <label>【基本情報】催行決定判断</label>
         <input type="text" id="input-info-decision" value="リクエスト予約後、受け入れ状況を確認しご連絡します。">
       </div>
-      
+
       <div class="form-group">
         <label>料金（お一人様価格）(※自由記述)</label>
         <button class="btn-choose-media btn-open-media-quill" data-target="price" style="margin-bottom:8px; display:block;">📱 過去の画像を挿入</button>
@@ -348,11 +351,20 @@
         <button class="btn-choose-media btn-open-media-quill" data-target="cancel" style="margin-bottom:8px; display:block;">📱 過去の画像を挿入</button>
         <div id="editor-cancel"></div>
       </div>
+
+      <!-- 削除エリア (編集モード時のみ表示) -->
+      <div id="danger-zone" class="form-group" style="display: none; background: #fff5f5; padding: 15px; border-radius: 8px; border-left: 4px solid #f56565; margin-top: 40px; margin-bottom: 20px;">
+        <h4 style="margin: 0 0 10px 0; color: #c53030; font-size: 1rem; font-weight: bold;">⚠️ 危険ゾーン</h4>
+        <p style="font-size: 0.8rem; color: #742a2a; margin: 0 0 12px 0; line-height: 1.4;">
+          この操作は取り消せません。このプログラムをMicroCMSから完全に削除します。
+        </p>
+        <button type="button" id="btn-open-delete-modal" style="background: #e53e3e; color: white; border: none; padding: 10px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; font-size: 0.95rem; transition: 0.2s;">このプログラムを完全に削除する</button>
+      </div>
     </aside>
 
     <main class="admin-pane-right">
       <div class="preview-header">ライブプレビュー（stay-detail.html のレイアウト）</div>
-      
+
       <div class="detail-header">
         <img id="preview-image" src="" alt="メイン画像" style="background: #e0e0e0;">
         <div class="detail-title-card">
@@ -365,7 +377,7 @@
         <div class="program-content">
           <h2>プログラムについて</h2>
           <div class="program-desc" id="preview-about"></div>
-          
+
           <div class="stay-gallery" id="preview-gallery" style="display: none; margin-bottom: 3rem;"></div>
 
           <h2>行程（スケジュール）</h2>
@@ -374,7 +386,7 @@
           <h2>料金に含まれるもの</h2>
           <div class="program-desc" id="preview-includes"></div>
         </div>
-        
+
         <aside class="program-sidebar">
           <div class="sidebar-card">
             <h3>基本情報</h3>
@@ -471,6 +483,70 @@
             <p style="color: #888; font-size: 0.9rem; text-align: center; margin-top: 40%;">プレビューはここに表示されます</p>
           </div>
           <button id="pm-btn-apply" style="display: none; background: #10b981; color: white; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 4px; width: 100%; margin-top: 10px;">「プログラムについて」に反映する</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- カテゴリ管理モーダル -->
+  <div class="media-modal-overlay" id="category-manage-modal" style="z-index: 1900; display: none;">
+    <div class="media-modal-content" style="max-width: 500px; height: auto; max-height: 90vh;">
+      <div class="media-modal-header" style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+        <h2 style="color: #334155; font-size: 1.1rem; font-weight: bold;">⚙️ カテゴリ（募集期間）の管理</h2>
+        <button class="media-modal-close" id="btn-close-cat-modal">&times;</button>
+      </div>
+      <div class="media-modal-body" style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 15px;">
+        <p style="margin: 0; font-size: 0.82rem; color: #64748b; line-height: 1.4;">
+          ※カテゴリ名を変更するか、不要なカテゴリを削除できます。変更は「変更を保存する」を押すまで保存されません。
+        </p>
+
+        <!-- カテゴリリスト -->
+        <div id="cat-list-container" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px;">
+          <!-- JSで動的に構築されます -->
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 10px 0;">
+
+        <!-- 新規追加フォーム -->
+        <div>
+          <label style="display: block; font-weight: bold; font-size: 0.85rem; color: #4a5568; margin-bottom: 6px;">🆕 新規カテゴリの追加</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="input-new-cat" placeholder="例: 冬季限定" style="flex: 1; padding: 8px 12px; border: 1px solid #cbd5e0; border-radius: 4px; font-size: 0.95rem;">
+            <button type="button" id="btn-add-new-cat" style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.9rem;">追加</button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 10px;">
+          <button type="button" id="btn-cancel-cat" style="background: #e2e8f0; color: #4a5568; border: none; padding: 10px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.95rem;">キャンセル</button>
+          <button type="button" id="btn-save-cat" style="background: #10b981; color: white; border: none; padding: 10px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.95rem;">変更を保存する</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 削除確認モーダル -->
+  <div class="media-modal-overlay" id="delete-confirm-modal" style="z-index: 2000; display: none;">
+    <div class="media-modal-content" style="max-width: 500px; height: auto; max-height: 90vh;">
+      <div class="media-modal-header" style="background: #fff5f5; border-bottom: 1px solid #fed7d7;">
+        <h2 style="color: #9b2c2c; font-size: 1.1rem; font-weight: bold;">⚠️ プログラムの永久削除</h2>
+        <button class="media-modal-close" id="btn-close-delete-modal">&times;</button>
+      </div>
+      <div class="media-modal-body" style="padding: 24px; box-sizing: border-box;">
+        <p style="margin: 0 0 15px 0; font-weight: bold; color: #2d3748; font-size: 1rem;">
+          本当にこのプログラムを削除しますか？
+        </p>
+        <p style="margin: 0 0 15px 0; color: #e53e3e; font-size: 0.9rem; line-height: 1.5; font-weight: bold;">
+          削除対象: <span id="delete-target-title" style="color: #2d3748; text-decoration: underline;">プログラムタイトル</span><br>
+          ※この操作は取り消せません。MicroCMSからデータが完全に削除されます。
+        </p>
+        <p style="margin: 0 0 8px 0; font-size: 0.85rem; color: #4a5568;">
+          誤削除を防止するため、確認のために以下に <strong>削除</strong> と入力してください。
+        </p>
+        <input type="text" id="input-delete-confirm" placeholder="削除" autocomplete="off" style="width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px; font-size: 1rem; margin-bottom: 20px; box-sizing: border-box;">
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button type="button" id="btn-cancel-delete" style="background: #e2e8f0; color: #4a5568; border: none; padding: 10px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.95rem;">キャンセル</button>
+          <button type="button" id="btn-confirm-delete" disabled style="background: #e53e3e; color: white; border: none; padding: 10px 18px; border-radius: 4px; font-weight: bold; cursor: not-allowed; opacity: 0.5; font-size: 0.95rem;">完全に削除する</button>
         </div>
       </div>
     </div>

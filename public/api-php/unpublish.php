@@ -19,6 +19,15 @@ if (!$endpoint || !$id) {
     json_response(['message' => 'endpoint と id が必要です'], 400);
 }
 
+$allowed_endpoints = ['news', 'stay', 'voices', 'downloads', 'stay-templates'];
+if (!in_array($endpoint, $allowed_endpoints, true)) {
+    json_response(['message' => '不正なエンドポイント'], 400);
+}
+
+if (!preg_match('/^[a-zA-Z0-9_-]+$/', $id)) {
+    json_response(['message' => '不正なID形式'], 400);
+}
+
 $url = "https://{$domain}.microcms-management.io/api/v1/contents/{$endpoint}/{$id}/status";
 
 [$ok, $status, $res] = curl_request($url, 'PATCH', [
@@ -27,7 +36,7 @@ $url = "https://{$domain}.microcms-management.io/api/v1/contents/{$endpoint}/{$i
 ], json_encode(['status' => ['DRAFT']], JSON_UNESCAPED_UNICODE));
 
 if (!$ok || $status >= 400) {
-    json_response(['message' => '非公開化に失敗しました', 'error' => $res], $status ?: 500);
+    json_response(['message' => '非公開化に失敗しました'], $status ?: 500);
 }
 
 json_response(['success' => true]);

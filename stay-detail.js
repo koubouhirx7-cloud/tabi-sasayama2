@@ -1,128 +1,179 @@
 import { fetchStayDetail } from './cms.js';
+import DOMPurify from 'dompurify';
 
-document.addEventListener('DOMContentLoaded', async () => {
-  // URLのクエリパラメータから取得 (?id=...)
-  const params = new URLSearchParams(window.location.search);
-  const stayId = params.get('id');
-  const draftKey = params.get('draftKey');
+const previewStay = {
+  title: '人生一度は里山で暮らす',
+  subtitle: '自然と地域の暮らしを体験する、丹波篠山の滞在プログラム',
+  aboutBody: `
+    <p>丹波篠山の里山に滞在し、人との交流や、いつもの暮らしを楽しむプログラムです。</p>
+    <p>地域を歩き、季節の仕事にふれ、その土地で受け継がれてきた知恵を学びます。観光だけでは見えない、里山の日常をゆっくりと体験してください。</p>
+  `,
+  heroImage: { url: './images/P1011277.jpg' },
+  gallery: [
+    { url: './images/DSC_5792.jpg' },
+    { url: './images/PC032939.jpg' },
+  ],
+  infoDates: '通年開催（ご希望の日程を確認して調整します）',
+  infoCapacity: '2〜10名程度',
+  infoDecision: '開催日の14日前までにご連絡します。',
+  scheduleBody: `
+    <p>13:00　丹波篠山市内に集合・オリエンテーション</p>
+    <p>14:00　地域散策と季節の里山体験</p>
+    <p>17:00　宿へ移動・地域の方との交流</p>
+    <p>翌日 10:00　振り返り後、現地解散</p>
+  `,
+  infoPrice: '<p>お一人様 18,000円〜</p><p>体験内容・人数・宿泊条件によりお見積もりします。</p>',
+  includesBody: '<p>ガイド料、体験料、プログラム内の移動費</p>',
+  infoCancel: '<p>7日前から30％、前日50％、当日100％</p>',
+  infoAccess: 'JR篠山口駅または丹波篠山市内（詳細はお申し込み後にご案内します）',
+};
 
-  if (!stayId) {
-    // IDがない場合は詳細ページとして機能しないため、一覧へ戻すなどの処理にするかアラートを出す
-    console.warn('STAY IDが指定されていません。');
+const sanitizeHtml = (value = '') => DOMPurify.sanitize(value);
+const plainText = (value = '') => String(value).replace(/<[^>]+>/g, '').trim();
+
+function withImageParams(url, width = 900) {
+  if (!url || url.startsWith('./') || url.startsWith('/')) return url;
+  return `${url}${url.includes('?') ? '&' : '?'}fm=webp&w=${width}&q=82`;
+}
+
+function normalizeImageUrl(image) {
+  if (typeof image === 'string') return image;
+  return image?.url || '';
+}
+
+function setRichValue(id, rowId, value, options = {}) {
+  const element = document.getElementById(id);
+  const row = document.getElementById(rowId);
+  const safeValue = options.newlines
+    ? sanitizeHtml(String(value || '').replace(/\n/g, '<br>'))
+    : sanitizeHtml(value || '');
+
+  if (!element || !row) return;
+  if (!plainText(safeValue)) {
+    row.hidden = true;
+    element.innerHTML = '';
     return;
   }
 
-  // 読み込み中の表示を適宜行う
-  const titleEl = document.querySelector('.detail-title-card h1');
-  const subTitleEl = document.querySelector('.detail-title-card p');
-  if (titleEl) titleEl.textContent = '読み込み中...';
+  row.hidden = false;
+  element.innerHTML = safeValue;
+}
+
+function renderGallery(data) {
+  const gallery = document.getElementById('mcs-gallery');
+  const dots = document.getElementById('gallery-dots');
+  if (!gallery || !dots) return;
+
+  const heroUrl = normalizeImageUrl(data.heroImage || data.image);
+  const galleryUrls = Array.isArray(data.gallery)
+    ? data.gallery.map(normalizeImageUrl).filter(Boolean)
+    : [];
+  const urls = [...new Set([heroUrl, ...galleryUrls].filter(Boolean))].slice(0, 6);
+
+  gallery.replaceChildren();
+  dots.replaceChildren();
+
+  if (urls.length === 0) {
+    gallery.hidden = true;
+    dots.hidden = true;
+    return;
+  }
+
+  gallery.hidden = false;
+  dots.hidden = false;
+
+  urls.forEach((url, index) => {
+    const image = document.createElement('img');
+    image.src = withImageParams(url, 900);
+    image.alt = `${data.title || '体験・滞在プログラム'}の写真 ${index + 1}`;
+    gallery.appendChild(image);
+
+    const dot = document.createElement('span');
+    dots.appendChild(dot);
+  });
+}
+
+function renderStay(data, isPreview = false) {
+  const title = data.title || data.stayProgram || '体験・滞在プログラム';
+  const subtitle = data.subtitle || data.description || '';
+  const titleElement = document.getElementById('stay-detail-title');
+  const subtitleElement = document.getElementById('stay-detail-subtitle');
+  const aboutElement = document.getElementById('mcs-about-body');
+
+  titleElement.textContent = title;
+  subtitleElement.textContent = plainText(subtitle);
+  subtitleElement.hidden = !plainText(subtitle);
+
+  const aboutHtml = data.aboutBody || data.body || '';
+  aboutElement.innerHTML = plainText(aboutHtml)
+    ? sanitizeHtml(aboutHtml)
+    : '<p>プログラムの詳しい内容は準備中です。</p>';
+
+  renderGallery(data);
+
+  setRichValue('mcs-info-dates', 'row-dates', data.infoDates || data.date);
+  setRichValue('mcs-info-capacity', 'row-capacity', data.infoCapacity || data.capacity);
+  setRichValue('mcs-info-decision', 'row-decision', data.infoDecision, { newlines: true });
+  setRichValue('mcs-schedule-list', 'row-schedule', data.scheduleBody || data.schedule);
+  setRichValue('mcs-info-price', 'row-price', data.infoPrice || data.price);
+  setRichValue('mcs-includes-body', 'row-includes', data.includesBody || data.includes);
+  setRichValue('mcs-info-cancel', 'row-cancel', data.infoCancel || data.cancel);
+  setRichValue(
+    'mcs-info-access',
+    'row-access',
+    data.infoAccess || data.access || '詳細はお申し込み後にご案内します。'
+  );
+
+  const previewNote = document.getElementById('detail-preview-note');
+  previewNote.classList.toggle('is-visible', isPreview);
+
+  const applyButton = document.getElementById('mcs-apply-link');
+  const customButton = document.getElementById('mcs-custom-link');
+  applyButton.href = `stay-apply.html?tour=${encodeURIComponent(title)}`;
+  customButton.href = `contact.html?type=customize&tour=${encodeURIComponent(title)}`;
+
+  document.title = `${title} | 丹波篠山で田舎・農業体験`;
+  const description = plainText(subtitle || aboutHtml).slice(0, 120);
+  if (description) {
+    document.querySelector('meta[name="description"]')?.setAttribute('content', description);
+  }
+
+  const ogImage = normalizeImageUrl(data.heroImage || data.image);
+  if (ogImage) {
+    document.querySelector('meta[property="og:image"]')?.setAttribute('content', ogImage);
+  }
+}
+
+function renderError() {
+  const article = document.getElementById('stay-detail-article');
+  article.innerHTML = `
+    <div class="detail-error">
+      <p>プログラム情報を取得できませんでした。</p>
+      <p><a href="stay.html">体験・滞在プログラム一覧へ戻る</a></p>
+    </div>
+  `;
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(window.location.search);
+  const stayId = params.get('id');
+  const draftKey = params.get('draftKey');
+  const isPreview = params.get('preview') === '1' || !stayId;
+
+  if (isPreview) {
+    renderStay(previewStay, true);
+    return;
+  }
 
   try {
     const data = await fetchStayDetail(stayId, draftKey);
-
     if (!data) {
-      if (titleEl) titleEl.textContent = 'データが見つかりませんでした';
+      renderError();
       return;
     }
-
-    // 取得したデータを画面上の各IDへ反映
-    if (titleEl) titleEl.textContent = data.title || '';
-    
-    // マイクロCMSのフィールド「description」をサブタイトルとして利用（設定されていない場合はsubtitle）
-    if (subTitleEl) subTitleEl.textContent = data.subtitle || data.description || '';
-
-    // メイン画像（基本は heroImage, もし無ければ image を使用）
-    const heroImg = document.querySelector('.detail-header img');
-    const imageUrl = data.heroImage?.url || data.image?.url;
-    if (heroImg && imageUrl) {
-      heroImg.src = imageUrl + '?fm=webp&w=1200&q=80';
-    }
-
-    // 画像最適化ユーティリティ
-    const optimizeHtmlImages = (html) => {
-      if (!html) return html;
-      return html.replace(/(src="https:\/\/images\.microcms-assets\.io\/[^"]+)"/g, '$1?fm=webp&w=1000&q=80"');
-    };
-
-    // ギャラリー (複数画像)
-    const galleryEl = document.getElementById('mcs-gallery');
-    if (galleryEl && data.gallery && data.gallery.length > 0) {
-      galleryEl.style.display = '';
-      data.gallery.forEach(imgData => {
-        const img = document.createElement('img');
-        img.src = imgData.url + '?fm=webp&w=800&q=80';
-        galleryEl.appendChild(img);
-      });
-    }
-
-    // プログラムについて (リッチエディタ。基本は aboutBody, 無ければ body を使用)
-    const aboutBody = document.getElementById('mcs-about-body');
-    const aboutHtml = data.aboutBody || data.body;
-    if (aboutBody && aboutHtml) {
-      aboutBody.innerHTML = optimizeHtmlImages(aboutHtml);
-    }
-
-    // 行程スケジュール (リッチエディタ)
-    const scheduleList = document.getElementById('mcs-schedule-list');
-    if (scheduleList && data.scheduleBody) {
-      scheduleList.innerHTML = optimizeHtmlImages(data.scheduleBody);
-    }
-
-    // 料金に含まれるもの (リッチエディタ)
-    const includesBody = document.getElementById('mcs-includes-body');
-    if (includesBody && data.includesBody) {
-      includesBody.innerHTML = optimizeHtmlImages(data.includesBody);
-    }
-
-    // 基本情報群
-    const infoDates = document.getElementById('mcs-info-dates');
-    if (infoDates && data.infoDates) infoDates.innerHTML = data.infoDates; // HTML許容でセット
-
-    const infoCapacity = document.getElementById('mcs-info-capacity');
-    if (infoCapacity && data.infoCapacity) infoCapacity.innerHTML = data.infoCapacity; // HTML許容
-
-    const infoDecision = document.getElementById('mcs-info-decision');
-    if (infoDecision && data.infoDecision) infoDecision.innerHTML = data.infoDecision.replace(/\n/g, '<br>'); // テキストエリアの改行対応
-
-    const infoPrice = document.getElementById('mcs-info-price');
-    if (infoPrice && data.infoPrice) {
-      infoPrice.innerHTML = data.infoPrice; // リッチエディタ
-    }
-
-    const infoCancel = document.getElementById('mcs-info-cancel');
-    if (infoCancel && data.infoCancel) {
-      infoCancel.innerHTML = data.infoCancel; // リッチエディタ
-    }
-
-    // ページタイトル（ブラウザのタブ名）なども動的に変更する
-    if (data.title) {
-      document.title = `${data.title} | 丹波篠山で田舎・農業体験`;
-      
-      // SEOディスクリプションとOGP画像の更新
-      const descText = data.subtitle || data.description || '';
-      if (descText) {
-        const plainText = descText.replace(/<[^>]+>/g, '').substring(0, 120);
-        document.querySelector('meta[name="description"]')?.setAttribute('content', plainText);
-      }
-      if (imageUrl) {
-        document.querySelector('meta[property="og:image"]')?.setAttribute('content', imageUrl);
-      }
-      
-      // 申し込みボタンへのリンク変更（専用フォームへ）
-      const applyBtn = document.getElementById('mcs-apply-link');
-      if (applyBtn) {
-        applyBtn.href = `stay-apply.html?tour=${encodeURIComponent(data.title)}`;
-      }
-      
-      // カスタマイズ相談は従来通りのお問い合わせフォームへ
-      const customBtn = document.getElementById('mcs-custom-link');
-      if (customBtn) {
-        customBtn.href = `contact.html?type=customize&tour=${encodeURIComponent(data.title)}`;
-      }
-    }
-
+    renderStay(data);
   } catch (error) {
     console.error('STAYデータ表示中にエラーが発生しました', error);
-    if (titleEl) titleEl.textContent = 'エラーが発生しました';
+    renderError();
   }
 });

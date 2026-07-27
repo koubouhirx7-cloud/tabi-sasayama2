@@ -1,0 +1,53 @@
+# Enable URL Rewriting
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # XServer対応: PHP-FPM/CGI環境でAuthorizationヘッダーをPHPへ転送する
+  RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+  # Rewrite /api/xxx to api-php/xxx.php (for Xserver compatibility)
+  # Exclude actual files (like upload_pdf.php) and directories
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^api/([^/]+)$ api-php/$1.php [L,QSA]
+</IfModule>
+
+# Cache-Control headers configuration
+<IfModule mod_headers.c>
+  # Images: Cache for 1 year (immutable)
+  <FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|ico)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # CSS, JS, HTML: No-cache (must revalidate every time)
+  <FilesMatch "\.(css|js|html)$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+
+  # セキュリティヘッダー
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "DENY"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+# MIMEタイプの強制（XServerでのnosniffエラー防止用）
+<IfModule mod_mime.c>
+  AddType application/javascript .js
+  AddType text/css .css
+</IfModule>
+
+# 機密ファイルへのアクセス拒否
+<FilesMatch "^\.env|\.json$|_common\.php|debug-log\.php">
+  Require all denied
+</FilesMatch>
+
+# 管理画面ファイルへのアクセス制限（ベーシック認証）
+<FilesMatch "^admin-">
+  AuthUserFile /home/xs203337/withsasayama.jp/htpasswd/satoyamatour.withsasayama.jp/.htpasswd
+  AuthName "Member Only"
+  AuthType Basic
+  require valid-user
+</FilesMatch>

@@ -3,117 +3,420 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>教育旅行・体験学習 | 丹波篠山の農業・里山体験</title>
-    <meta name="description" content="学校・団体向けの丹波篠山における教育旅行（ファームステイ、農業体験、里山学習など）をご提案します。" />
+    <title>教育旅行・体験学習・学生農業体験｜丹波篠山の里山学習｜ウイズささやま</title>
+    <meta name="description" content="小学生〜大学生・専門学校向けの教育旅行・体験学習プログラム。丹波篠山の里山・農業で学ぶ非日常の学習体験。修学旅行・課外活動にも対応。京阪神からのアクセス良好。ウイズささやま（with ささやま）にご相談ください。" />
     <link rel="stylesheet" href="./style.css" />
     <style>
-      .lp-header {
-        background-color: #a99c79;
-        height: 300px;
+      .education-page {
+        background: #ffffff;
+        --edu-gallery-angle: -7deg;
+        --edu-diagonal-rise: clamp(110px, 12.3vw, 178px);
+      }
+
+      .education-page .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 1rem 0;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+      }
+
+      .education-page .logo img {
+        height: 65px;
+      }
+
+      .edu-hero {
+        position: relative;
+        overflow: visible;
+        min-height: clamp(1320px, 62vw, 1400px);
+        padding: 148px 0 0;
+        background: #ffffff;
+      }
+
+      .edu-hero-copy {
+        position: relative;
+        z-index: 3;
+        width: min(760px, 88%);
+        margin-left: 7%;
+      }
+
+      .edu-title-row {
         display: flex;
         align-items: center;
-        justify-content: center;
-        position: relative;
-        margin-top: 140px;
+        gap: 24px;
+        margin-bottom: 24px;
       }
-      .lp-title-wrap {
+
+      .edu-title-mark {
+        width: 8px;
+        height: 70px;
+        background: #203c3d;
+      }
+
+      .edu-title-logo {
+        width: min(700px, 78vw);
+        max-width: 100%;
+      }
+
+      .edu-copy {
+        color: #4c5652;
+        font-size: 1.12rem;
+        line-height: 2.05;
+        margin-left: 8px;
+      }
+
+      .edu-emphasis {
+        display: block;
+        margin-top: 14px;
+        color: #303836;
+        font-family: var(--font-display);
+        font-size: 1.65rem;
+        line-height: 1.7;
+      }
+
+      .edu-collage {
+        position: absolute;
+        z-index: 2;
+        left: 0;
+        right: 0;
+        bottom: -18px;
+        height: 650px;
+        overflow: visible;
+        pointer-events: none;
+      }
+
+      .edu-sky-strip {
+        display: none;
+      }
+
+      .edu-gallery-rail {
+        position: absolute;
+        left: 50%;
+        bottom: 117px;
+        width: min(1120px, 92vw);
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        transform: translateX(-50%) rotate(var(--edu-gallery-angle));
+        transform-origin: center;
+      }
+
+      .edu-gallery-row {
+        display: flex;
+        gap: 14px;
+      }
+
+      .edu-gallery-row-top {
+        width: 100%;
+      }
+
+      .edu-gallery-row-bottom {
+        width: 74%;
+        margin: 0 auto;
+      }
+
+      .edu-photo {
+        flex: 1 1 0;
+        position: relative;
+        overflow: hidden;
+        background: #eef2ee;
+        aspect-ratio: 4 / 3;
+        box-shadow: 0 8px 24px rgba(14, 37, 30, 0.14);
+      }
+
+      .edu-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .edu-programs {
         position: relative;
         z-index: 1;
-        text-align: center;
-        color: white;
-      }
-      .lp-title-wrap h1 {
-        font-family: var(--font-display);
-        font-size: clamp(2.5rem, 6vw, 5rem);
-        margin-bottom: 1rem;
-        letter-spacing: 2px;
-      }
-      .lp-title-wrap p {
-        font-size: clamp(1.2rem, 3vw, 1.8rem);
-        font-weight: bold;
+        margin-top: calc(var(--edu-diagonal-rise) * -0.62);
+        padding: calc(var(--edu-diagonal-rise) + 72px) 0 86px;
+        background: #64aa7e;
+        color: #18302d;
+        clip-path: polygon(0 var(--edu-diagonal-rise), 100% 0, 100% 100%, 0 100%);
       }
 
-
-
-      .program-highlight {
+      .edu-program-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: var(--spacing-lg);
-        align-items: center;
-        margin-bottom: var(--spacing-xl);
-      }
-      .program-highlight:nth-child(even) {
-        direction: rtl;
-      }
-      .program-highlight:nth-child(even) > * {
-        direction: ltr;
-      }
-      
-      .prog-img img {
-        border-radius: 0;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      }
-      
-      .prog-info h3 {
-        font-family: var(--font-display);
-        color: var(--color-primary);
-        font-size: 2rem;
-        margin-bottom: 1rem;
-      }
-      .prog-info p {
-        margin-bottom: 1.5rem;
-        font-size: 1.1rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 84px;
       }
 
-      .cta-section {
-        background: var(--color-secondary);
-        color: white;
-        padding: var(--spacing-xl) 0;
-        text-align: center;
+      .edu-program h2 {
+        margin-bottom: 16px;
+        color: #18302d;
+        font-size: 1.7rem;
+        font-weight: 500;
+        letter-spacing: 0;
       }
-      .cta-section h2 {
-        font-family: var(--font-display);
-        color: white;
-        margin-bottom: 1rem;
+
+      .edu-program p {
+        line-height: 2;
+        color: rgba(17, 42, 38, 0.88);
       }
-      .btn-download {
-        background: white;
-        color: var(--color-secondary);
-        font-size: 1.2rem;
-        padding: 1rem 3rem;
-        border-radius: 50px;
+
+      .edu-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 22px 0 18px;
+      }
+
+      .edu-action {
         display: inline-flex;
         align-items: center;
-        gap: 10px;
-        font-weight: bold;
-        transition: transform 0.3s;
-      }
-      .btn-download:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        color: var(--color-secondary);
+        justify-content: center;
+        min-width: 130px;
+        min-height: 38px;
+        padding: 8px 18px;
+        border: 1px solid #d8e9dc;
+        border-radius: 2px;
+        background: #ffffff;
+        color: #243d39;
+        font-size: 0.9rem;
+        line-height: 1.4;
       }
 
-      @media (max-width: 768px) {
-        .program-highlight {
+      .edu-action:hover {
+        opacity: 1;
+        background: #f0f7f2;
+      }
+
+      .edu-specs {
+        color: rgba(17, 42, 38, 0.86);
+        font-size: 0.95rem;
+        line-height: 1.8;
+      }
+
+      .edu-arrival {
+        height: 390px;
+        overflow: hidden;
+        background: #233c3d;
+      }
+
+      .edu-arrival img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 52%;
+      }
+
+      .education-page .footer {
+        border-top: 0;
+        background: #203c3d;
+        color: rgba(255, 255, 255, 0.84);
+        padding-top: 58px;
+      }
+
+      .education-page .footer-logo,
+      .education-page .footer-info,
+      .education-page .footer-nav-col a,
+      .education-page .footer-bottom {
+        color: rgba(255, 255, 255, 0.84);
+      }
+
+      .education-page .footer-bottom {
+        border-top-color: rgba(255, 255, 255, 0.18);
+      }
+
+      @media (max-width: 1100px) {
+        .edu-hero {
+          min-height: 1160px;
+        }
+
+        .edu-gallery-rail {
+          width: min(940px, 92vw);
+          gap: 12px;
+        }
+      }
+
+      @media (max-width: 860px) {
+        .edu-hero {
+          min-height: auto;
+          padding: 124px 0 0;
+        }
+
+        .edu-hero-copy {
+          width: auto;
+          margin: 0 6%;
+        }
+
+        .edu-title-row {
+          gap: 16px;
+        }
+
+        .edu-title-mark {
+          height: 54px;
+        }
+
+        .edu-copy {
+          font-size: 1rem;
+          line-height: 1.9;
+        }
+
+        .edu-emphasis {
+          font-size: 1.28rem;
+        }
+
+        .edu-collage {
+          position: relative;
+          display: block;
+          height: auto;
+          margin-top: 36px;
+          padding: 0 6% 36px;
+        }
+
+        .edu-gallery-rail {
+          position: relative;
+          left: auto;
+          right: auto;
+          bottom: auto;
+          height: auto;
+          width: 100%;
+          display: flex;
+          gap: 12px;
+          transform: none;
+        }
+
+        .edu-gallery-row,
+        .edu-gallery-row-bottom {
+          width: 100%;
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 12px;
+        }
+
+        .edu-gallery-row-top .edu-photo:first-child {
+          grid-column: span 2;
+        }
+
+        .edu-photo {
+          position: relative;
+          inset: auto;
+          width: 100%;
+          height: auto;
+          transform: none;
+          box-shadow: 0 10px 22px rgba(14, 37, 30, 0.16);
+        }
+
+        .edu-programs {
+          margin-top: 0;
+          padding: 64px 0;
+          clip-path: none;
+        }
+
+        .edu-program-grid {
+          grid-template-columns: 1fr;
+          gap: 48px;
+        }
+
+        .edu-arrival {
+          height: 280px;
+        }
+      }
+
+      @media (max-width: 540px) {
+        .edu-title-logo {
+          width: 100%;
+        }
+
+        .edu-title-row {
+          align-items: flex-start;
+        }
+
+        .edu-title-mark {
+          flex: 0 0 6px;
+          height: 46px;
+          margin-top: 5px;
+        }
+
+        .edu-collage {
           grid-template-columns: 1fr;
         }
-        .program-highlight:nth-child(even) {
-          direction: ltr;
+
+        .edu-gallery-row,
+        .edu-gallery-row-bottom {
+          grid-template-columns: 1fr;
+        }
+
+        .edu-gallery-row-top .edu-photo:first-child {
+          grid-column: auto;
+        }
+
+        .edu-actions {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .edu-action {
+          min-width: 0;
+          padding-inline: 10px;
+        }
+
+        .education-page .footer-nav {
+          width: 100%;
+          gap: 32px;
         }
       }
     </style>
-      <meta name="keywords" content="丹波篠山,農業,体験,移住,田舎,暮らし,兵庫県,里山,古民家,Tamba Sasayama,Farm stay,Agriculture,Rural life,Kominka,Hyogo" />
+    <meta name="keywords" content="教育旅行,体験学習,学習,学生,農業,里山,修学旅行,丹波篠山旅,非日常,京阪神,小学生,中学生,高校生,大学生,兵庫県" />
+    <link rel="canonical" href="https://withsasayama.jp/education.html" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="一般社団法人ウイズささやま" />
-    <meta property="og:image" content="https://withsasayama.jp/images/PC032939.jpg" />
+    <meta property="og:title" content="教育旅行・体験学習・学生農業体験｜丹波篠山の里山学習｜ウイズささやま" />
+    <meta property="og:description" content="小学生〜大学生向けの教育旅行・体験学習プログラム。丹波篠山の里山・農業で学ぶ非日常の学習体験。修学旅行・課外活動にも対応。京阪神からのアクセス良好。" />
+    <meta property="og:url" content="https://withsasayama.jp/education.html" />
+    <meta property="og:image" content="https://withsasayama.jp/images/education/education-arrival.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="教育旅行・体験学習・学生農業体験｜丹波篠山の里山学習｜ウイズささやま" />
+    <meta name="twitter:description" content="小学生〜大学生向けの教育旅行・体験学習。丹波篠山の里山・農業で学ぶ非日常の学習体験。修学旅行・課外活動にも。" />
+    <meta name="twitter:image" content="https://withsasayama.jp/images/education/education-arrival.jpg" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      "name": "丹波篠山 里山・農業 教育旅行・体験学習プログラム",
+      "description": "小学生〜大学生・専門学校向けの教育旅行・体験学習プログラム。丹波篠山の里山・農業で学ぶ非日常の学習体験。修学旅行・課外活動にも対応。",
+      "url": "https://withsasayama.jp/education.html",
+      "provider": {
+        "@type": "Organization",
+        "name": "一般社団法人ウイズささやま",
+        "url": "https://withsasayama.jp",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "丹波篠山市",
+          "addressRegion": "兵庫県",
+          "addressCountry": "JP"
+        }
+      },
+      "educationalLevel": "初等・中等・高等・大学",
+      "teaches": ["農業","里山文化","食育","自然体験"],
+      "courseMode": "現地体験",
+      "hasCourseInstance": {
+        "@type": "CourseInstance",
+        "courseMode": "現地体験",
+        "location": {
+          "@type": "Place",
+          "name": "丹波篠山市",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "丹波篠山市",
+            "addressRegion": "兵庫県",
+            "addressCountry": "JP"
+          }
+        }
+      }
+    }
+    </script>
   </head>
-  <body>
+  <body class="education-page">
     <!-- HEADER -->
                                         <header class="header">
       <div class="container nav-container">
-        <a href="index.html" class="logo"><img src="/images/logo.png?v=2" alt="丹波篠山ローカルトラベル"></a>
+        <a href="index.html" class="logo"><img src="./images/logo.png?v=2" alt="丹波篠山ローカルトラベル"></a>
         <button class="hamburger" aria-label="メニューを開く">
           <span></span>
           <span></span>
@@ -132,72 +435,89 @@
     </header>
 
     <main>
-      <div class="lp-header fade-in">
-        <div class="lp-title-wrap">
-          <h1>教育プログラム<br><span style="font-size:0.5em; font-family: var(--font-base); letter-spacing: 0.1em; font-weight: normal;">- education -</span></h1>
-          <p style="font-size: 1.1rem; font-weight: normal; margin-top: 1.5rem; line-height: 1.8;">
-            教育旅行会社や団体向けの内容です。<br>
-            お気軽にお問い合わせください。
+      <section class="edu-hero fade-in">
+        <div class="edu-hero-copy">
+          <div class="edu-title-row">
+            <span class="edu-title-mark" aria-hidden="true"></span>
+            <h1>
+              <img class="edu-title-logo" src="./images/title-options/title-option-a-education.png" alt="教育旅行と探究プログラム">
+            </h1>
+          </div>
+          <p class="edu-copy">
+            地方の課題を探り、地域の可能性を究する。<br>
+            暮らしの知恵に学び、未来の生き方を考える。<br>
+            先をゆく、教育旅行へ。<br>
+            世代を越えて、大人も学生も
+            <span class="edu-emphasis">価値観を揺さぶる“ふる里山”での体験を。</span>
           </p>
         </div>
-      </div>
 
-      <section class="section pt-0">
-        <div class="container">
-          
-
-          <div class="program-highlight fade-in">
-            <div class="prog-img">
-              <img src="/images/satoyama-quest.jpg" alt="里山探究プログラム"  loading="lazy">
+        <div class="edu-collage" aria-hidden="true">
+          <div class="edu-sky-strip"></div>
+          <div class="edu-gallery-rail">
+            <div class="edu-gallery-row edu-gallery-row-top">
+              <figure class="edu-photo photo-notes">
+                <img src="./images/education/education-notes.jpg" alt="">
+              </figure>
+              <figure class="edu-photo photo-forest">
+                <img src="./images/education/education-forest.jpg" alt="">
+              </figure>
+              <figure class="edu-photo photo-meal">
+                <img src="./images/education/education-meal.jpg" alt="">
+              </figure>
             </div>
-            <div class="prog-info">
-              <h3>里山探究プログラム</h3>
-              <p>中学生から高校生を対象にした課題解決型やまち歩き型の日帰りプログラムです。<br>農業と食の課題、文化の技と魅力、農村の未来を考える、学びの場作り、城下町の歴史と保全と活用に触れ、自分たちなりの解決策をチームで探ります。</p>
-              <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; list-style: disc; color: #666;">
-                <li>対象：中学・高校生他</li>
-                <li>期間：2時間30分〜1日（応宿泊相談）</li>
-                <li>目的：課題発見力・協調性・行動力の育成</li>
-              </ul>
-              <div style="display: flex; gap: 1rem;">
-                <a href="https://drive.google.com/file/d/1sGW9JWdi8eL7Jyj3kPAWLe2mXrjBIIN3/view?usp=sharing" target="_blank" class="btn-outline pdf-link" data-pdf-title="里山探究プログラム">PDF詳細</a>
-                <a href="https://drive.google.com/file/d/100Q5AZUgoRaKpCGQM8JLoI4vy_-aiuHh/view?usp=sharing" target="_blank" class="btn-dark">お申し込みフォーム</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="program-highlight fade-in">
-            <div class="prog-img">
-              <img src="/images/satoyama-academy.jpg" alt="里山アカデミー"  loading="lazy">
-            </div>
-            <div class="prog-info">
-              <h3>里山アカデミー</h3>
-              <p>より深く里山の文化やなりわいを学ぶ、体験特化型の教育旅行プログラムです。<br>陶芸、農業、古民家改修など、その道のプロフェッショナルである地元住民から直接指導を受け、ホンモノの手仕事を体験します。</p>
-              <ul style="margin-bottom: 1.5rem; padding-left: 1.5rem; list-style: disc; color: #666;">
-                <li>対象：教育旅行・修学旅行</li>
-                <li>期間：日帰り〜</li>
-                <li>目的：日本の伝統文化・職業観の醸成</li>
-              </ul>
-              <div style="display: flex; gap: 1rem;">
-                <a href="/pdf/academy.pdf" target="_blank" class="btn-outline pdf-link" data-pdf-title="里山アカデミー">PDF詳細</a>
-                <a href="contact.html" class="btn-dark">お申し込みフォーム</a>
-              </div>
+            <div class="edu-gallery-row edu-gallery-row-bottom">
+              <figure class="edu-photo photo-field">
+                <img src="./images/education/education-field.jpg" alt="">
+              </figure>
+              <figure class="edu-photo photo-workshop">
+                <img src="./images/education/education-workshop.jpg" alt="">
+              </figure>
             </div>
           </div>
-
         </div>
       </section>
 
-      <section class="cta-section fade-in">
+      <section class="edu-programs">
         <div class="container">
-          <h2>詳しい資料をご用意しております</h2>
-          <p class="mb-lg">学校行事への導入や、ゼミ合宿のご相談も承ります。まずはカタログをご覧ください。</p>
-          <a href="download.html" class="btn-download">
-            📘 教育プログラムのカタログをダウンロードする
-          </a>
-          <p style="margin-top: 1.5rem;">
-            <a href="company-contact.html" style="color: white; text-decoration: underline;">直接カスタマイズの相談をする</a>
-          </p>
+          <div class="edu-program-grid">
+            <article class="edu-program">
+              <h2>《里山探究プログラム》</h2>
+              <p>
+                地方の課題を探る「課題解決型」と、自由な散策から価値を見つける「まち歩き型」日帰り探究プログラムです。主なテーマは、食と農の本質に迫ること、丹波焼から継承と創造を学ぶこと、里山保全と地域の未来を考えること、城下町の魅力と保全意義を知ること。チームで自分たちなりの解決策を探ります。
+              </p>
+              <div class="edu-actions">
+                <a class="edu-action" href="./pdf/education/satoyama-quest-pamphlet.pdf" target="_blank">パンフレット</a>
+                <a class="edu-action" href="./pdf/education/satoyama-quest-application.pdf" target="_blank">申し込み書</a>
+              </div>
+              <p class="edu-specs">
+                所要時間：2時間30分〜終日<br>
+                対象年齢：中学生以上<br>
+                受入人数：最大40名（各テーマごと）
+              </p>
+            </article>
+
+            <article class="edu-program">
+              <h2>《里山アカデミー》</h2>
+              <p>
+                農業や林業などの生業や自然と共に暮らす知恵を、それぞれの教室の“師匠”から学ぶ、体験特化型の教育プログラムです。農家・木こり・集落の方々との交流を通して、風景や環境を守る大切さ、受け継がれてきた持続可能な暮らしの考え方を知り、これからの生き方や仕事を考えるヒントを探ります。
+              </p>
+              <div class="edu-actions">
+                <a class="edu-action" href="download.html">資料を見る</a>
+                <a class="edu-action" href="contact.html">相談する</a>
+              </div>
+              <p class="edu-specs">
+                所要時間：2泊3日〜<br>
+                対象年齢：高校生以上<br>
+                受入人数：最大12名（40名も可能、ただし体験の相談要）
+              </p>
+            </article>
+          </div>
         </div>
+      </section>
+
+      <section class="edu-arrival" aria-label="丹波篠山での教育旅行の様子">
+        <img src="./images/education/education-arrival.jpg" alt="丹波篠山に到着した教育旅行の参加者">
       </section>
     </main>
 
@@ -214,7 +534,7 @@
               営業時間：平日9:00-17:00（土日祝定休）
             </div>
           </div>
-          
+
           <div class="footer-nav">
             <div class="footer-nav-col">
               <a href="index.html">＞ホーム</a>
@@ -226,17 +546,17 @@
               <a href="contact.html">＞お問い合わせ</a>
             </div>
             <div class="footer-nav-col">
-              <a href="https://drive.google.com/file/d/1YQNORvYI_3ykokxJf36AKLx-hU9EOlUE/view?usp=sharing" target="_blank">＞会社案内・旅行業登録</a>
-              <a href="https://drive.google.com/file/d/1Z4aZs0c8mSOcT5otj1DunceqjGFVjj6R/view?usp=sharing" target="_blank">＞プライバシーポリシー</a>
+              <a href="company.html">＞会社案内・旅行業登録</a>
+              <a href="https://drive.google.com/file/d/1ogeZLtQ7jQ91XwM-UyOWyyZhMOIsl6N9/view?usp=drive_link" target="_blank">＞プライバシーポリシー</a>
             </div>
           </div>
         </div>
-        
+
         <div class="footer-bottom">
           <p>&copy; 2026 一般社団法人ウイズささやま All Rights Reserved.</p>
         </div>
       </div>
     </footer>
-    <script type="module" src="/main.js"></script>
+    <script type="module" src="./main.js"></script>
   </body>
 </html>

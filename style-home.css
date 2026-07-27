@@ -211,12 +211,12 @@ ul { list-style: none; }
   justify-content: center;
   position: relative;
 }
-.hero-inner { 
+.hero-inner {
   width: 100%;
   display: flex;
-  justify-content: center; 
-  text-align: center; 
-  flex-direction: column; 
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
 }
 .hero-text-wrap {
   color: #fff;
@@ -879,7 +879,7 @@ ul { list-style: none; }
 @media (max-width: 768px) {
   .hamburger { display: flex; }
   .header .nav-links { display: none; } /* PCナビを隠す */
-  
+
   .nav-links {
     position: fixed;
     inset: 0;
@@ -967,7 +967,7 @@ ul { list-style: none; }
   font-family: inherit;
   font-size: 1em;
   cursor: pointer;
-  padding: 4px 6px;
+  padding: 8px 12px;
   transition: 0.3s;
   opacity: 0.5;
   outline: none;
@@ -981,6 +981,7 @@ ul { list-style: none; }
 }
 .lang-sep {
   opacity: 0.3;
+  pointer-events: none;
 }
 /* Completely hide Google native artifacts */
 #google_translate_element,
@@ -1000,7 +1001,7 @@ body > .skiptranslate {
 }
 .goog-text-highlight {
   background-color: transparent !important;
-  border: none !important; 
+  border: none !important;
   box-shadow: none !important;
 }
 body, html {
@@ -1036,7 +1037,7 @@ body, html {
 @keyframes scroll-left-seamless {
   0% { transform: translateX(0); }
   /* (320px幅 + 1.5rem(24px)gap) * 7枚 = 2408px分マイナスに移動 */
-  100% { transform: translateX(calc(-50% - 0.75rem)); } 
+  100% { transform: translateX(calc(-50% - 0.75rem)); }
 }
 
 /* ---------- お客様の声カード共通スタイル ---------- */

@@ -2,6 +2,9 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 
 export default defineConfig({
+  server: {
+    allowedHosts: ['.trycloudflare.com']
+  },
   build: {
     rollupOptions: {
       input: {
@@ -27,6 +30,7 @@ export default defineConfig({
         adminDebug: resolve(__dirname, 'admin-debug.html'),
         survey: resolve(__dirname, 'survey.html'),
         customize: resolve(__dirname, 'customize.html'),
+        customizeDetail: resolve(__dirname, 'customize-detail.html'),
       }
     }
   }

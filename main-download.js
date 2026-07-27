@@ -1,4 +1,5 @@
 import { fetchDownloads } from './cms.js';
+import DOMPurify from 'dompurify';
 
 (async function initDownloadList() {
   const container = document.getElementById('download-list-container');
@@ -8,7 +9,7 @@ import { fetchDownloads } from './cms.js';
 
   function renderDownloads() {
     container.innerHTML = '';
-    
+
     if (!downloadData || downloadData.length === 0) {
       container.innerHTML = '<p style="text-align: center; color: #666; font-size: 1.1rem; padding: 3rem 0;">現在提供中のダウンロード資料はありません。</p>';
       return;
@@ -16,7 +17,7 @@ import { fetchDownloads } from './cms.js';
 
     downloadData.forEach((item, index) => {
       const delay = (index % 5) * 0.1;
-      
+
       const title = item.title || 'カタログ';
       const description = item.description || '';
       let fileUrl = '#';
@@ -27,9 +28,9 @@ import { fetchDownloads } from './cms.js';
           fileUrl = item.file; // テキストフィールドでURLを直接入れた場合
         }
       }
-      
+
       // ボタンのテキストも必要に応じて変えられますが、Googleドライブ等を開く想定で「資料を開く」に変更
-      
+
       const html = `
         <div class="download-card fade-in is-visible" style="animation-delay: ${delay}s">
           <div class="dl-content">
@@ -39,7 +40,7 @@ import { fetchDownloads } from './cms.js';
           <a href="${fileUrl}" class="btn-dl" target="_blank" rel="noopener noreferrer">資料をみる（ダウンロード）</a>
         </div>
       `;
-      container.insertAdjacentHTML('beforeend', html);
+      container.insertAdjacentHTML('beforeend', DOMPurify.sanitize(html));
     });
   }
 

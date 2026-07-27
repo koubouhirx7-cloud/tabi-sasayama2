@@ -170,7 +170,7 @@
       z-index: 100;
       backdrop-filter: blur(5px);
     }
-    
+
     /* --- INJECTED PREVIEW STYLES (Copied from news-detail.html) --- */
     .preview-container {
       padding: 40px;
@@ -362,12 +362,21 @@
         <div id="editor-container"></div>
         <small style="display:block; margin-top:4px; color:#888;">※ 文字の装飾や画像の挿入が可能です。右側の画面にリアルタイムで反映されます。</small>
       </div>
+
+      <!-- 削除エリア (編集モード時のみ表示) -->
+      <div id="danger-zone" class="form-group" style="display: none; background: #fff5f5; padding: 15px; border-radius: 8px; border-left: 4px solid #f56565; margin-top: 40px; margin-bottom: 20px;">
+        <h4 style="margin: 0 0 10px 0; color: #c53030; font-size: 1rem; font-weight: bold;">⚠️ 危険ゾーン</h4>
+        <p style="font-size: 0.8rem; color: #742a2a; margin: 0 0 12px 0; line-height: 1.4;">
+          この操作は取り消せません。この記事をMicroCMSから完全に削除します。
+        </p>
+        <button type="button" id="btn-open-delete-modal" style="background: #e53e3e; color: white; border: none; padding: 10px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; font-size: 0.95rem; transition: 0.2s;">この記事を完全に削除する</button>
+      </div>
     </aside>
 
     <!-- RIGHT: Live Preview -->
     <main class="admin-pane-right">
       <div class="preview-header">ライブプレビュー（実際の表示デザイン）</div>
-      
+
       <div class="preview-container">
         <article class="notion-card">
           <div class="notion-cover">
@@ -453,6 +462,34 @@
             <p style="color: #888; font-size: 0.9rem; text-align: center; margin-top: 40%;">プレビューはここに表示されます</p>
           </div>
           <button id="pm-btn-apply" style="display: none; background: #10b981; color: white; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 4px; width: 100%; margin-top: 10px;">この内容を入稿画面に反映する</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 削除確認モーダル -->
+  <div class="media-modal-overlay" id="delete-confirm-modal" style="z-index: 2000; display: none;">
+    <div class="media-modal-content" style="max-width: 500px; height: auto; max-height: 90vh;">
+      <div class="media-modal-header" style="background: #fff5f5; border-bottom: 1px solid #fed7d7;">
+        <h2 style="color: #9b2c2c; font-size: 1.1rem; font-weight: bold;">⚠️ 記事の永久削除</h2>
+        <button class="media-modal-close" id="btn-close-delete-modal">&times;</button>
+      </div>
+      <div class="media-modal-body" style="padding: 24px; box-sizing: border-box;">
+        <p style="margin: 0 0 15px 0; font-weight: bold; color: #2d3748; font-size: 1rem;">
+          本当にこの記事を削除しますか？
+        </p>
+        <p style="margin: 0 0 15px 0; color: #e53e3e; font-size: 0.9rem; line-height: 1.5; font-weight: bold;">
+          削除対象: <span id="delete-target-title" style="color: #2d3748; text-decoration: underline;">記事タイトル</span><br>
+          ※この操作は取り消せません。MicroCMSからデータが完全に削除されます。
+        </p>
+        <p style="margin: 0 0 8px 0; font-size: 0.85rem; color: #4a5568;">
+          誤削除を防止するため、確認のために以下に <strong>削除</strong> と入力してください。
+        </p>
+        <input type="text" id="input-delete-confirm" placeholder="削除" autocomplete="off" style="width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 4px; font-size: 1rem; margin-bottom: 20px; box-sizing: border-box;">
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button type="button" id="btn-cancel-delete" style="background: #e2e8f0; color: #4a5568; border: none; padding: 10px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.95rem;">キャンセル</button>
+          <button type="button" id="btn-confirm-delete" disabled style="background: #e53e3e; color: white; border: none; padding: 10px 18px; border-radius: 4px; font-weight: bold; cursor: not-allowed; opacity: 0.5; font-size: 0.95rem;">完全に削除する</button>
         </div>
       </div>
     </div>

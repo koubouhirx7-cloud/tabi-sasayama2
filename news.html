@@ -3,305 +3,514 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>最新情報（News） | ウイズささやま</title>
-    <meta name="description" content="一般社団法人ウイズささやまの最新情報、イベント開催告知、丹波篠山での田舎暮らしに関するお知らせを配信しています。" />
+    <title>最新情報・イベント告知｜丹波篠山旅・里山体験｜ウイズささやま</title>
+    <meta
+      name="description"
+      content="ウイズささやまの最新情報・イベント開催告知。丹波篠山の農業体験、里山トラベル、教育プログラムのお知らせを随時更新します。"
+    />
     <link rel="stylesheet" href="./style.css" />
     <style>
-      .page-header {
-        background-color: #a99c79;
-        height: 300px;
+      .news-page {
+        --news-ink: #263d3c;
+        --news-muted: #7f8582;
+        --news-line: #d5d8d5;
+        --news-accent: #b5a883;
+        --news-footer: #203c3d;
+        background: #fff;
+        color: var(--news-ink);
+      }
+
+      .news-page .header {
+        background: rgba(255, 255, 255, 0.97);
+        border-bottom: 1px solid #ecefed;
+        box-shadow: none;
+      }
+
+      .news-page .news-main {
+        padding-top: 166px;
+      }
+
+      .news-page .news-inner {
+        width: min(100% - 40px, 1060px);
+        margin: 0 auto;
+      }
+
+      .news-page .news-heading {
         display: flex;
         align-items: center;
-        justify-content: center;
-        position: relative;
-        margin-top:  140px;
+        gap: 24px;
+        margin-bottom: 42px;
       }
-      .page-header h1 {
+
+      .news-page .news-heading-mark {
+        flex: 0 0 8px;
+        width: 8px;
+        height: 78px;
+        background: var(--news-ink);
+      }
+
+      .news-page .news-heading-copy {
         position: relative;
-        z-index: 1;
-        color: white;
-        font-family: var(--font-display);
-        font-size: clamp(2rem, 5vw, 4rem);
+        width: min(390px, 64vw);
+      }
+
+      .news-page .news-title-image {
+        width: 100%;
+        height: auto;
+      }
+
+      .news-page .news-heading-en {
+        position: absolute;
+        right: 12%;
+        bottom: -3px;
+        font-family: var(--font-en);
+        font-size: 1.05rem;
+        font-style: italic;
+        letter-spacing: 0.08em;
+        color: #394e4c;
+      }
+
+      .news-page .news-index {
+        padding-bottom: 68px;
+      }
+
+      .news-page .news-layout {
+        display: grid;
+        grid-template-columns: 190px minmax(0, 1fr);
+        gap: 44px;
+        align-items: start;
+      }
+
+      .news-page .news-sidebar {
+        display: grid;
+        gap: 12px;
+      }
+
+      .news-page .sidebar-box {
+        border: 1px solid #858d8a;
+        background: #fff;
+        padding: 13px 12px 14px;
+      }
+
+      .news-page .sidebar-title {
+        margin-bottom: 8px;
+        color: #5f6865;
+        font-family: var(--font-base);
+        font-size: 0.82rem;
+        font-weight: 400;
+        letter-spacing: 0.08em;
+      }
+
+      .news-page .sidebar-list {
+        display: grid;
+        gap: 1px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .news-page .sidebar-list a {
+        display: block;
+        min-height: 27px;
+        padding: 3px 8px;
+        color: #67706d;
+        font-size: 0.82rem;
+        line-height: 1.6;
+        letter-spacing: 0.06em;
+      }
+
+      .news-page .sidebar-list a:hover {
+        opacity: 1;
+        background: #f2f1ec;
+      }
+
+      .news-page .sidebar-list a.active {
+        background: var(--news-accent);
+        color: #fff;
+      }
+
+      .news-page .news-list {
+        border-top: 1px solid var(--news-line);
+      }
+
+      .news-page .news-row {
+        display: grid;
+        grid-template-columns: 118px minmax(0, 1fr) 122px;
+        gap: 18px;
+        align-items: center;
+        min-height: 66px;
+        border-bottom: 1px solid var(--news-line);
+        color: inherit;
+      }
+
+      .news-page .news-row:hover {
+        opacity: 1;
+        background: #fafaf8;
+      }
+
+      .news-page .news-date {
+        color: #b5aa90;
+        font-size: 0.84rem;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0;
+      }
+
+      .news-page .news-title {
+        min-width: 0;
+        color: #5b6260;
+        font-size: 0.92rem;
+        font-weight: 400;
+        line-height: 1.6;
+        letter-spacing: 0.04em;
+      }
+
+      .news-page .news-category {
+        justify-self: end;
+        min-width: 110px;
+        padding: 5px 9px;
+        background: var(--news-accent);
+        color: #fff;
+        font-size: 0.73rem;
+        line-height: 1.35;
+        text-align: center;
+        letter-spacing: 0.04em;
+      }
+
+      .news-page .news-empty {
+        padding: 52px 16px;
+        border-bottom: 1px solid var(--news-line);
+        color: var(--news-muted);
+        font-size: 0.9rem;
+        line-height: 1.8;
         text-align: center;
       }
 
-      .category-nav {
+      .news-page .news-pagination {
         display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
         justify-content: center;
-        margin-bottom: var(--spacing-lg);
-        width: 100%;
+        align-items: center;
+        gap: 11px;
+        min-height: 54px;
+        padding-top: 20px;
       }
-      .category-nav .tag {
-        padding: 0.5rem 1rem;
-        background: white;
-        border: 1px solid var(--color-border);
-        border-radius: 0;
-        font-size: 0.9rem;
+
+      .news-page .pagination-btn {
+        width: 11px;
+        height: 11px;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: #9b9b97;
+        color: transparent;
         cursor: pointer;
-        transition: 0.3s;
-        text-decoration: none;
-        color: var(--color-text);
-      }
-      .category-nav .tag:hover, .category-nav .tag.active {
-        background: var(--color-primary);
-        color: white;
-        border-color: var(--color-primary);
       }
 
-      .news-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 3rem;
-      }
-      @media (max-width: 1024px) {
-        .news-grid { grid-template-columns: repeat(2, 1fr); }
-      }
-      @media (max-width: 600px) {
-        .news-grid { grid-template-columns: 1fr; }
+      .news-page .pagination-btn:hover,
+      .news-page .pagination-btn.active {
+        opacity: 1;
+        background: #4a5f5d;
       }
 
-      .news-card {
-        text-decoration: none;
-        color: inherit;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        background: white;
-        border-radius: 0;
+      .news-page .pagination-btn[disabled] {
+        display: none;
+      }
+
+      .news-page .news-season {
+        height: clamp(320px, 43vw, 540px);
         overflow: hidden;
-        border: 1px solid rgba(0,0,0,0.06);
-        box-shadow: 0 6px 24px rgba(0,0,0,0.04);
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      
-      .news-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 16px 40px rgba(0,0,0,0.08);
-        border-color: rgba(0,0,0,0.1);
+        background: #91a954;
       }
 
-      .news-img {
-        aspect-ratio: 16 / 10;
-        width: 100%;
-        overflow: hidden;
-        background: #FFFFFF;
-      }
-      .news-img img {
+      .news-page .news-season img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.5s;
-      }
-      .news-card:hover .news-img img {
-        transform: scale(1.05);
-      }
-      
-      .news-content {
-        padding: var(--spacing-md);
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-      }
-      
-      .news-meta {
-        font-size: 0.8rem;
-        color: var(--color-secondary);
-        margin-bottom: 0.5rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .news-category {
-        background: var(--color-bg);
-        padding: 0.2rem 0.5rem;
-        border-radius: 0;
-        color: var(--color-primary);
-        font-weight: bold;
-      }
-      .news-date {
-        color: #888;
-      }
-      
-      .news-title {
-        font-size: 1.1rem;
-        font-weight: bold;
-        line-height: 1.4;
-        margin-bottom: auto; /* Pushes content down if needed */
-        font-family: var(--font-base);
+        object-position: center 56%;
       }
 
-      /* Sidebar Layout for Notion Blog Style */
-      .news-layout {
-        display: flex;
-        gap: 80px;
+      .news-page .footer {
+        border-top: 0;
+        background: var(--news-footer);
+        color: rgba(255, 255, 255, 0.84);
+        padding: 46px 0 24px;
+      }
+
+      .news-page .footer-top {
         align-items: flex-start;
-      }
-      .news-sidebar {
-        width: 250px;
-        flex-shrink: 0;
-        position: sticky;
-        top: 100px;
-      }
-      .news-main {
-        flex: 1;
-      }
-      @media (max-width: 900px) {
-        .news-layout { flex-direction: column; }
-        .news-sidebar { width: 100%; position: static; margin-bottom: 30px; }
-      }
-      
-      .sidebar-box {
-        background: white;
-        border-radius: 0;
-        padding: 24px;
-        margin-bottom: 24px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-        border: 1px solid var(--color-border);
-      }
-      .sidebar-title {
-        font-family: var(--font-display);
-        font-size: 1.1rem;
-        margin-bottom: 16px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid var(--color-border);
-        color: var(--color-text);
-      }
-      .sidebar-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-      .sidebar-list li {
-        margin-bottom: 4px;
-      }
-      .sidebar-list a {
-        text-decoration: none;
-        color: var(--color-text);
-        display: block;
-        padding: 8px 12px;
-        border-radius: 0;
-        transition: 0.2s;
-        font-size: 0.95rem;
-      }
-      .sidebar-list a:hover {
-        background: #f0f0f0;
-      }
-      .sidebar-list a.active {
-        background: var(--color-primary);
-        color: white;
-        font-weight: bold;
+        margin-bottom: 38px;
       }
 
-      /* Pagination Styles */
-      .pagination-btn {
-        padding: 0.4rem 0.8rem;
-        border: 1px solid var(--color-border);
-        background: white;
-        color: var(--color-text);
-        cursor: pointer;
-        border-radius: 0;
-        transition: 0.2s;
-        font-family: var(--font-base);
-        font-size: 0.9rem;
+      .news-page .footer-left {
+        display: grid;
+        grid-template-columns: 92px minmax(0, 1fr);
+        gap: 24px;
+        align-items: start;
+        max-width: 560px;
       }
-      .pagination-btn:hover:not(.active):not([disabled]) {
-        background: #f0f0f0;
+
+      .news-page .footer-mark {
+        width: 92px;
+        height: auto;
       }
-      .pagination-btn.active {
-        background: var(--color-primary);
-        color: white;
-        border-color: var(--color-primary);
-        font-weight: bold;
+
+      .news-page .footer-logo,
+      .news-page .footer-info,
+      .news-page .footer-nav-col a,
+      .news-page .footer-bottom {
+        color: rgba(255, 255, 255, 0.8);
       }
-      .pagination-btn[disabled] {
-        opacity: 0.5;
-        cursor: not-allowed;
+
+      .news-page .footer-logo {
+        margin-bottom: 6px;
+        font-size: 1.5rem;
+        letter-spacing: 0.08em;
+      }
+
+      .news-page .footer-info {
+        font-size: 0.8rem;
+        line-height: 1.9;
+      }
+
+      .news-page .footer-nav {
+        gap: 54px;
+      }
+
+      .news-page .footer-nav-col {
+        gap: 7px;
+      }
+
+      .news-page .footer-nav-col a {
+        font-size: 0.82rem;
+      }
+
+      .news-page .footer-bottom {
+        border-top-color: rgba(255, 255, 255, 0.2);
+      }
+
+      @media (max-width: 860px) {
+        .news-page .news-main {
+          padding-top: 132px;
+        }
+
+        .news-page .news-layout {
+          grid-template-columns: 1fr;
+          gap: 28px;
+        }
+
+        .news-page .news-sidebar {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .news-page .sidebar-list {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .news-page .news-row {
+          grid-template-columns: 104px minmax(0, 1fr) 116px;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .news-page .news-inner {
+          width: min(100% - 28px, 1060px);
+        }
+
+        .news-page .news-heading {
+          gap: 16px;
+          margin-bottom: 32px;
+        }
+
+        .news-page .news-heading-mark {
+          flex-basis: 6px;
+          width: 6px;
+          height: 54px;
+        }
+
+        .news-page .news-heading-copy {
+          width: min(300px, calc(100vw - 76px));
+        }
+
+        .news-page .news-heading-en {
+          right: 8%;
+          bottom: -5px;
+          font-size: 0.88rem;
+        }
+
+        .news-page .news-sidebar {
+          grid-template-columns: 1fr;
+        }
+
+        .news-page .sidebar-list {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .news-page .news-row {
+          grid-template-columns: 88px minmax(0, 1fr);
+          gap: 8px 12px;
+          min-height: 82px;
+          padding: 10px 0;
+        }
+
+        .news-page .news-date {
+          grid-column: 1;
+          grid-row: 1;
+        }
+
+        .news-page .news-title {
+          grid-column: 2;
+          grid-row: 1 / span 2;
+          align-self: center;
+          font-size: 0.86rem;
+        }
+
+        .news-page .news-category {
+          grid-column: 1;
+          grid-row: 2;
+          justify-self: start;
+          min-width: 82px;
+          padding: 4px 5px;
+          font-size: 0.65rem;
+        }
+
+        .news-page .news-index {
+          padding-bottom: 44px;
+        }
+
+        .news-page .news-season {
+          height: 290px;
+        }
+
+        .news-page .footer-nav {
+          width: 100%;
+          gap: 28px;
+        }
+
+        .news-page .footer-left {
+          grid-template-columns: 58px minmax(0, 1fr);
+          gap: 16px;
+          max-width: none;
+          width: 100%;
+        }
+
+        .news-page .footer-mark {
+          width: 58px;
+        }
+
+        .news-page .footer-logo {
+          font-size: 1.08rem;
+        }
       }
     </style>
-      <meta name="keywords" content="丹波篠山,農業,体験,移住,田舎,暮らし,兵庫県,里山,古民家,Tamba Sasayama,Farm stay,Agriculture,Rural life,Kominka,Hyogo" />
+    <meta
+      name="keywords"
+      content="最新情報,イベント,丹波篠山旅,里山,農業体験,トラベル,ウイズささやま,お知らせ"
+    />
+    <link rel="canonical" href="https://withsasayama.jp/news.html" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="一般社団法人ウイズささやま" />
-    <meta property="og:image" content="https://withsasayama.jp/images/PC032939.jpg" />
+    <meta property="og:title" content="最新情報・イベント告知｜ウイズささやま" />
+    <meta
+      property="og:description"
+      content="丹波篠山の農業体験、里山トラベル、教育プログラムの最新情報をお届けします。"
+    />
+    <meta property="og:url" content="https://withsasayama.jp/news.html" />
+    <meta property="og:image" content="https://withsasayama.jp/images/news/news-rice-field-web.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
   </head>
-  <body>
-    <!-- HEADER -->
-                                        <header class="header">
+  <body class="news-page">
+    <header class="header scrolled">
       <div class="container nav-container">
-        <a href="index.html" class="logo"><img src="/images/logo.png?v=2" alt="丹波篠山ローカルトラベル"></a>
-        <button class="hamburger" aria-label="メニューを開く">
+        <a href="index.html" class="logo">
+          <img src="./images/logo.png?v=2" alt="丹波篠山ローカルトラベル">
+        </a>
+        <button class="hamburger" type="button" aria-label="メニューを開く">
           <span></span>
           <span></span>
           <span></span>
         </button>
-        <nav class="nav-links">
+        <nav class="nav-links" aria-label="メインナビゲーション">
           <a href="index.html">ホーム</a>
           <a href="stay.html">体験と滞在</a>
           <a href="education.html">教育プログラム</a>
           <a href="customize.html">カスタムと事例</a>
-          <a href="news.html">最新情報</a>
+          <a href="news.html" aria-current="page">最新情報</a>
           <a href="about.html">旅作り</a>
           <a href="contact.html">お問い合わせ</a>
         </nav>
       </div>
     </header>
 
-    <main>
-      <div class="page-header fade-in">
-        <h1>最新情報<br><span style="font-size:0.5em; font-family: var(--font-base); letter-spacing: 0.1em; font-weight: normal;">- news -</span></h1>
-      </div>
+    <main class="news-main">
+      <section class="news-index">
+        <div class="news-inner">
+          <div class="news-heading">
+            <span class="news-heading-mark" aria-hidden="true"></span>
+            <div class="news-heading-copy">
+              <h1>
+                <img
+                  class="news-title-image"
+                  src="./images/title-options/title-option-a-news.png"
+                  alt="最新情報"
+                >
+              </h1>
+              <span class="news-heading-en" aria-hidden="true">news</span>
+            </div>
+          </div>
 
-      <section class="section" style="padding-top: 80px;">
-        <div class="container fade-in">
-          
           <div class="news-layout">
-            <!-- Sidebar -->
-            <aside class="news-sidebar">
+            <aside class="news-sidebar" aria-label="記事の絞り込み">
               <div class="sidebar-box">
-                <h3 class="sidebar-title">カテゴリー</h3>
+                <h2 class="sidebar-title">カテゴリー</h2>
                 <ul class="sidebar-list" id="category-filter-list">
                   <li><a href="#" class="active" data-cat="すべて">すべて</a></li>
                 </ul>
               </div>
+
               <div class="sidebar-box">
-                <h3 class="sidebar-title">アーカイブ</h3>
+                <h2 class="sidebar-title">アーカイブ</h2>
                 <ul class="sidebar-list" id="archive-filter-list">
                   <li><a href="#" class="active" data-arc="すべて">すべて</a></li>
                 </ul>
               </div>
             </aside>
-            
-            <!-- Main Content -->
-            <div class="news-main">
-              <!-- News Grid -->
-              <div class="news-grid" id="news-grid-container">
-                <p style="grid-column: 1/-1; text-align: center; color: #666;">お知らせを読み込んでいます...</p>
+
+            <div>
+              <div class="news-list" id="news-grid-container" aria-live="polite">
+                <p class="news-empty">最新情報を読み込んでいます。</p>
               </div>
-              <!-- Pagination -->
-              <div id="news-pagination" style="margin-top: 3rem; display: flex; justify-content: center; gap: 0.5rem; align-items: center;"></div>
+              <div class="news-pagination" id="news-pagination" aria-label="ページ切り替え"></div>
             </div>
           </div>
-          
         </div>
+      </section>
+
+      <section class="news-season" aria-label="丹波篠山の実りの風景">
+        <img
+          src="./images/news/news-rice-field-web.jpg"
+          alt="丹波篠山で実りを迎える稲田"
+        >
       </section>
     </main>
 
-    <!-- FOOTER -->
-                                        <footer class="footer">
+    <footer class="footer">
       <div class="container">
         <div class="footer-top">
           <div class="footer-left">
-            <div class="footer-logo">一般社団法人ウイズささやま</div>
-            <div class="footer-info">
-              〒669-2321 兵庫県丹波篠山市黒岡191 丹波篠山市民センター内<br>
-              TEL: 079-552-7373 / FAX: 079-552-4680<br>
-              兵庫県知事登録旅行業 地域-797号<br>
-              営業時間：平日9:00-17:00（土日祝定休）
+            <img
+              class="footer-mark"
+              src="./images/logo-white.png"
+              alt="丹波篠山ローカルトラベル"
+            >
+            <div>
+              <div class="footer-logo">一般社団法人ウイズささやま</div>
+              <div class="footer-info">
+                〒669-2321 兵庫県丹波篠山市黒岡191<br>
+                丹波篠山市民センター内<br>
+                TEL: 079-552-7373
+              </div>
             </div>
           </div>
-          
+
           <div class="footer-nav">
             <div class="footer-nav-col">
               <a href="index.html">＞ホーム</a>
@@ -313,18 +522,22 @@
               <a href="contact.html">＞お問い合わせ</a>
             </div>
             <div class="footer-nav-col">
-              <a href="https://drive.google.com/file/d/1YQNORvYI_3ykokxJf36AKLx-hU9EOlUE/view?usp=sharing" target="_blank">＞会社案内・旅行業登録</a>
-              <a href="https://drive.google.com/file/d/1Z4aZs0c8mSOcT5otj1DunceqjGFVjj6R/view?usp=sharing" target="_blank">＞プライバシーポリシー</a>
+              <a href="company.html">＞会社案内・旅行業登録</a>
+              <a
+                href="https://drive.google.com/file/d/1ogeZLtQ7jQ91XwM-UyOWyyZhMOIsl6N9/view?usp=drive_link"
+                target="_blank"
+                rel="noopener"
+              >＞プライバシーポリシー</a>
             </div>
           </div>
         </div>
-        
+
         <div class="footer-bottom">
           <p>&copy; 2026 一般社団法人ウイズささやま All Rights Reserved.</p>
         </div>
       </div>
     </footer>
-    <script type="module" src="/main.js"></script>
-    <script type="module" src="/main-news.js?v=2"></script>
+    <script type="module" src="./main.js"></script>
+    <script type="module" src="./main-news.js"></script>
   </body>
 </html>

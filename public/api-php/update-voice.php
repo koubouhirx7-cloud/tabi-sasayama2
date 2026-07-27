@@ -2,7 +2,7 @@
 require_once __DIR__ . '/_common.php';
 require_basic_auth();
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $_SERVER['REQUEST_METHOD'] !== 'PATCH') {
     json_response(['message' => 'Method Not Allowed'], 405);
 }
 
@@ -18,7 +18,7 @@ $is_draft = !empty($body['isDraft']);
 if (!$id) json_response(['message' => 'IDが必要です'], 400);
 
 $payload = [];
-$fields = ['age', 'gender', 'stayProgram', 'fromOrigin', 'purpose', 'comment'];
+$fields = ['age', 'gender', 'stayProgram', 'fromOrigin', 'purpose', 'comment', 'isPublic'];
 foreach ($fields as $f) {
     if (isset($body[$f])) $payload[$f] = $body[$f];
 }

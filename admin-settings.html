@@ -13,7 +13,7 @@
       font-family: var(--font-base, sans-serif);
       color: var(--color-text, #333);
     }
-    
+
     .admin-header {
       background: var(--color-primary, #333);
       color: white;
@@ -23,7 +23,7 @@
       align-items: center;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-    
+
     .admin-header h1 {
       margin: 0;
       font-size: 1.2rem;
@@ -35,13 +35,13 @@
       text-decoration: none;
       font-size: 0.9rem;
     }
-    
+
     .settings-container {
       max-width: 800px;
       margin: 60px auto;
       padding: 0 20px;
     }
-    
+
     .settings-container h2 {
       font-family: var(--font-display, sans-serif);
       font-size: 1.8rem;
@@ -142,31 +142,20 @@
     <div id="alert-message" class="alert-success">設定を保存しました。</div>
 
     <h2>環境設定</h2>
-    
+
     <div class="settings-card">
       <h3>🤖 AI自動生成 (Gemini API) 設定</h3>
       <p style="font-size: 0.9rem; color: #555; margin-bottom: 20px;">
-        記事の自動生成機能を利用するためには、Google Gemini APIキーが必要です。<br>
-        このキーはあなたのお使いのブラウザ（ローカル環境）に安全に保存され、生成時のみサーバーへ送信されます。
+        記事の自動生成機能を利用するための Google Gemini APIキーは、セキュリティ強化のためサーバー側（<code>.env.php</code>）で安全に一元管理されています。
       </p>
-      
+
       <div class="settings-group">
         <label for="gemini-api-key">Gemini API Key</label>
-        <input type="password" id="gemini-api-key" placeholder="AIzaSy...">
+        <input type="password" id="gemini-api-key" value="••••••••••••••••••••" disabled>
         <div class="settings-help">
-          <strong>【APIキーの取得手順】</strong>
-          <ol style="margin-top: 5px; padding-left: 20px; color: #555;">
-            <li><a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--color-primary); font-weight:bold;">Google AI Studio</a> にアクセスし、Googleアカウントでログインします。</li>
-            <li>画面左側の「Get API key」または「Create API key」ボタンをクリックします。</li>
-            <li>「Create API key in new project」を選択すると、<code>AIzaSy...</code>から始まるキーが生成されます。</li>
-            <li>生成されたキーをコピーし、上の入力欄に貼り付けて保存してください。</li>
-          </ol>
-          ※空欄にして保存した場合は、サーバーに設定されているデフォルトのキー（Vercel環境変数など）が使用されます。
+          ※セキュリティ上、管理画面からAPIキーを直接入力・変更することはできません。<br>
+          変更が必要な場合は、サーバー上の <code>.env.php</code> ファイルの <code>GEMINI_API_KEY</code> を直接更新してください。
         </div>
-      </div>
-
-      <div style="text-align: right; margin-top: 25px;">
-        <button class="btn-save" id="btn-save-ai">APIキーを保存</button>
       </div>
     </div>
 
@@ -174,32 +163,10 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const apiKeyInput = document.getElementById('gemini-api-key');
-      const btnSave = document.getElementById('btn-save-ai');
-      const alertMsg = document.getElementById('alert-message');
-
-      // Load existing key
-      const existingKey = localStorage.getItem('geminiApiKey');
-      if (existingKey) {
-        apiKeyInput.value = existingKey;
+      // 古いAPIキーがブラウザのローカルストレージに残っている場合は、セキュリティのために自動削除します
+      if (localStorage.getItem('geminiApiKey')) {
+        localStorage.removeItem('geminiApiKey');
       }
-
-      // Save key
-      btnSave.addEventListener('click', () => {
-        const key = apiKeyInput.value.trim();
-        
-        if (key) {
-          localStorage.setItem('geminiApiKey', key);
-        } else {
-          localStorage.removeItem('geminiApiKey');
-        }
-
-        // Show alert
-        alertMsg.style.display = 'block';
-        setTimeout(() => {
-          alertMsg.style.display = 'none';
-        }, 3000);
-      });
     });
   </script>
 </body>

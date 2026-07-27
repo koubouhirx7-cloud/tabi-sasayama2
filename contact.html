@@ -3,248 +3,694 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>お問い合わせ | 一般社団法人ウイズささやま</title>
-    <meta name="description" content="丹波篠山での体験プログラム、里山・農業体験、企業向け研修、移住相談などに関するお問い合わせ・ご相談はこちらからどうぞ。" />
+    <title>お問い合わせ｜丹波篠山旅・農業体験・教育旅行の相談｜ウイズささやま</title>
+    <meta
+      name="description"
+      content="丹波篠山での里山・農業体験、学生向け体験学習・教育旅行、企業研修、カスタムトラベルのご相談はウイズささやまへ。"
+    />
     <link rel="stylesheet" href="./style.css" />
     <style>
-      .page-header {
-        background-color: #a99c79;
-        height: 300px;
+      .contact-page {
+        --contact-ink: #233938;
+        --contact-muted: #69726f;
+        --contact-line: #7e8683;
+        --contact-panel: #ece8e0;
+        --contact-footer: #203c3d;
+        background: #fff;
+        color: var(--contact-ink);
+      }
+
+      .contact-page .header {
+        background: rgba(255, 255, 255, 0.97);
+        border-bottom: 1px solid #ecefed;
+        box-shadow: none;
+      }
+
+      .contact-page .contact-main {
+        padding-top: 168px;
+      }
+
+      .contact-page .contact-inner {
+        width: min(100% - 40px, 1180px);
+        margin: 0 auto;
+      }
+
+      .contact-page .contact-heading {
         display: flex;
         align-items: center;
-        justify-content: center;
-        position: relative;
-        margin-top:  140px;
-      }
-      .page-header h1 {
-        position: relative;
-        z-index: 1;
-        color: white;
-        font-family: var(--font-display);
-        font-size: clamp(2rem, 5vw, 4rem);
-        text-align: center;
+        gap: 24px;
+        margin-bottom: 30px;
       }
 
-      .info-box {
-        background: white;
-        border-radius: var(--border-radius-md);
-        padding: var(--spacing-lg);
-        margin-bottom: var(--spacing-lg);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        border: 1px solid var(--color-border);
-      }
-      .info-box h2 {
-        color: var(--color-primary);
-        margin-bottom: var(--spacing-md);
-        font-family: var(--font-display);
-        text-align: center;
+      .contact-page .contact-heading-mark {
+        flex: 0 0 8px;
+        width: 8px;
+        height: 82px;
+        background: var(--contact-ink);
       }
 
-      .company-table {
+      .contact-page .contact-heading h1 {
+        line-height: 1;
+      }
+
+      .contact-page .contact-title-image {
+        width: min(410px, 62vw);
+        height: auto;
+      }
+
+      .contact-page .contact-lead {
+        max-width: 690px;
+        margin-bottom: 24px;
+        color: #596360;
+        font-size: 0.94rem;
+        line-height: 2;
+        letter-spacing: 0;
+      }
+
+      .contact-page .contact-form {
+        width: min(100%, 510px);
+        padding-bottom: 64px;
+      }
+
+      .contact-page .form-field {
+        margin-bottom: 16px;
+      }
+
+      .contact-page .form-label-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 5px;
+      }
+
+      .contact-page .form-label-row label,
+      .contact-page .optional-label,
+      .contact-page .participant-label {
+        color: #4f5956;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        letter-spacing: 0;
+      }
+
+      .contact-page .required {
+        flex: 0 0 auto;
+        color: #737b78;
+        font-size: 0.78rem;
+        letter-spacing: 0;
+      }
+
+      .contact-page input,
+      .contact-page textarea,
+      .contact-page select {
         width: 100%;
-        border-collapse: collapse;
-      }
-      .company-table th, .company-table td {
-        border-bottom: 1px solid var(--color-border);
-        padding: 1rem;
-        text-align: left;
-      }
-      .company-table th {
-        width: 30%;
-        background: rgba(90, 126, 90, 0.05);
-        color: var(--color-primary);
-        font-weight: bold;
-      }
-
-      .form-group {
-        margin-bottom: 1.5rem;
-      }
-      .form-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: bold;
-        color: var(--color-text);
-      }
-      .form-group input, 
-      .form-group textarea, 
-      .form-group select {
-        width: 100%;
-        padding: 0.8rem;
-        border: 1px solid var(--color-border);
-        border-radius: var(--border-radius-sm);
-        font-family: var(--font-base);
+        border: 1px solid var(--contact-line);
+        border-radius: 0;
+        background: #fff;
+        color: #273735;
+        font: inherit;
         font-size: 1rem;
-        transition: border-color 0.3s;
+        letter-spacing: 0;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
       }
-      .form-group input:focus, 
-      .form-group textarea:focus, 
-      .form-group select:focus {
+
+      .contact-page input,
+      .contact-page select {
+        min-height: 48px;
+        padding: 9px 12px;
+      }
+
+      .contact-page textarea {
+        min-height: 84px;
+        padding: 10px 12px;
+        line-height: 1.7;
+        resize: vertical;
+      }
+
+      .contact-page input:focus,
+      .contact-page textarea:focus,
+      .contact-page select:focus {
         outline: none;
-        border-color: var(--color-primary);
-        box-shadow: 0 0 5px rgba(90, 126, 90, 0.2);
+        border-color: var(--contact-ink);
+        box-shadow: 0 0 0 2px rgba(35, 57, 56, 0.13);
       }
-      
-      .required {
-        color: var(--color-accent);
+
+      .contact-page .optional-panel {
+        margin-top: 32px;
+        padding: 12px 26px 26px;
+        background: var(--contact-panel);
+      }
+
+      .contact-page .optional-title {
+        margin: 0 0 20px;
+        text-align: center;
+        color: #59615f;
+        font-family: var(--font-base);
+        font-size: 0.94rem;
+        font-weight: 400;
+        letter-spacing: 0;
+      }
+
+      .contact-page .optional-field {
+        margin-bottom: 20px;
+      }
+
+      .contact-page .optional-field:last-child {
+        margin-bottom: 0;
+      }
+
+      .contact-page .optional-label {
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      .contact-page .date-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        border: 1px solid var(--contact-line);
+        background: #fff;
+      }
+
+      .contact-page .date-row,
+      .contact-page .participant-row {
+        display: grid;
+        grid-template-columns: 150px minmax(0, 1fr);
+        align-items: center;
+      }
+
+      .contact-page .date-row + .date-row,
+      .contact-page .participant-row + .participant-row {
+        border-top: 1px solid #a7aeab;
+      }
+
+      .contact-page .date-row label,
+      .contact-page .participant-row label {
+        padding: 7px 10px;
+        color: #535d5a;
+        font-size: 0.87rem;
+        letter-spacing: 0;
+      }
+
+      .contact-page .date-row input,
+      .contact-page .participant-row input {
+        min-height: 38px;
+        border: 0;
+        border-left: 1px solid #a7aeab;
+        padding: 6px 9px;
+      }
+
+      .contact-page .date-row input:focus,
+      .contact-page .participant-row input:focus {
+        box-shadow: inset 0 0 0 2px rgba(35, 57, 56, 0.13);
+      }
+
+      .contact-page .participant-grid {
+        border: 1px solid var(--contact-line);
+        background: #fff;
+      }
+
+      .contact-page .optional-panel textarea {
+        min-height: 150px;
+      }
+
+      .contact-page .robot-check {
+        margin: 22px 0;
+      }
+
+      .contact-page .robot-check label {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: #59615f;
+        font-size: 0.85rem;
+        cursor: pointer;
+        letter-spacing: 0;
+      }
+
+      .contact-page .robot-check input {
+        width: 18px;
+        min-height: 18px;
+        height: 18px;
+        margin: 0;
+        accent-color: var(--contact-ink);
+      }
+
+      .contact-page .form-actions {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .contact-page .contact-button {
+        min-width: 210px;
+        min-height: 42px;
+        border: 1px solid #111;
+        border-radius: 0;
+        background: #111;
+        color: #fff;
+        font-family: var(--font-base);
+        font-size: 0.9rem;
+        letter-spacing: 0.08em;
+        cursor: pointer;
+        transition: background 0.2s ease, color 0.2s ease;
+      }
+
+      .contact-page .contact-button:hover {
+        background: #304745;
+        border-color: #304745;
+      }
+
+      .contact-page .contact-button.is-secondary {
+        background: #fff;
+        color: #263936;
+        border-color: #687370;
+      }
+
+      .contact-page .contact-button.is-secondary:hover {
+        background: #f1f2f0;
+      }
+
+      .contact-page .confirm-step[hidden] {
+        display: none;
+      }
+
+      .contact-page .confirm-title {
+        margin-bottom: 8px;
+        font-size: 1.25rem;
+        letter-spacing: 0;
+      }
+
+      .contact-page .confirm-lead {
+        margin-bottom: 22px;
+        color: var(--contact-muted);
+        font-size: 0.9rem;
+        letter-spacing: 0;
+      }
+
+      .contact-page .confirm-list {
+        border-top: 1px solid var(--contact-line);
+      }
+
+      .contact-page .confirm-row {
+        display: grid;
+        grid-template-columns: 150px minmax(0, 1fr);
+        border-bottom: 1px solid #b2b8b5;
+      }
+
+      .contact-page .confirm-row dt,
+      .contact-page .confirm-row dd {
+        margin: 0;
+        padding: 10px 8px;
+        font-size: 0.9rem;
+        line-height: 1.7;
+        letter-spacing: 0;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+
+      .contact-page .confirm-row dt {
+        color: #59615f;
+        background: #eef0ed;
+      }
+
+      .contact-page .footer {
+        border-top: 0;
+        background: var(--contact-footer);
+        color: rgba(255, 255, 255, 0.86);
+        padding: 46px 0 24px;
+      }
+
+      .contact-page .footer-top {
+        align-items: flex-start;
+        margin-bottom: 38px;
+      }
+
+      .contact-page .footer-left {
+        display: grid;
+        grid-template-columns: 92px minmax(0, 1fr);
+        gap: 24px;
+        align-items: start;
+        max-width: 560px;
+      }
+
+      .contact-page .footer-mark {
+        width: 92px;
+        height: auto;
+      }
+
+      .contact-page .footer-logo {
+        margin-bottom: 6px;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.5rem;
+        letter-spacing: 0.08em;
+      }
+
+      .contact-page .footer-info,
+      .contact-page .footer-nav-col a,
+      .contact-page .footer-bottom {
+        color: rgba(255, 255, 255, 0.78);
+      }
+
+      .contact-page .footer-info {
         font-size: 0.8rem;
-        margin-left: 0.5rem;
+        line-height: 1.9;
+      }
+
+      .contact-page .footer-nav {
+        gap: 54px;
+      }
+
+      .contact-page .footer-nav-col {
+        gap: 7px;
+      }
+
+      .contact-page .footer-nav-col a {
+        font-size: 0.82rem;
+      }
+
+      .contact-page .footer-bottom {
+        border-top-color: rgba(255, 255, 255, 0.2);
+        padding-top: 18px;
+      }
+
+      @media (max-width: 860px) {
+        .contact-page .contact-main {
+          padding-top: 136px;
+        }
+
+        .contact-page .contact-heading-mark {
+          height: 64px;
+        }
+
+        .contact-page .footer-left {
+          grid-template-columns: 76px minmax(0, 1fr);
+          max-width: none;
+          width: 100%;
+        }
+
+        .contact-page .footer-mark {
+          width: 76px;
+        }
+      }
+
+      @media (max-width: 620px) {
+        .contact-page .contact-inner {
+          width: min(100% - 28px, 1180px);
+        }
+
+        .contact-page .contact-heading {
+          gap: 15px;
+          margin-bottom: 24px;
+        }
+
+        .contact-page .contact-heading-mark {
+          flex-basis: 6px;
+          width: 6px;
+          height: 52px;
+        }
+
+        .contact-page .contact-title-image {
+          width: min(330px, calc(100vw - 70px));
+        }
+
+        .contact-page .contact-lead {
+          margin-bottom: 20px;
+          font-size: 0.88rem;
+        }
+
+        .contact-page .optional-panel {
+          padding: 12px 16px 20px;
+        }
+
+        .contact-page .date-row,
+        .contact-page .participant-row {
+          grid-template-columns: 132px minmax(0, 1fr);
+        }
+
+        .contact-page .confirm-row {
+          grid-template-columns: 1fr;
+        }
+
+        .contact-page .confirm-row dt {
+          padding-bottom: 5px;
+        }
+
+        .contact-page .form-actions {
+          flex-direction: column-reverse;
+        }
+
+        .contact-page .contact-button {
+          width: 100%;
+        }
+
+        .contact-page .footer {
+          padding-top: 40px;
+        }
+
+        .contact-page .footer-left {
+          grid-template-columns: 58px minmax(0, 1fr);
+          gap: 16px;
+        }
+
+        .contact-page .footer-mark {
+          width: 58px;
+        }
+
+        .contact-page .footer-logo {
+          font-size: 1.08rem;
+        }
+
+        .contact-page .footer-nav {
+          width: 100%;
+          gap: 28px;
+        }
       }
     </style>
-      <meta name="keywords" content="丹波篠山,農業,体験,移住,田舎,暮らし,兵庫県,里山,古民家,Tamba Sasayama,Farm stay,Agriculture,Rural life,Kominka,Hyogo" />
+    <meta
+      name="keywords"
+      content="お問い合わせ,相談,丹波篠山旅,農業体験,体験学習,教育旅行,里山,withささやま"
+    />
+    <link rel="canonical" href="https://withsasayama.jp/contact.html" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="一般社団法人ウイズささやま" />
+    <meta property="og:title" content="お問い合わせ｜ウイズささやま" />
+    <meta
+      property="og:description"
+      content="丹波篠山での体験、教育旅行、カスタムトラベルについてご相談ください。"
+    />
+    <meta property="og:url" content="https://withsasayama.jp/contact.html" />
     <meta property="og:image" content="https://withsasayama.jp/images/PC032939.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
   </head>
-  <body>
-    <!-- HEADER -->
-                                        <header class="header">
+  <body class="contact-page">
+    <header class="header scrolled">
       <div class="container nav-container">
-        <a href="index.html" class="logo"><img src="/images/logo.png?v=2" alt="丹波篠山ローカルトラベル"></a>
-        <button class="hamburger" aria-label="メニューを開く">
+        <a href="index.html" class="logo">
+          <img src="./images/logo.png?v=2" alt="丹波篠山ローカルトラベル">
+        </a>
+        <button class="hamburger" type="button" aria-label="メニューを開く">
           <span></span>
           <span></span>
           <span></span>
         </button>
-        <nav class="nav-links">
+        <nav class="nav-links" aria-label="メインナビゲーション">
           <a href="index.html">ホーム</a>
           <a href="stay.html">体験と滞在</a>
           <a href="education.html">教育プログラム</a>
           <a href="customize.html">カスタムと事例</a>
           <a href="news.html">最新情報</a>
           <a href="about.html">旅作り</a>
-          <a href="contact.html">お問い合わせ</a>
+          <a href="contact.html" aria-current="page">お問い合わせ</a>
         </nav>
       </div>
     </header>
 
-    <main>
-      <div class="page-header fade-in">
-        <h1>お問い合わせ<br><span style="font-size:0.5em; font-family: var(--font-base); letter-spacing: 0.1em; font-weight: normal;">- contact -</span></h1>
-      </div>
+    <main class="contact-main">
+      <div class="contact-inner">
+        <div class="contact-heading">
+          <span class="contact-heading-mark" aria-hidden="true"></span>
+          <h1>
+            <img
+              class="contact-title-image"
+              src="./images/title-options/title-option-a-contact.png"
+              alt="お問い合わせ"
+            >
+          </h1>
+        </div>
 
-      <section class="section pt-0">
-        <div class="container" style="max-width: 800px;">
-          
+        <p class="contact-lead">
+          ご質問、ご相談、カスタムメイドのご依頼など、お気軽にお問い合わせください。
+        </p>
 
-
-          <div class="info-box fade-in" style="margin-top: 80px; position: relative; z-index: 10;">
-            <h2>お問い合わせ・カスタマイズ相談</h2>
-            <p class="text-center mb-md" style="color: #666;">
-              一般的なご質問やご相談、ならびにご希望の体験内容に応じたオーダーメイドプログラムのご提案を承ります。<br>
-              <span style="color: var(--color-accent); font-weight: bold; display: inline-block; margin-top: 8px; text-decoration: underline; text-underline-offset: 3px;">※一般的なお問い合わせのみの場合は、以下の「カスタマイズ相談詳細」は空欄のままでお進みください。</span>
-            </p>
-            
-            <form action="send_contact.php" method="POST" class="contact-form">
-              <div class="form-group">
-                <label for="name">お名前 <span class="required">必須</span></label>
-                <input type="text" id="name" name="name" required placeholder="例：山田 太郎">
+        <form action="./send_contact.php" method="POST" class="contact-form" id="contact-form">
+          <div class="form-input-step" id="contact-input-step">
+            <div class="form-field">
+              <div class="form-label-row">
+                <label for="name">お名前</label>
+                <span class="required">必須</span>
               </div>
-              
-              <div class="form-group">
-                <label for="kana">ふりがな <span class="required">必須</span></label>
-                <input type="text" id="kana" name="kana" required placeholder="例：やまだ たろう">
+              <input type="text" id="name" name="name" autocomplete="name" required>
+            </div>
+
+            <div class="form-field">
+              <div class="form-label-row">
+                <label for="kana">ふりがな</label>
+                <span class="required">必須</span>
               </div>
+              <input type="text" id="kana" name="kana" required>
+            </div>
 
-              <div class="form-group">
-                <label for="tel">TEL <span class="required">必須</span></label>
-                <input type="tel" id="tel" name="tel" required placeholder="例：090-1234-5678">
+            <div class="form-field">
+              <div class="form-label-row">
+                <label for="tel">電話番号</label>
+                <span class="required">必須</span>
               </div>
+              <input type="tel" id="tel" name="tel" autocomplete="tel" inputmode="tel" required>
+            </div>
 
-              <div class="form-group">
-                <label for="email">メールアドレス <span class="required">必須</span></label>
-                <input type="email" id="email" name="email" required placeholder="例：info@example.com">
+            <div class="form-field">
+              <div class="form-label-row">
+                <label for="email">メールアドレス</label>
+                <span class="required">必須</span>
               </div>
+              <input type="email" id="email" name="email" autocomplete="email" required>
+            </div>
 
-              <hr style="border: none; border-top: 1px dashed var(--color-border); margin: 2rem 0;">
-              
-              <h3 style="color: var(--color-primary); margin-bottom: 1rem; font-family: var(--font-display);">カスタマイズ相談詳細</h3>
+            <div class="form-field">
+              <div class="form-label-row">
+                <label for="message">お問い合わせ内容</label>
+                <span class="required">必須</span>
+              </div>
+              <textarea id="message" name="message" required></textarea>
+            </div>
 
-              <div class="form-group">
-                <label for="purpose">ご希望の体験内容（複数可）</label>
-                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                  <label style="font-weight: normal;"><input type="checkbox" name="purpose" value="農業"> 農業体験</label>
-                  <label style="font-weight: normal;"><input type="checkbox" name="purpose" value="ものづくり"> ものづくり（陶芸等）</label>
-                  <label style="font-weight: normal;"><input type="checkbox" name="purpose" value="古民家"> 古民家滞在</label>
-                  <label style="font-weight: normal;"><input type="checkbox" name="purpose" value="教育旅行"> 学校・教育</label>
-                  <label style="font-weight: normal;"><input type="checkbox" name="purpose" value="インバウンド"> 外国人向け</label>
+            <section class="optional-panel" aria-labelledby="optional-title">
+              <h2 class="optional-title" id="optional-title">追加項目（自由入力）</h2>
+
+              <div class="optional-field">
+                <span class="optional-label">ご希望日（年月日）</span>
+                <div class="date-grid">
+                  <div class="date-row">
+                    <label for="date-first">第一候補日</label>
+                    <input type="date" id="date-first" name="date_first">
+                  </div>
+                  <div class="date-row">
+                    <label for="date-second">第二候補日</label>
+                    <input type="date" id="date-second" name="date_second">
+                  </div>
                 </div>
               </div>
 
-              <div class="form-group">
-                <label for="date">希望日程 / 時期</label>
-                <input type="text" id="date" name="date" placeholder="例：2026年10月の土日、または 具体的な日付">
-              </div>
-
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                <div class="form-group">
-                  <label for="people">想定人数</label>
-                  <input type="text" id="people" name="people" placeholder="例：大人2名、子供2名">
-                </div>
-                
-                <div class="form-group">
-                  <label for="budget">ご予算（お一人様あたり）</label>
-                  <select id="budget" name="budget">
-                    <option value="">選択してください</option>
-                    <option value="15000">15,000円〜</option>
-                    <option value="25000">25,000円〜</option>
-                    <option value="40000">40,000円〜</option>
-                    <option value="未定">相談して決めたい</option>
-                  </select>
+              <div class="optional-field">
+                <span class="optional-label">ご人数</span>
+                <div class="participant-grid">
+                  <div class="participant-row">
+                    <label for="adult-count">大人（12歳以上）</label>
+                    <input type="number" id="adult-count" name="adult_count" min="0" inputmode="numeric">
+                  </div>
+                  <div class="participant-row">
+                    <label for="child-count">小人（6〜12歳）</label>
+                    <input type="number" id="child-count" name="child_count" min="0" inputmode="numeric">
+                  </div>
+                  <div class="participant-row">
+                    <label for="infant-count">乳幼児（0〜6歳）</label>
+                    <input type="number" id="infant-count" name="infant_count" min="0" inputmode="numeric">
+                  </div>
                 </div>
               </div>
 
-              <div class="form-group">
-                <label for="message">自由記入欄・その他ご要望</label>
-                <textarea id="message" name="message" rows="5" placeholder="一般的なお問い合わせ内容、またはアレルギーの有無やとくに体験したいことなどをご自由にご記入ください。"></textarea>
+              <div class="optional-field">
+                <label class="optional-label" for="budget">ご予算</label>
+                <input type="text" id="budget" name="budget" inputmode="numeric">
               </div>
 
-              <div class="text-center mt-md">
-                <button type="submit" class="btn btn-primary" style="padding: 1rem 4rem; font-size: 1.2rem;">送信する</button>
+              <div class="optional-field">
+                <label class="optional-label" for="experience">ご希望の体験内容（カテゴリーなど）</label>
+                <textarea id="experience" name="experience"></textarea>
               </div>
-            </form>
+            </section>
+
+            <div class="robot-check">
+              <label>
+                <input type="checkbox" name="not_a_robot" value="yes" required>
+                私はロボットではありません
+              </label>
+            </div>
+
+            <input
+              type="text"
+              name="website_url"
+              tabindex="-1"
+              autocomplete="off"
+              aria-hidden="true"
+              style="position:absolute; left:-9999px;"
+            >
+
+            <div class="form-actions">
+              <button class="contact-button" type="button" id="contact-confirm-button">内容確認</button>
+            </div>
           </div>
 
-        </div>
-      </section>
+          <section class="confirm-step" id="contact-confirm-step" aria-live="polite" hidden>
+            <h2 class="confirm-title">お問い合わせ内容の確認</h2>
+            <p class="confirm-lead">以下の内容で送信します。入力内容をご確認ください。</p>
+            <dl class="confirm-list" id="contact-confirm-list"></dl>
+            <div class="form-actions">
+              <button class="contact-button is-secondary" type="button" id="contact-edit-button">入力内容を修正</button>
+              <button class="contact-button" type="submit">送信する</button>
+            </div>
+          </section>
+        </form>
+      </div>
     </main>
 
-    <!-- FOOTER -->
-                                        <footer class="footer">
+    <footer class="footer">
       <div class="container">
         <div class="footer-top">
           <div class="footer-left">
-            <div class="footer-logo">一般社団法人ウイズささやま</div>
-            <div class="footer-info">
-              〒669-2321 兵庫県丹波篠山市黒岡191 丹波篠山市民センター内<br>
-              TEL: 079-552-7373 / FAX: 079-552-4680<br>
-              兵庫県知事登録旅行業 地域-797号<br>
-              営業時間：平日9:00-17:00（土日祝定休）
+            <img
+              class="footer-mark"
+              src="./images/logo-white.png"
+              alt="丹波篠山ローカルトラベル"
+            >
+            <div>
+              <div class="footer-logo">一般社団法人ウイズささやま</div>
+              <div class="footer-info">
+                〒669-2321 兵庫県丹波篠山市黒岡191<br>
+                丹波篠山市民センター内<br>
+                TEL: 079-552-7373
+              </div>
             </div>
           </div>
-          
+
           <div class="footer-nav">
             <div class="footer-nav-col">
               <a href="index.html">＞ホーム</a>
               <a href="stay.html">＞体験と滞在</a>
               <a href="education.html">＞教育プログラム</a>
-              <a href="customize.html">＞カスタムと事例</a>
+              <a href="customize.html">＞事例紹介</a>
               <a href="news.html">＞最新情報</a>
-              <a href="about.html">＞旅作り</a>
-              <a href="contact.html">＞お問い合わせ</a>
+              <a href="contact.html" aria-current="page">＞お問い合わせ</a>
             </div>
             <div class="footer-nav-col">
-              <a href="https://drive.google.com/file/d/1YQNORvYI_3ykokxJf36AKLx-hU9EOlUE/view?usp=sharing" target="_blank">＞会社案内・旅行業登録</a>
-              <a href="https://drive.google.com/file/d/1Z4aZs0c8mSOcT5otj1DunceqjGFVjj6R/view?usp=sharing" target="_blank">＞プライバシーポリシー</a>
+              <a href="about.html">＞旅づくり</a>
+              <a href="company.html">＞会社案内・旅行業登録</a>
+              <a
+                href="https://drive.google.com/file/d/1ogeZLtQ7jQ91XwM-UyOWyyZhMOIsl6N9/view?usp=drive_link"
+                target="_blank"
+                rel="noopener"
+              >＞プライバシーポリシー</a>
             </div>
           </div>
         </div>
-        
+
         <div class="footer-bottom">
           <p>&copy; 2026 一般社団法人ウイズささやま All Rights Reserved.</p>
         </div>
       </div>
     </footer>
-    <script type="module" src="/main.js"></script>
+    <script type="module" src="./main.js"></script>
+    <script type="module" src="./contact.js"></script>
   </body>
 </html>

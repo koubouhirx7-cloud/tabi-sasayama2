@@ -3,110 +3,325 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>会社案内 | 一般社団法人ウイズささやま</title>
-    <meta name="description" content="兵庫県丹波篠山市を拠点に、田舎暮らし、農業体験、移住支援など地域活性化に取り組む「一般社団法人ウイズささやま」の会社概要です。" />
+    <title>会社案内・旅行業登録｜一般社団法人ウイズささやま</title>
+    <meta
+      name="description"
+      content="一般社団法人ウイズささやまの会社概要、所在地、連絡先、旅行業登録情報、旅行業約款をご案内します。"
+    />
     <link rel="stylesheet" href="./style.css" />
     <style>
-      .page-header {
-        background-color: #a99c79;
-        height: 300px;
+      .company-page {
+        --company-ink: #1d3433;
+        --company-muted: #64706d;
+        --company-line: #6f7b78;
+        --company-label: #d4dcda;
+        --company-footer: #203c3d;
+        background: #fff;
+        color: var(--company-ink);
+      }
+
+      .company-page .header {
+        background: rgba(255, 255, 255, 0.97);
+        border-bottom: 1px solid #ecefed;
+        box-shadow: none;
+      }
+
+      .company-page .company-main {
+        padding-top: 176px;
+      }
+
+      .company-page .company-inner {
+        width: min(100% - 40px, 940px);
+        margin: 0 auto;
+      }
+
+      .company-page .company-heading {
         display: flex;
         align-items: center;
-        justify-content: center;
-        position: relative;
-        margin-top:  140px;
-      }
-      .page-header h1 {
-        position: relative;
-        z-index: 1;
-        color: white;
-        font-family: var(--font-display);
-        font-size: clamp(2rem, 5vw, 4rem);
-        text-align: center;
+        gap: 26px;
+        margin-bottom: 58px;
       }
 
-      .info-box {
-        background: white;
-        border-radius: var(--border-radius-md);
-        padding: var(--spacing-lg);
-        margin-bottom: var(--spacing-lg);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        border: 1px solid var(--color-border);
-      }
-      .info-box h2 {
-        color: var(--color-primary);
-        margin-bottom: var(--spacing-md);
-        font-family: var(--font-display);
-        text-align: center;
+      .company-page .company-heading-mark {
+        flex: 0 0 8px;
+        width: 8px;
+        height: 76px;
+        background: var(--company-ink);
       }
 
-      .company-table {
+      .company-page .company-title-image {
+        width: min(390px, 64vw);
+        height: auto;
+      }
+
+      .company-page .company-section {
+        margin-bottom: 34px;
+      }
+
+      .company-page .company-section-title {
+        margin-bottom: 14px;
+        font-size: 1rem;
+        font-weight: 500;
+        letter-spacing: 0;
+        color: var(--company-muted);
+      }
+
+      .company-page .company-table {
         width: 100%;
         border-collapse: collapse;
-      }
-      .company-table th, .company-table td {
-        border-bottom: 1px solid var(--color-border);
-        padding: 1rem;
-        text-align: left;
-      }
-      .company-table th {
-        width: 30%;
-        background: rgba(90, 126, 90, 0.05);
-        color: var(--color-primary);
-        font-weight: bold;
+        table-layout: fixed;
+        border: 1px solid var(--company-line);
+        font-size: 1rem;
+        line-height: 1.65;
+        letter-spacing: 0;
       }
 
-      .form-group {
-        margin-bottom: 1.5rem;
+      .company-page .company-table th,
+      .company-page .company-table td {
+        border: 1px solid var(--company-line);
+        padding: 8px 12px;
+        text-align: left;
+        vertical-align: top;
       }
-      .form-group label {
+
+      .company-page .company-table th {
+        width: 220px;
+        background: var(--company-label);
+        color: #384846;
+        font-weight: 400;
+      }
+
+      .company-page .company-table td {
+        background: #fff;
+        color: #33413f;
+      }
+
+      .company-page .company-link {
+        color: #3295ad;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      .company-page .company-link:hover {
+        opacity: 0.72;
+      }
+
+      .company-page .company-document-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .company-page .company-document-list li {
+        margin: 0;
+      }
+
+      .company-page .company-note {
         display: block;
-        margin-bottom: 0.5rem;
-        font-weight: bold;
-        color: var(--color-text);
+        margin-top: 4px;
+        color: #687572;
+        font-size: 0.9rem;
       }
-      .form-group input, 
-      .form-group textarea, 
-      .form-group select {
-        width: 100%;
-        padding: 0.8rem;
-        border: 1px solid var(--color-border);
-        border-radius: var(--border-radius-sm);
-        font-family: var(--font-base);
-        font-size: 1rem;
-        transition: border-color 0.3s;
+
+      .company-page .company-content {
+        padding-bottom: 74px;
       }
-      .form-group input:focus, 
-      .form-group textarea:focus, 
-      .form-group select:focus {
-        outline: none;
-        border-color: var(--color-primary);
-        box-shadow: 0 0 5px rgba(90, 126, 90, 0.2);
+
+      .company-page .footer {
+        border-top: 0;
+        background: var(--company-footer);
+        color: rgba(255, 255, 255, 0.86);
+        padding: 46px 0 24px;
       }
-      
-      .required {
-        color: var(--color-accent);
+
+      .company-page .footer-top {
+        align-items: flex-start;
+        margin-bottom: 38px;
+      }
+
+      .company-page .footer-left {
+        display: grid;
+        grid-template-columns: 92px minmax(0, 1fr);
+        gap: 24px;
+        align-items: start;
+        max-width: 560px;
+      }
+
+      .company-page .footer-mark {
+        width: 92px;
+        height: auto;
+      }
+
+      .company-page .footer-logo {
+        margin-bottom: 6px;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.5rem;
+        letter-spacing: 0.08em;
+      }
+
+      .company-page .footer-info,
+      .company-page .footer-nav-col a,
+      .company-page .footer-bottom {
+        color: rgba(255, 255, 255, 0.78);
+      }
+
+      .company-page .footer-info {
         font-size: 0.8rem;
-        margin-left: 0.5rem;
+        line-height: 1.9;
+      }
+
+      .company-page .footer-nav {
+        gap: 54px;
+      }
+
+      .company-page .footer-nav-col {
+        gap: 7px;
+      }
+
+      .company-page .footer-nav-col a {
+        font-size: 0.82rem;
+      }
+
+      .company-page .footer-bottom {
+        border-top-color: rgba(255, 255, 255, 0.2);
+        padding-top: 18px;
+      }
+
+      @media (max-width: 860px) {
+        .company-page .company-main {
+          padding-top: 136px;
+        }
+
+        .company-page .company-heading {
+          margin-bottom: 42px;
+        }
+
+        .company-page .company-heading-mark {
+          height: 60px;
+        }
+
+        .company-page .company-table th {
+          width: 170px;
+        }
+
+        .company-page .footer-left {
+          grid-template-columns: 76px minmax(0, 1fr);
+          max-width: none;
+          width: 100%;
+        }
+
+        .company-page .footer-mark {
+          width: 76px;
+        }
+      }
+
+      @media (max-width: 620px) {
+        .company-page .company-inner {
+          width: min(100% - 28px, 940px);
+        }
+
+        .company-page .company-heading {
+          gap: 16px;
+          margin-bottom: 34px;
+        }
+
+        .company-page .company-heading-mark {
+          flex-basis: 6px;
+          width: 6px;
+          height: 50px;
+        }
+
+        .company-page .company-title-image {
+          width: min(300px, calc(100vw - 76px));
+        }
+
+        .company-page .company-section {
+          margin-bottom: 28px;
+        }
+
+        .company-page .company-table,
+        .company-page .company-table tbody,
+        .company-page .company-table tr,
+        .company-page .company-table th,
+        .company-page .company-table td {
+          display: block;
+          width: 100%;
+        }
+
+        .company-page .company-table {
+          border-bottom: 0;
+          font-size: 0.93rem;
+        }
+
+        .company-page .company-table tr {
+          border-bottom: 1px solid var(--company-line);
+        }
+
+        .company-page .company-table th,
+        .company-page .company-table td {
+          border: 0;
+          padding: 8px 10px;
+        }
+
+        .company-page .company-table th {
+          border-bottom: 1px solid #a6b1ae;
+        }
+
+        .company-page .company-content {
+          padding-bottom: 48px;
+        }
+
+        .company-page .footer {
+          padding-top: 40px;
+        }
+
+        .company-page .footer-left {
+          grid-template-columns: 58px minmax(0, 1fr);
+          gap: 16px;
+        }
+
+        .company-page .footer-mark {
+          width: 58px;
+        }
+
+        .company-page .footer-logo {
+          font-size: 1.08rem;
+        }
+
+        .company-page .footer-nav {
+          width: 100%;
+          gap: 28px;
+        }
       }
     </style>
-      <meta name="keywords" content="丹波篠山,農業,体験,移住,田舎,暮らし,兵庫県,里山,古民家,Tamba Sasayama,Farm stay,Agriculture,Rural life,Kominka,Hyogo" />
+    <meta
+      name="keywords"
+      content="一般社団法人ウイズささやま,会社案内,旅行業登録,丹波篠山,兵庫県知事登録旅行業"
+    />
+    <link rel="canonical" href="https://withsasayama.jp/company.html" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="一般社団法人ウイズささやま" />
+    <meta property="og:title" content="会社案内・旅行業登録｜一般社団法人ウイズささやま" />
+    <meta
+      property="og:description"
+      content="一般社団法人ウイズささやまの会社概要と旅行業登録情報をご案内します。"
+    />
+    <meta property="og:url" content="https://withsasayama.jp/company.html" />
     <meta property="og:image" content="https://withsasayama.jp/images/PC032939.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
   </head>
-  <body>
-    <!-- HEADER -->
-                                        <header class="header">
+  <body class="company-page">
+    <header class="header scrolled">
       <div class="container nav-container">
-        <a href="index.html" class="logo"><img src="/images/logo.png?v=2" alt="丹波篠山ローカルトラベル"></a>
-        <button class="hamburger" aria-label="メニューを開く">
+        <a href="index.html" class="logo">
+          <img src="./images/logo.png?v=2" alt="丹波篠山ローカルトラベル">
+        </a>
+        <button class="hamburger" type="button" aria-label="メニューを開く">
           <span></span>
           <span></span>
           <span></span>
         </button>
-        <nav class="nav-links">
+        <nav class="nav-links" aria-label="メインナビゲーション">
           <a href="index.html">ホーム</a>
           <a href="stay.html">体験と滞在</a>
           <a href="education.html">教育プログラム</a>
@@ -118,132 +333,162 @@
       </div>
     </header>
 
-    <main>
-      <div class="page-header fade-in">
-        <h1>Company<br><span style="font-size:0.5em">会社案内</span></h1>
-      </div>
+    <main class="company-main">
+      <div class="company-inner company-content">
+        <div class="company-heading">
+          <span class="company-heading-mark" aria-hidden="true"></span>
+          <h1>
+            <img
+              class="company-title-image"
+              src="./images/title-options/title-option-a-company.png"
+              alt="会社案内"
+            >
+          </h1>
+        </div>
 
-      <section class="section pt-0">
-        <div class="container" style="max-width: 800px;">
-          
-          <div class="info-box fade-in" style="margin-top: 80px; position: relative; z-index: 10;">
-            <h2>会社案内・旅行業登録</h2>
-            
-            <h3 style="color: var(--color-primary); margin-top: 2rem; margin-bottom: 1rem; font-family: var(--font-display); font-size: 1.3rem; border-bottom: 1px solid var(--color-border); padding-bottom: 0.5rem;">会社案内</h3>
-            <table class="company-table">
+        <section class="company-section" aria-labelledby="company-profile-title">
+          <h2 class="company-section-title" id="company-profile-title">会社概要</h2>
+          <table class="company-table">
+            <tbody>
               <tr>
-                <th>名称</th>
+                <th scope="row">名称</th>
                 <td>一般社団法人ウイズささやま</td>
               </tr>
               <tr>
-                <th>所在地</th>
-                <td>兵庫県丹波篠山市黒岡191<br>丹波篠山市民センター内</td>
+                <th scope="row">所在地</th>
+                <td>
+                  〒669-2321 兵庫県丹波篠山市黒岡191<br>
+                  丹波篠山市民センター内
+                </td>
               </tr>
               <tr>
-                <th>電話番号</th>
-                <td>079-552-7373</td>
+                <th scope="row">電話番号</th>
+                <td><a href="tel:0795527373">079-552-7373</a></td>
               </tr>
               <tr>
-                <th>営業日</th>
-                <td>月〜金曜日（9:00〜17:00）</td>
+                <th scope="row">FAX番号</th>
+                <td>079-552-4680</td>
               </tr>
-            </table>
+              <tr>
+                <th scope="row">営業日</th>
+                <td>月〜金（年末年始を除く）</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
 
-            <h3 style="color: var(--color-primary); margin-top: 3rem; margin-bottom: 1rem; font-family: var(--font-display); font-size: 1.3rem; border-bottom: 1px solid var(--color-border); padding-bottom: 0.5rem;">旅行業登録</h3>
-            <table class="company-table">
+        <section class="company-section" aria-labelledby="travel-registration-title">
+          <h2 class="company-section-title" id="travel-registration-title">旅行業登録</h2>
+          <table class="company-table">
+            <tbody>
               <tr>
-                <th>業務範囲</th>
+                <th scope="row">業務範囲</th>
                 <td>国内旅行</td>
               </tr>
               <tr>
-                <th>旅行業登録</th>
-                <td>兵庫県知事登録旅行業地域797号</td>
+                <th scope="row">登録番号</th>
+                <td>兵庫県知事登録旅行業 地域-797号</td>
               </tr>
               <tr>
-                <th>登録年月日</th>
-                <td>2020年9月2日</td>
+                <th scope="row">登録年月日</th>
+                <td>2020年（令和2年）9月2日</td>
               </tr>
               <tr>
-                <th>登録の有効期間</th>
-                <td>2025年9月2日から2030年9月1日まで</td>
+                <th scope="row">有効期限</th>
+                <td>2025年（令和7年）9月2日から2030年（令和12年）9月1日まで</td>
               </tr>
               <tr>
-                <th>営業所の名称</th>
-                <td>一般社団法人ウイズささやま</td>
+                <th scope="row">旅行業約款</th>
+                <td>
+                  <ul class="company-document-list">
+                    <li>募集型企画旅行約款</li>
+                    <li>受注型企画旅行約款</li>
+                    <li>手配旅行契約</li>
+                    <li>旅行相談契約</li>
+                    <li>特別補償規定</li>
+                  </ul>
+                  <span class="company-note">
+                    当社は、標準旅行業約款を適用しています。
+                  </span>
+                </td>
               </tr>
               <tr>
-                <th>営業所の住所</th>
-                <td>兵庫県丹波篠山市黒岡191<br>丹波篠山市民センター内</td>
+                <th scope="row">会社案内・登録資料</th>
+                <td>
+                  <a
+                    class="company-link"
+                    href="https://drive.google.com/file/d/1YQNORvYI_3ykokxJf36AKLx-hU9EOlUE/view?usp=sharing"
+                    target="_blank"
+                    rel="noopener"
+                  >PDFを見る</a>
+                </td>
               </tr>
               <tr>
-                <th>旅行業務取扱管理者</th>
+                <th scope="row">個人情報保護</th>
+                <td>
+                  <a
+                    class="company-link"
+                    href="https://drive.google.com/file/d/1ogeZLtQ7jQ91XwM-UyOWyyZhMOIsl6N9/view?usp=drive_link"
+                    target="_blank"
+                    rel="noopener"
+                  >プライバシーポリシー（PDF）</a>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">旅行業務取扱管理者</th>
                 <td>古西 遥奈</td>
               </tr>
-              <tr>
-                <th>旅行業約款</th>
-                <td>
-                  <a href="/pdf/yakkan.pdf" target="_blank" style="color: var(--color-primary); text-decoration: underline;">標準旅行業約款</a>を適用<br>
-                  ・募集型企画旅行契約<br>
-                  ・受注型企画旅行契約<br>
-                  ・手配旅行契約<br>
-                  ・旅行相談契約
-                </td>
-              </tr>
-              <tr>
-                <th>旅行条件書</th>
-                <td>
-                  当社ウェブサイトに記載の旅行条件書は、<a href="/pdf/jouken.pdf" target="_blank" style="color: var(--color-primary); text-decoration: underline;">こちら</a>からご覧ください。
-                </td>
-              </tr>
-              <tr>
-                <th>個人情報保護</th>
-                <td>
-                  <a href="#" style="color: var(--color-primary); text-decoration: underline;">プライバシーポリシー</a>をご覧ください。
-                </td>
-              </tr>
-            </table>
-          </div>
-
-        </div>
-      </section>
+            </tbody>
+          </table>
+        </section>
+      </div>
     </main>
 
-    <!-- FOOTER -->
-                                        <footer class="footer">
+    <footer class="footer">
       <div class="container">
         <div class="footer-top">
           <div class="footer-left">
-            <div class="footer-logo">一般社団法人ウイズささやま</div>
-            <div class="footer-info">
-              〒669-2321 兵庫県丹波篠山市黒岡191 丹波篠山市民センター内<br>
-              TEL: 079-552-7373 / FAX: 079-552-4680<br>
-              兵庫県知事登録旅行業 地域-797号<br>
-              営業時間：平日9:00-17:00（土日祝定休）
+            <img
+              class="footer-mark"
+              src="./images/logo-white.png"
+              alt="丹波篠山ローカルトラベル"
+            >
+            <div>
+              <div class="footer-logo">一般社団法人ウイズささやま</div>
+              <div class="footer-info">
+                〒669-2321 兵庫県丹波篠山市黒岡191<br>
+                丹波篠山市民センター内<br>
+                TEL: 079-552-7373
+              </div>
             </div>
           </div>
-          
+
           <div class="footer-nav">
             <div class="footer-nav-col">
               <a href="index.html">＞ホーム</a>
               <a href="stay.html">＞体験と滞在</a>
               <a href="education.html">＞教育プログラム</a>
-              <a href="customize.html">＞カスタムと事例</a>
+              <a href="customize.html">＞事例紹介</a>
               <a href="news.html">＞最新情報</a>
-              <a href="about.html">＞旅作り</a>
               <a href="contact.html">＞お問い合わせ</a>
             </div>
             <div class="footer-nav-col">
-              <a href="https://drive.google.com/file/d/1YQNORvYI_3ykokxJf36AKLx-hU9EOlUE/view?usp=sharing" target="_blank">＞会社案内・旅行業登録</a>
-              <a href="https://drive.google.com/file/d/1Z4aZs0c8mSOcT5otj1DunceqjGFVjj6R/view?usp=sharing" target="_blank">＞プライバシーポリシー</a>
+              <a href="about.html">＞旅づくり</a>
+              <a href="company.html" aria-current="page">＞会社案内・旅行業登録</a>
+              <a
+                href="https://drive.google.com/file/d/1ogeZLtQ7jQ91XwM-UyOWyyZhMOIsl6N9/view?usp=drive_link"
+                target="_blank"
+                rel="noopener"
+              >＞プライバシーポリシー</a>
             </div>
           </div>
         </div>
-        
+
         <div class="footer-bottom">
           <p>&copy; 2026 一般社団法人ウイズささやま All Rights Reserved.</p>
         </div>
       </div>
     </footer>
-    <script type="module" src="/main.js"></script>
+    <script type="module" src="./main.js"></script>
   </body>
 </html>

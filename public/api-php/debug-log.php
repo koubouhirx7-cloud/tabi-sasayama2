@@ -15,8 +15,8 @@ $log_dir  = dirname($log_file);
 // ログディレクトリがなければ作成
 if (!is_dir($log_dir)) {
     mkdir($log_dir, 0755, true);
-    // .htaccess でアクセス禁止
-    file_put_contents($log_dir . '/.htaccess', "Order deny,allow\nDeny from all\n");
+    // .htaccess でアクセス禁止（Apache 2.2 / 2.4 両対応）
+    file_put_contents($log_dir . '/.htaccess', "Order deny,allow\nDeny from all\nRequire all denied\n");
 }
 
 // ログ読み込みヘルパー

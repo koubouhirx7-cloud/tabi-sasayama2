@@ -14,6 +14,11 @@ if (empty($_POST['not_a_robot']) || $_POST['not_a_robot'] !== 'yes') {
     die("スパム判定エラー。ブラウザの「戻る」ボタンで前の画面に戻り、チェックを入れてから再度送信してください。");
 }
 
+// ハニーポット（スパムボット対策）
+if (!empty($_POST['website_url'])) {
+    die("スパム判定エラー：不正なリクエストです。");
+}
+
 // フォームデータ受け取りとエスケープ
 function h($str) {
     if ($str === null) return '';
@@ -55,7 +60,7 @@ $body .= "送信元IP: " . $_SERVER['REMOTE_ADDR'] . "\n";
 // ヘッダー
 $headers  = "From: " . mb_encode_mimeheader("ウイズささやま アンケートフォーム") . " <info@withsasayama.jp>\r\n";
 $headers .= "Reply-To: info@withsasayama.jp\r\n";
-$headers .= "X-Mailer: PHP/" . phpversion();
+$headers .= "X-Mailer: PHP";
 
 // 送信
 $is_success = mb_send_mail($to, $subject, $body, $headers);
