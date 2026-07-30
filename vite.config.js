@@ -2,6 +2,24 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 
 export default defineConfig({
+  plugins: [
+    {
+      name: 'site-favicon',
+      transformIndexHtml() {
+        return [
+          {
+            tag: 'link',
+            attrs: {
+              rel: 'icon',
+              type: 'image/png',
+              href: '/favicon.png?v=20260730',
+            },
+            injectTo: 'head',
+          },
+        ];
+      },
+    },
+  ],
   server: {
     allowedHosts: ['.trycloudflare.com']
   },

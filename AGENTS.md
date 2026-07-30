@@ -60,6 +60,11 @@
   - `public/images/title-options/title-option-a-about.png`
 - Prefer relative `./images/...` paths on standalone HTML pages when local `file://` preview matters.
 
+## Site Favicon
+- The browser-tab icon is the generated dark green satoyama mountain and path mark at `public/favicon.png`.
+- Vite injects the favicon link into every built HTML page through the `site-favicon` plugin in `vite.config.js`.
+- Keep the editable project copy at `images/branding/favicon-satoyama.png` and a matching public archive at `public/images/branding/favicon-satoyama.png`.
+
 ## Company Page Notes
 - `company.html` is the local company information and travel registration page opened from the footer.
 - Its visual direction follows the supplied company-page reference:
