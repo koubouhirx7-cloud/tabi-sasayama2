@@ -32,6 +32,18 @@ import { newsPreviewArticles } from './news-preview-data.js';
     return `${y}.${m}.${d}`;
   };
 
+  const getArticleCategory = (item) => {
+    const value = item.category;
+    if (Array.isArray(value)) {
+      return value.find((category) => typeof category === 'string' && category.trim())
+        || 'お知らせ';
+    }
+    if (value && typeof value === 'object') {
+      return value.name || value.title || value.label || 'お知らせ';
+    }
+    return typeof value === 'string' && value.trim() ? value : 'お知らせ';
+  };
+
   const updateUrl = () => {
     const params = new URLSearchParams();
     if (currentCategory !== 'すべて') params.set('cat', currentCategory);
@@ -55,7 +67,7 @@ import { newsPreviewArticles } from './news-preview-data.js';
 
   function renderFilters() {
     const categories = [...new Set(
-      newsData.map((item) => item.category).filter(Boolean)
+      newsData.map(getArticleCategory)
     )];
     const years = [...new Set(
       newsData
@@ -132,7 +144,7 @@ import { newsPreviewArticles } from './news-preview-data.js';
     const filtered = newsData
       .filter((item) => {
         const categoryMatches =
-          currentCategory === 'すべて' || item.category === currentCategory;
+          currentCategory === 'すべて' || getArticleCategory(item) === currentCategory;
         const year = getArticleDate(item).getFullYear();
         const archiveMatches =
           currentArchive === 'すべて' || `${year}年` === currentArchive;
@@ -155,7 +167,7 @@ import { newsPreviewArticles } from './news-preview-data.js';
 
     const rows = displayData.map((item) => {
       const date = formatDate(getArticleDate(item));
-      const category = item.category || 'お知らせ';
+      const category = getArticleCategory(item);
       const title = item.title || 'タイトル未設定';
       const id = encodeURIComponent(item.id || '');
       return `

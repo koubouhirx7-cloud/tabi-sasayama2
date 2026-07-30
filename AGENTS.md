@@ -113,6 +113,7 @@
 ## News Page Notes
 - `news.html` is the latest-information list page and reads the microCMS `news` endpoint through `main-news.js`.
 - `news-detail.html` is the article page and reads the selected microCMS entry through `main-news-detail.js`.
+- The live microCMS `category` field currently returns an array such as `["レポート"]`. Normalize it before building filters, comparing the selected category, or rendering the category label; otherwise duplicate filter labels appear.
 - List rows use the microCMS date, title, and category. Detail pages use the title, category, date, eyecatch, and body.
 - When microCMS has no published entries, use the shared layout-preview entries in `news-preview-data.js` so the list and detail interaction can still be reviewed. Real microCMS articles always take priority and replace the preview list automatically.
 - Preview detail articles use `images/news/news-preview-editorial.jpg`; do not present the preview copy as published customer information.
@@ -191,3 +192,35 @@
   - intermediate width before mobile breakpoint, around 900-1100px
   - mobile width
 - The common issue to watch is the gallery/green diagonal drifting apart at intermediate widths.
+
+## XServer Production Deployment
+- Production URL: `https://satoyamatour.withsasayama.jp/`.
+- Confirmed XServer account details:
+  - server ID: `xs203337`
+  - host: `sv12640.xserver.jp`
+  - SSH port: `10022`
+  - document root: `/home/xs203337/withsasayama.jp/public_html/satoyamatour.withsasayama.jp`
+- The dedicated local SSH key is `~/.ssh/xserver_withsasayama_20260730`. Do not reuse keys from other customer accounts.
+- Before each production write, create a timestamped tar backup outside `public_html`, under `/home/xs203337/withsasayama.jp/deployment_backups/`, and verify it with `gzip -t`.
+- Never guess the upload destination. Confirm it by comparing the SHA-256 of the live URL and the server-side `index.html`.
+- Upload the contents of `dist/` into the document root. Do not upload the `dist` directory as a nested folder.
+- Do not use `rsync -a` from this external volume. Local build files can have mode `700`, and archive mode will propagate those permissions and cause a production `403`.
+- Use recursive/checksum/timestamp transfer without permission propagation, for example `rsync -rctz --no-perms`, and do not use `--delete` for routine updates.
+- Exclude these paths from deployment:
+  - `._*` and `.DS_Store`
+  - `.user.ini` and `.env.php`
+  - `api-php/data/***`
+  - `logs/***`
+- XServer's working permissions for this site are:
+  - document root: `711`
+  - subdirectories: `705`
+  - public files: `604`
+  - `.user.ini`: `600`
+  - `api-php/data/analytics-config.json`: `644`
+- The live `.env.php` is intentionally outside the site root at `/home/xs203337/withsasayama.jp/public_html/.env.php`. Never overwrite or move it.
+- After upload, verify:
+  - a second checksum dry run reports zero transferred files
+  - primary pages return HTTP 200
+  - the live `index.html` hash matches `dist/index.html`
+  - `/api/get-content?endpoint=stay&limit=1` returns JSON
+  - the home, news list/detail, stay list/detail, customize list/detail, company, contact, and education pages render in Chrome
