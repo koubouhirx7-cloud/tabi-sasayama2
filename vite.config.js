@@ -16,6 +16,14 @@ export default defineConfig({
             },
             injectTo: 'head',
           },
+          {
+            tag: 'meta',
+            attrs: {
+              name: 'robots',
+              content: 'max-image-preview:large',
+            },
+            injectTo: 'head',
+          },
         ];
       },
     },

@@ -65,6 +65,13 @@
 - Vite injects the favicon link into every built HTML page through the `site-favicon` plugin in `vite.config.js`.
 - Keep the editable project copy at `images/branding/favicon-satoyama.png` and a matching public archive at `public/images/branding/favicon-satoyama.png`.
 
+## Search Thumbnail and Canonical URL
+- The production site host is `https://satoyamatour.withsasayama.jp/`; public-page canonical URLs, Open Graph URLs, structured-data URLs, `public/robots.txt`, and `public/sitemap.xml` must use this host.
+- Do not use `https://withsasayama.jp/` for public-page metadata. The former host returns 404 for the referenced image paths and prevents search-preview images from being fetched.
+- Vite injects `max-image-preview:large` into every built HTML page via `vite.config.js`.
+- The homepage search-preview image is the real site photo at `public/images/search/search-thumbnail.jpg` (1200 x 630). Keep the matching editable copy at `images/search/search-thumbnail.jpg`.
+- `index.html` exposes this image through `og:image`, `twitter:image`, `LocalBusiness.image`, and `WebPage.primaryImageOfPage`.
+
 ## Company Page Notes
 - `company.html` is the local company information and travel registration page opened from the footer.
 - Its visual direction follows the supplied company-page reference:

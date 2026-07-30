@@ -5,4 +5,4 @@ Disallow: /api/
 Disallow: /api-php/
 Disallow: /logs/
 
-Sitemap: https://withsasayama.jp/sitemap.xml
+Sitemap: https://satoyamatour.withsasayama.jp/sitemap.xml

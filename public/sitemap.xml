@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://withsasayama.jp/</loc>
+    <loc>https://satoyamatour.withsasayama.jp/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://withsasayama.jp/stay.html</loc>
+    <loc>https://satoyamatour.withsasayama.jp/stay.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://withsasayama.jp/education.html</loc>
+    <loc>https://satoyamatour.withsasayama.jp/education.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://withsasayama.jp/customize.html</loc>
+    <loc>https://satoyamatour.withsasayama.jp/customize.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://withsasayama.jp/news.html</loc>
+    <loc>https://satoyamatour.withsasayama.jp/news.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://withsasayama.jp/about.html</loc>
+    <loc>https://satoyamatour.withsasayama.jp/about.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://withsasayama.jp/inbound.html</loc>
+    <loc>https://satoyamatour.withsasayama.jp/inbound.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://withsasayama.jp/contact.html</loc>
+    <loc>https://satoyamatour.withsasayama.jp/contact.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
