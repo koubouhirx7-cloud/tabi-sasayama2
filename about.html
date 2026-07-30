@@ -7,109 +7,120 @@
     <meta name="description" content="ウイズささやま（with ささやま）が丹波篠山の里山・農業体験を通じて伝えたいこと。非日常のトラベル体験を通じ、地域と旅人をつなぐ旅づくりの背景と想いをご紹介します。" />
     <link rel="stylesheet" href="./style.css" />
     <style>
-      .page-header {
-        background-color: #a99c79;
-        height: 300px;
+      .about-page {
+        --about-ink: #1d3433;
+        --about-muted: #64706d;
+        background: #fff;
+        color: var(--about-ink);
+      }
+
+      .about-page .header {
+        background: rgba(255, 255, 255, 0.97);
+        border-bottom: 1px solid #ecefed;
+        box-shadow: none;
+      }
+
+      .about-page .about-main {
+        padding-top: 176px;
+      }
+
+      .about-page .about-inner {
+        width: min(calc(100% - 40px), 940px);
+        margin: 0 auto;
+      }
+
+      .about-page .about-heading {
         display: flex;
         align-items: center;
-        justify-content: center;
-        position: relative;
-        margin-top:  140px;
+        gap: 26px;
+        margin-bottom: 58px;
       }
-      .page-header h1 {
-        position: relative;
-        z-index: 1;
-        color: white;
-        font-family: var(--font-display);
-        font-size: clamp(2rem, 5vw, 4rem);
-        text-align: center;
+
+      .about-page .about-heading-mark {
+        flex: 0 0 8px;
+        width: 8px;
+        height: 76px;
+        background: var(--about-ink);
+      }
+
+      .about-page .about-heading h1 {
+        margin: 0;
+        line-height: 1;
+      }
+
+      .about-page .about-title-image {
+        display: block;
+        width: min(390px, 64vw);
+        height: auto;
+      }
+
+      .about-page .about-content {
+        padding-bottom: 96px;
       }
 
       .vision-section {
         background: transparent;
-        padding: var(--spacing-lg) var(--spacing-md);
+        padding: 0;
         text-align: center;
-        max-width: 900px;
-        margin: 40px auto var(--spacing-lg);
+        max-width: 860px;
+        margin: 0 auto;
         position: relative;
-        z-index: 10;
       }
 
       .vision-text {
         font-family: var(--font-display);
         font-size: clamp(1.2rem, 3vw, 1.8rem);
         line-height: 2;
-        color: var(--color-primary);
+        color: var(--about-ink);
         margin-bottom: var(--spacing-md);
       }
 
-      .guides-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: var(--spacing-lg);
-        margin-top: var(--spacing-lg);
+      .about-page .vision-block .title {
+        color: var(--about-ink);
       }
 
-      .guide-card {
-        background: var(--color-surface);
-        padding: var(--spacing-md);
-        border-radius: var(--border-radius-blob);
-        text-align: center;
-        border: 2px dashed var(--color-secondary);
-        transition: transform 0.3s ease;
-      }
-      .guide-card:hover {
-        transform: translateY(-5px);
-        background: rgba(194, 168, 120, 0.05); /* very light secondary */
+      @media (max-width: 860px) {
+        .about-page .about-main {
+          padding-top: 136px;
+        }
+
+        .about-page .about-heading {
+          margin-bottom: 42px;
+        }
+
+        .about-page .about-heading-mark {
+          height: 60px;
+        }
       }
 
-      .guide-img {
-        width: 120px;
-        height: 120px;
-        margin: 0 auto;
-        border-radius: 50%;
-        overflow: hidden;
-        margin-bottom: 1rem;
-        border: 3px solid white;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      }
-      .guide-img img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
+      @media (max-width: 620px) {
+        .about-page .about-inner {
+          width: min(calc(100% - 28px), 940px);
+        }
 
-      .guide-description {
-        font-family: var(--font-base);
-        font-size: 1rem;
-        color: var(--color-text);
-        line-height: 1.6;
-        padding: 0.5rem;
-        background: white;
-        border-radius: var(--border-radius-md);
-        position: relative;
-        margin-top: 1rem;
-        border: 1px solid var(--color-border);
-      }
-      .guide-description::before {
-        content: '';
-        position: absolute;
-        top: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        border-width: 0 10px 10px 10px;
-        border-style: solid;
-        border-color: transparent transparent var(--color-border) transparent;
-      }
-      .guide-description::after {
-        content: '';
-        position: absolute;
-        top: -8px;
-        left: 50%;
-        transform: translateX(-50%);
-        border-width: 0 9px 9px 9px;
-        border-style: solid;
-        border-color: transparent transparent white transparent;
+        .about-page .about-heading {
+          gap: 16px;
+          margin-bottom: 34px;
+        }
+
+        .about-page .about-heading-mark {
+          flex-basis: 6px;
+          width: 6px;
+          height: 50px;
+        }
+
+        .about-page .about-title-image {
+          width: min(300px, calc(100vw - 76px));
+        }
+
+        .about-page .about-content {
+          padding-bottom: 68px;
+        }
+
+        .vision-text {
+          font-size: 1.12rem;
+          line-height: 1.9;
+        }
       }
     </style>
     <meta name="keywords" content="withささやま,旅づくり,里山,丹波篠山旅,トラベル,農業,体験,非日常,地域,兵庫県" />
@@ -125,7 +136,7 @@
     <meta name="twitter:description" content="ウイズささやまが丹波篠山の里山・農業体験を通じて伝えたいこと。地域と旅人をつなぐ旅づくりの想い。" />
     <meta name="twitter:image" content="https://withsasayama.jp/images/PC032939.jpg" />
   </head>
-  <body>
+  <body class="about-page">
     <!-- HEADER -->
                                         <header class="header">
       <div class="container nav-container">
@@ -147,14 +158,20 @@
       </div>
     </header>
 
-    <main>
-      <div class="page-header fade-in">
-        <h1>旅作り<br><span style="font-size:0.5em; font-family: var(--font-base); letter-spacing: 0.1em; font-weight: normal;">- about us -</span></h1>
-      </div>
+    <main class="about-main">
+      <div class="about-inner">
+        <div class="about-heading fade-in">
+          <span class="about-heading-mark" aria-hidden="true"></span>
+          <h1>
+            <img
+              class="about-title-image"
+              src="./images/title-options/title-option-a-about.png"
+              alt="旅づくり"
+            >
+          </h1>
+        </div>
 
-      <section class="section pt-0">
-        <div class="container fade-in">
-
+        <section class="about-content fade-in">
           <div class="vision-section">
 
             <!-- Vision -->
@@ -202,9 +219,8 @@
             </div>
 
           </div>
-
-        </div>
-      </section>
+        </section>
+      </div>
     </main>
 
     <!-- FOOTER -->

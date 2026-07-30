@@ -50,12 +50,14 @@
   - `images/title-options/title-option-a-news.png`
   - `images/title-options/title-option-a-contact.png`
   - `images/title-options/title-option-a-stay.png`
+  - `images/title-options/title-option-a-about.png`
   - `public/images/title-options/title-option-a-education.png`
   - `public/images/title-options/title-option-a-case.png`
   - `public/images/title-options/title-option-a-company.png`
   - `public/images/title-options/title-option-a-news.png`
   - `public/images/title-options/title-option-a-contact.png`
   - `public/images/title-options/title-option-a-stay.png`
+  - `public/images/title-options/title-option-a-about.png`
 - Prefer relative `./images/...` paths on standalone HTML pages when local `file://` preview matters.
 
 ## Company Page Notes
@@ -70,6 +72,13 @@
 - All public-page links labeled `プライバシーポリシー` should point to:
   - `https://drive.google.com/file/d/1ogeZLtQ7jQ91XwM-UyOWyyZhMOIsl6N9/view?usp=drive_link`
 - On mobile, company-table rows switch to stacked label/value blocks to prevent horizontal overflow.
+
+## About / Travel-Making Page Notes
+- `about.html` is the `旅作り` navigation destination, while its supplied handwritten page title uses the exact phrase `旅づくり`.
+- Keep the global site navigation. The former large beige `旅作り / about us` page-header band was intentionally removed.
+- The page heading follows the shared white-background pattern: dark green vertical mark plus the A-style handwritten title.
+- The original Google Drive title source is archived at `source-assets/about/about-title-source.png`.
+- The active title image is `images/title-options/title-option-a-about.png`, with a matching copy under `public/images/title-options/`.
 
 ## Case / Customize Page Notes
 - `customize.html` is currently used as the "事例紹介・ストーリー" page.
